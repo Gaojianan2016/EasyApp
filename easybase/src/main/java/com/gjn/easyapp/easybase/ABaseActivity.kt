@@ -25,19 +25,19 @@ abstract class ABaseActivity
         mActivity = this
         mContext = this
         mBundle = intent.extras ?: Bundle()
-        getBundle()
+        onBundle()
         init()
         initView()
         initData()
     }
 
-    protected fun preCreate() {
+    protected open fun preCreate() {
     }
 
-    protected fun getBundle() {
+    protected open fun onBundle() {
     }
 
-    protected fun init() {
+    protected open fun init() {
     }
 
     abstract fun layoutId(): Int

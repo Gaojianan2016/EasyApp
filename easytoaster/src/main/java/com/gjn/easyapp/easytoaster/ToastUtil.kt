@@ -9,18 +9,17 @@ import android.widget.ImageView
 import android.widget.Toast
 import kotlinx.coroutines.runBlocking
 
-
 object ToastUtil {
 
-    const val EASY_TYPE_NULL = -1
-    const val EASY_TYPE_CONFIRM = 0
-    const val EASY_TYPE_INFO = 1
-    const val EASY_TYPE_WARNING = 2
-    const val EASY_TYPE_ERROR = 3
-    const val EASY_TYPE_FAIL = 4
-    const val EASY_TYPE_SUCCESS = 5
-    const val EASY_TYPE_WAIT = 6
-    const val EASY_TYPE_PROHIBIT = 7
+    private const val EASY_TYPE_NULL = -1
+    private const val EASY_TYPE_CONFIRM = 0
+    private const val EASY_TYPE_INFO = 1
+    private const val EASY_TYPE_WARNING = 2
+    private const val EASY_TYPE_ERROR = 3
+    private const val EASY_TYPE_FAIL = 4
+    private const val EASY_TYPE_SUCCESS = 5
+    private const val EASY_TYPE_WAIT = 6
+    private const val EASY_TYPE_PROHIBIT = 7
 
     private var mContext: Context? = null
     private var mToast: Toast? = null
@@ -47,6 +46,7 @@ object ToastUtil {
         }
     }
 
+    @JvmOverloads
     @SuppressLint("ShowToast")
     fun showToast(
         msg: CharSequence?, view: View? = null, duration: Int = Toast.LENGTH_SHORT,
@@ -66,62 +66,92 @@ object ToastUtil {
             } else {
                 mToast = Toast.makeText(mContext, msg, duration)
             }
-            if (view != null) {
-                mToast!!.view = view
-                mToast!!.setText(msg)
-            }
-            mToast!!.setGravity(gravity, xOffset, yOffset)
-            mToast?.show()
+            mToast!!.apply {
+                if (view != null) {
+                    this.view = view
+                    setText(msg)
+                }
+                setGravity(gravity, xOffset, yOffset)
+            }.show()
         }
     }
 
-    fun showNullToast(msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
-                      gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0){
+    @JvmOverloads
+    fun showNullToast(
+        msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
+        gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0
+    ) {
         showEasyToast(msg, EASY_TYPE_NULL, duration, gravity, xOffset, yOffset)
     }
 
-    fun showConfirmToast(msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
-                      gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0){
+    @JvmOverloads
+    fun showConfirmToast(
+        msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
+        gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0
+    ) {
         showEasyToast(msg, EASY_TYPE_CONFIRM, duration, gravity, xOffset, yOffset)
     }
 
-    fun showInfoToast(msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
-                      gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0){
+    @JvmOverloads
+    fun showInfoToast(
+        msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
+        gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0
+    ) {
         showEasyToast(msg, EASY_TYPE_INFO, duration, gravity, xOffset, yOffset)
     }
 
-    fun showWarningToast(msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
-                      gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0){
+    @JvmOverloads
+    fun showWarningToast(
+        msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
+        gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0
+    ) {
         showEasyToast(msg, EASY_TYPE_WARNING, duration, gravity, xOffset, yOffset)
     }
 
-    fun showErrorToast(msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
-                      gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0){
+    @JvmOverloads
+    fun showErrorToast(
+        msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
+        gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0
+    ) {
         showEasyToast(msg, EASY_TYPE_ERROR, duration, gravity, xOffset, yOffset)
     }
 
-    fun showFailToast(msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
-                      gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0){
+    @JvmOverloads
+    fun showFailToast(
+        msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
+        gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0
+    ) {
         showEasyToast(msg, EASY_TYPE_FAIL, duration, gravity, xOffset, yOffset)
     }
 
-    fun showSuccessToast(msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
-                      gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0){
+    @JvmOverloads
+    fun showSuccessToast(
+        msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
+        gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0
+    ) {
         showEasyToast(msg, EASY_TYPE_SUCCESS, duration, gravity, xOffset, yOffset)
     }
 
-    fun showWaitToast(msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
-                      gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0){
+    @JvmOverloads
+    fun showWaitToast(
+        msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
+        gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0
+    ) {
         showEasyToast(msg, EASY_TYPE_WAIT, duration, gravity, xOffset, yOffset)
     }
 
-    fun showProhibitToast(msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
-                      gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0){
+    @JvmOverloads
+    fun showProhibitToast(
+        msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT,
+        gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0
+    ) {
         showEasyToast(msg, EASY_TYPE_PROHIBIT, duration, gravity, xOffset, yOffset)
     }
 
-    private fun showEasyToast(msg: CharSequence?, type: Int = EASY_TYPE_NULL, duration: Int = Toast.LENGTH_SHORT,
-                      gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0){
+    private fun showEasyToast(
+        msg: CharSequence?, type: Int = EASY_TYPE_NULL, duration: Int = Toast.LENGTH_SHORT,
+        gravity: Int = Gravity.CENTER, xOffset: Int = 0, yOffset: Int = 0
+    ) {
         if (mEasyToastView == null) {
             return
         }
@@ -136,7 +166,6 @@ object ToastUtil {
             EASY_TYPE_SUCCESS -> iv.setImageResource(R.drawable.easy_toast_success)
             EASY_TYPE_WAIT -> iv.setImageResource(R.drawable.easy_toast_wait)
             EASY_TYPE_PROHIBIT -> iv.setImageResource(R.drawable.easy_toast_prohibit)
-            EASY_TYPE_NULL -> iv.visibility = View.GONE
             else -> iv.visibility = View.GONE
         }
         showToast(msg, mEasyToastView, duration, gravity, xOffset, yOffset)
