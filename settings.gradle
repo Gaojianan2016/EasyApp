@@ -1,0 +1,7 @@
+include ':easyutils'
+include ':easydialoger'
+include ':easytoaster'
+include ':easylogger'
+include ':easybase'
+include ':app'
+rootProject.name = "EasyApp"
