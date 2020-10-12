@@ -7,17 +7,10 @@ group='com.github.Gaojianan2016'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.3"
-
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
-
         consumerProguardFiles "consumer-rules.pro"
     }
-
     buildTypes {
         release {
             minifyEnabled false

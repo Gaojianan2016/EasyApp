@@ -1,0 +1,113 @@
+package com.gjn.easyapp.easydialoger.base
+
+import android.app.Dialog
+import android.content.DialogInterface
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import android.view.*
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import androidx.viewpager.widget.ViewPager
+
+abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragment,
+    ConvertDataBindingDialogFragment {
+
+    var isCloseOnTouchOutside: Boolean = true
+    var isCanClose: Boolean = true
+    var isShowAnimations: Boolean = false
+    var isTransparent: Boolean = false
+    var windowAnimations: Int = View.NO_ID
+    var dimAmount: Float = DIM_AMOUNT
+    var width: Int = ViewPager.LayoutParams.WRAP_CONTENT
+    var height: Int = ViewPager.LayoutParams.WRAP_CONTENT
+    var gravity: Int = Gravity.CENTER
+
+    private var onDialogCancelListeners: MutableList<OnDialogCancelListener>? = null
+
+    abstract fun createDialogBuilder(): AlertDialog.Builder?
+
+    abstract fun layoutResId(): Int
+
+    abstract fun dataBindingResId(): Int
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        if (createDialogBuilder() != null) {
+            return createDialogBuilder()!!.create()
+        }
+        return super.onCreateDialog(savedInstanceState)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        if (createDialogBuilder() == null) {
+            dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            isTransparent = true
+            if (layoutResId() != View.NO_ID) {
+                val holder = ViewHolder.create(context, layoutResId(), container)
+                convertView(holder, this)
+                return holder.view
+            }
+            if (dataBindingResId() != View.NO_ID) {
+                val holder = DataBindingHolder.create(context, dataBindingResId(), container)
+                convertDataBinding(holder, this)
+                return holder.dataBinding.root
+            }
+        }
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        dialog?.let { dialog ->
+            dialog.setCanceledOnTouchOutside(isCloseOnTouchOutside)
+            dialog.setCancelable(isCanClose)
+        }
+        dialog?.window?.let { window ->
+            if (isTransparent) {
+                window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            }
+            window.attributes.let { params ->
+                if (dimAmount != DIM_AMOUNT) {
+                    params.dimAmount = dimAmount
+                }
+                if (windowAnimations != View.NO_ID && isShowAnimations) {
+                    params.windowAnimations = windowAnimations
+                }
+                params.width = width
+                params.height = height
+                params.gravity = gravity
+            }
+        }
+    }
+
+    override fun show(manager: FragmentManager, tag: String?) {
+        try {
+            super.show(manager, tag)
+        } catch (e: Exception) {
+        }
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        onDialogCancelListeners?.forEach { it.onCancel(dialog, this) }
+    }
+
+    fun addOnDialogCancelListener(listener: OnDialogCancelListener) {
+        if (onDialogCancelListeners == null) {
+            onDialogCancelListeners = mutableListOf()
+        }
+        onDialogCancelListeners?.add(listener)
+    }
+
+    fun clearOnDialogCancelListeners() {
+        onDialogCancelListeners?.clear()
+    }
+
+    companion object {
+        const val DIM_AMOUNT = 0.7f
+    }
+}
+
