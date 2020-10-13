@@ -4,6 +4,5 @@ public class TestJava {
 
     public TestJava() {
 
-
     }
 }

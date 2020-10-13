@@ -19,8 +19,8 @@ import com.gjn.easyapp.easydialoger.base.BaseDialogFragment
 import com.gjn.easyapp.easydialoger.base.ConvertLayoutDialogFragment
 import com.gjn.easyapp.easydialoger.base.OnDialogCancelListener
 import com.gjn.easyapp.easydialoger.base.ViewHolder
-import com.gjn.easyapp.easyutils.ViewUtils
 import com.gjn.easyapp.easyutils.dp
+import com.gjn.easyapp.easyutils.widthPixels
 import java.util.*
 
 object EasyDialogUtils {
@@ -246,17 +246,11 @@ object EasyDialogUtils {
         return showDialog(dialogFragment)
     }
 
-    fun showSmallLoadingDialog(): BaseDialogFragment? {
-        return showEasyLoadingDialog(LOADING_S)
-    }
+    fun showSmallLoadingDialog(): BaseDialogFragment? = showEasyLoadingDialog(LOADING_S)
 
-    fun showNormalLoadingDialog(): BaseDialogFragment? {
-        return showEasyLoadingDialog(LOADING_N)
-    }
+    fun showNormalLoadingDialog(): BaseDialogFragment? = showEasyLoadingDialog(LOADING_N)
 
-    fun showBigLoadingDialog(): BaseDialogFragment? {
-        return showEasyLoadingDialog(LOADING_B)
-    }
+    fun showBigLoadingDialog(): BaseDialogFragment? = showEasyLoadingDialog(LOADING_B)
 
     @JvmOverloads
     fun showEasyLoadingDialog(
@@ -267,9 +261,9 @@ object EasyDialogUtils {
             return null
         }
         val edge = when (size) {
-            LOADING_B -> ViewUtils.getScreenWidth(mActivity!!) / LOADING_B
-            LOADING_N -> ViewUtils.getScreenWidth(mActivity!!) / LOADING_N
-            else -> ViewUtils.getScreenWidth(mActivity!!) / LOADING_S
+            LOADING_B -> mActivity!!.widthPixels() / LOADING_B
+            LOADING_N -> mActivity!!.widthPixels() / LOADING_N
+            else -> mActivity!!.widthPixels() / LOADING_S
         }
         val dialogFragment = EasyDialogFragment.newInstance(R.layout.edf_dialog_loading,
             object : ConvertLayoutDialogFragment {

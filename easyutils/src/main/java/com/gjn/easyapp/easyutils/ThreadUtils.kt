@@ -12,6 +12,7 @@ object ThreadUtils {
     private val sMainHandler = Handler(Looper.getMainLooper())
 
     private val CPU_COUNT: Int = Runtime.getRuntime().availableProcessors()
+
     // We want at least 2 threads and at most 4 threads in the core pool,
     // preferring to have 1 less than the CPU count to avoid saturating
     // the CPU with background work
@@ -28,22 +29,24 @@ object ThreadUtils {
     private var THREAD_POOL_EXECUTOR: ThreadPoolExecutor
 
     init {
-        val threadPoolExecutor = ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, 30,
-            TimeUnit.SECONDS, POOL_WORK_QUEUE, THREAD_FACTORY)
+        val threadPoolExecutor = ThreadPoolExecutor(
+            CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, 30,
+            TimeUnit.SECONDS, POOL_WORK_QUEUE, THREAD_FACTORY
+        )
         threadPoolExecutor.allowCoreThreadTimeOut(true)
         THREAD_POOL_EXECUTOR = threadPoolExecutor
     }
 
     @JvmOverloads
-    fun runOnUiThread(runnable: Runnable, delayed: Long = 0){
+    fun runOnUiThread(runnable: Runnable, delayed: Long = 0) {
         sMainHandler.postDelayed(runnable, delayed)
     }
 
-    fun runOnSubThread(runnable: Runnable){
-        if (THREAD_POOL_EXECUTOR!!.queue.size == 128 || THREAD_POOL_EXECUTOR!!.isShutdown) {
+    fun runOnSubThread(runnable: Runnable) {
+        if (THREAD_POOL_EXECUTOR.queue.size == 128 || THREAD_POOL_EXECUTOR.isShutdown) {
             Log.e(TAG, "线程池爆满警告，请查看是否开启了过多的耗时线程")
             return
         }
-        THREAD_POOL_EXECUTOR!!.execute(runnable)
+        THREAD_POOL_EXECUTOR.execute(runnable)
     }
 }
