@@ -1,12 +1,12 @@
 package com.gjn.easyapp
 
-import android.view.View
+import android.graphics.BitmapFactory
+import android.graphics.Color
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easybase.BaseLog
 import com.gjn.easyapp.easydialoger.EasyDialogUtils
-import com.gjn.easyapp.easyutils.heightPixels
-import com.gjn.easyapp.easyutils.togglePassword
-import com.gjn.easyapp.easyutils.widthPixels
+import com.gjn.easyapp.easyutils.QRCodeUtils
+import com.google.zxing.EncodeHintType
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : ABaseActivity() {
@@ -42,6 +42,22 @@ class MainActivity : ABaseActivity() {
 //            et_test.togglePassword()
 
 //            BaseLog.i("屏幕宽度 ${mContext.widthPixels()} 屏幕高度 ${mContext.heightPixels()}")
+
+//            val bmp = QRCodeUtils.stringEncode("你好，我是二维码")
+//            iv_code_test.setImageBitmap(bmp)
+//            tv_test.text = QRCodeUtils.bitmapDecode(bmp)
+
+            val enMap = QRCodeUtils.defaultEncodeMap
+            enMap[EncodeHintType.MARGIN] = 1
+            val qrBmp = QRCodeUtils.stringEncode("你好，我是二维码",
+                positiveColor = Color.RED, negativeColor = Color.YELLOW, hints = enMap,
+                logoBitmap = BitmapFactory.decodeResource(resources, R.mipmap.balance_bg),
+                scale = 0.1f
+            )
+
+            iv_code_test.setImageBitmap(qrBmp)
+            tv_test.text = QRCodeUtils.bitmapDecode(qrBmp)
+
         }
     }
 
