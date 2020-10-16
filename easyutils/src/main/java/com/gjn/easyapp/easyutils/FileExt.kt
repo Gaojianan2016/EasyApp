@@ -7,9 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
 import java.util.zip.ZipInputStream
 
 fun String.file(): File = File(this)
@@ -66,6 +64,26 @@ fun File.create(): Boolean {
         return mkdirs()
     }
     return true
+}
+
+fun File.toBytes(): ByteArray? {
+    var bytes: ByteArray? = null
+    val fis: FileInputStream
+    try {
+        fis = FileInputStream(this)
+        val bos = ByteArrayOutputStream()
+        val b = ByteArray(1024)
+        var n: Int
+        while (fis.read(b).also { n = it } != -1) {
+            bos.write(b, 0, n)
+        }
+        fis.close()
+        bos.close()
+        bytes = bos.toByteArray()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return bytes
 }
 
 object FileUtils {
