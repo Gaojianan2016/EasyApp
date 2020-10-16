@@ -4,6 +4,19 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
+import kotlin.math.abs
+
+const val MINUTE = 60.toLong()
+const val HOUR = 60 * 60.toLong()
+const val DAY = 60 * 60 * 24.toLong()
+const val WEEK = 60 * 60 * 24 * 7.toLong()
+const val MONTH = 60 * 60 * 24 * 30.toLong()
+const val YEAR = 60 * 60 * 24 * 365.toLong()
+
+const val KB = 1024.toLong()
+const val MB = 1024 * 1024.toLong()
+const val GB = 1024 * 1024 * 1024.toLong()
+const val TB = 1024 * 1024 * 1024 * 1024.toLong()
 
 fun String.toMd5(): String {
     try {
@@ -29,19 +42,21 @@ fun String.toMd5(): String {
     return this
 }
 
-fun Double.decimalFormat(): String = this.decimalFormat(2)
-
-fun Double.decimalFormat(len: Int): String {
-    val pattern = StringBuilder("0.")
-    for (i in 0 until len) {
+@JvmOverloads
+fun Double.decimalFormat(prefix: String = "", suffix: String? = null, len: Int = 2): String {
+    val pattern = StringBuilder("${prefix}0.")
+    for (i in 0..len) {
         pattern.append("0")
+    }
+    if (suffix != null) {
+        pattern.append(suffix)
     }
     return DecimalFormat(pattern.toString()).format(this)
 }
 
-fun Long.dataFormat(): String = dataFormat("yyyy-MM-dd HH:mm:ss")
-
-fun Long.dataFormat(format: String): String = SimpleDateFormat(format).format(this)
+@JvmOverloads
+fun Long.dataFormat(format: String = "yyyy-MM-dd HH:mm:ss"): String =
+    SimpleDateFormat(format).format(this)
 
 fun Char.isChineseChar(): Boolean {
     val ub = Character.UnicodeBlock.of(this)
@@ -72,11 +87,71 @@ fun String.isChinese(): Boolean {
 }
 
 fun Long.byteToStr(): String = when {
-    this >= 1024 * 1024 * 1024 -> "${(this / 1024 / 1024 / 1024.toDouble()).decimalFormat()}GB"
-    this >= 1024 * 1024 -> "${(this / 1024 / 1024.toDouble()).decimalFormat()}MB"
-    this >= 1024 -> "${(this / 1024.toDouble()).decimalFormat()}KB"
-    else -> "${(this.toDouble()).decimalFormat()}B"
+    this >= GB -> (this / 1024 / 1024 / 1024.toDouble()).decimalFormat(suffix = "GB")
+    this >= MB -> (this / 1024 / 1024.toDouble()).decimalFormat(suffix = "MB")
+    this >= KB -> (this / 1024.toDouble()).decimalFormat(suffix = "KB")
+    else -> (this.toDouble()).decimalFormat(suffix = "B")
 }
 
+fun String.hidePhone(): String = hideSubstring(3, 4)
+
+fun String.hideName(): String = hideSubstring(1, 1)
+
+fun String.hideSubstring(start: Int, end: Int): String {
+    if (length < 3) return this
+    val result = StringBuilder()
+    val head = substring(0, start)
+    val foot = substring(length - end)
+    val surplus = length - start - end
+    result.append(head)
+    for (i in 0..surplus) {
+        result.append("*")
+    }
+    result.append(foot)
+    return result.toString()
+}
+
+fun Long.elapsedTime(): String {
+    val second = abs(this) / 1000
+    return when {
+        second >= YEAR -> "${second / YEAR}年前"
+        second >= MONTH -> "${second / MONTH}个月前"
+        second >= WEEK -> "${second / WEEK}周前"
+        second >= DAY * 2 -> "两天前"
+        second >= DAY -> "一天前"
+        second >= HOUR -> "${second / HOUR}小时前"
+        second >= MINUTE -> "${second / MINUTE}分钟前"
+        second > 5 -> "${second % 60}秒前"
+        else -> "刚刚"
+    }
+}
+
+@JvmOverloads
+fun Long.toSecondFormat(isChinese: Boolean = false): String {
+    val second = this / 1000
+    return when {
+        second > HOUR -> if (isChinese) String.format(
+            "%02d时%02d分%02d秒",
+            second / HOUR,
+            second / MINUTE % MINUTE,
+            second % MINUTE
+        ) else String.format(
+            "%02d:%02d:%02d",
+            second / HOUR,
+            second / MINUTE % MINUTE,
+            second % MINUTE
+        )
+        second > MINUTE -> if (isChinese) String.format(
+            "%02d分%02d秒",
+            second / MINUTE,
+            second % MINUTE
+        ) else String.format("%02d:%02d", second / MINUTE, second % MINUTE)
+        second > 0 -> if (isChinese) String.format(
+            "00分%02d秒",
+            second % MINUTE
+        ) else String.format("00:%02d", second % MINUTE)
+        else -> if (isChinese) "00分00秒" else "00:00"
+    }
+}
 
 

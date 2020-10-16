@@ -57,8 +57,8 @@ object QRCodeUtils {
         val height = bitMatrix.height
         val pixels = IntArray(width * height)
         //将BitMatrix的像素保存下来
-        for (y in 0 until height) {
-            for (x in 0 until width) {
+        for (y in 0 .. height) {
+            for (x in 0 .. width) {
                 pixels[y * width + x] = if (bitMatrix[x, y]) positiveColor else negativeColor
             }
         }

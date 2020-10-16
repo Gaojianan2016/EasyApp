@@ -5,9 +5,10 @@ import android.graphics.Color
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easybase.BaseLog
 import com.gjn.easyapp.easydialoger.EasyDialogUtils
-import com.gjn.easyapp.easyutils.QRCodeUtils
+import com.gjn.easyapp.easyutils.*
 import com.google.zxing.EncodeHintType
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 class MainActivity : ABaseActivity() {
 
@@ -47,17 +48,49 @@ class MainActivity : ABaseActivity() {
 //            iv_code_test.setImageBitmap(bmp)
 //            tv_test.text = QRCodeUtils.bitmapDecode(bmp)
 
-            val enMap = QRCodeUtils.defaultEncodeMap
-            enMap[EncodeHintType.MARGIN] = 1
-            val qrBmp = QRCodeUtils.stringEncode("你好，我是二维码",
-                positiveColor = Color.RED, negativeColor = Color.YELLOW, hints = enMap,
-                logoBitmap = BitmapFactory.decodeResource(resources, R.mipmap.balance_bg),
-                scale = 0.1f
-            )
+//            val enMap = QRCodeUtils.defaultEncodeMap
+//            enMap[EncodeHintType.MARGIN] = 1
+//            val qrBmp = QRCodeUtils.stringEncode("你好，我是二维码",
+//                positiveColor = Color.RED, negativeColor = Color.YELLOW, hints = enMap,
+//                logoBitmap = BitmapFactory.decodeResource(resources, R.mipmap.balance_bg),
+//                scale = 0.1f
+//            )
+//
+//            iv_code_test.setImageBitmap(qrBmp)
+//            tv_test.text = QRCodeUtils.bitmapDecode(qrBmp)
 
-            iv_code_test.setImageBitmap(qrBmp)
-            tv_test.text = QRCodeUtils.bitmapDecode(qrBmp)
+            val d = 35.7
+            println("${d.decimalFormat()} , ${d.decimalFormat(prefix = "￥")}, ${d.decimalFormat(suffix = "MB")}")
 
+            val s = "我是一段中文"
+            val s2 = "我has中文"
+            val s3 = "easdasdk.213123"
+            val s4 = "easdasdk。213123"
+            println("s = ${s.isChinese()} s2 = ${s2.hasChinese()} s3 = ${s3.hasChinese()} s4 = ${s4.hasChinese()}")
+
+            println(s.toMd5())
+
+            println(s3.hidePhone())
+
+            val data1 = 2 * 1000
+            val data2 = 3 * MINUTE * 1000
+            val data3 = 2 * HOUR * 1000
+            val data4 = DAY * 1000
+            val data5 = 6 * DAY * 1000
+            val data6 = 15 * DAY * 1000
+            val data7 = 2 * DAY * 1000
+            val data8 = 377 * DAY * 1000
+            println("${data1.toLong().elapsedTime()} , ${data2.elapsedTime()}  , ${data3.elapsedTime()}  " +
+                    ", ${data4.elapsedTime()}  , ${data5.elapsedTime()}  , ${data6.elapsedTime()} " +
+                    ", ${data7.elapsedTime()} , ${data8.elapsedTime()} ")
+
+            val time1 = 0
+            val time2 = 10 * 1000
+            val time3 = 5 * 60 * 1000
+            val time4 = 3 * 24 * 60 * 1000
+
+            println("${time1.toLong().toSecondFormat()} , ${time2.toLong().toSecondFormat()} " +
+                    ", ${time3.toLong().toSecondFormat()} , ${time4.toLong().toSecondFormat()} ")
         }
     }
 
