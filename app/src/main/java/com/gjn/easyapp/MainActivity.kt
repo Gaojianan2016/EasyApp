@@ -1,11 +1,13 @@
 package com.gjn.easyapp
 
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import androidx.core.app.ActivityCompat
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easybase.BaseLog
 import com.gjn.easyapp.easydialoger.EasyDialogUtils
 import com.gjn.easyapp.easyutils.StringUtils
+import com.gjn.easyapp.easyutils.blurBitmap
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : ABaseActivity() {
@@ -128,23 +130,26 @@ class MainActivity : ABaseActivity() {
 //            println("day6 ${StringUtils.elapsedTime(day0, day6)}")
 //            println("day7 ${StringUtils.elapsedTime(day0, day7)}")
 
-            val drawable = ActivityCompat.getDrawable(mContext, R.mipmap.icon_bargain)
+//            val drawable = ActivityCompat.getDrawable(mContext, R.mipmap.icon_bargain)
+//
+//            val sp1 = StringUtils.matcherDrawableSpan(
+//                "1 ", "我是一段测试文字(Has En)",
+//                imageSpan = CenterAlignImageSpan(drawable)
+//            )
+//            val sp2 = StringUtils.matcherColorSpan(sp1, Color.RED, "测试", "(H", "")
+//            tv_test.text = sp2
+//            tv_test.textSize = 18f
+//
+//            val sp3 = StringUtils.matcherDrawableSpan(
+//                "1 ", "我是一段测试文字(Has En)",
+//                drawable = drawable
+//            )
+//            val sp4 = StringUtils.matcherColorSpan(sp3, Color.BLUE, "文字", "n)")
+//
+//            tv_test2.text = sp4
 
-            val sp1 = StringUtils.matcherDrawableSpan(
-                "1 ", "我是一段测试文字(Has En)",
-                imageSpan = CenterAlignImageSpan(drawable)
-            )
-            val sp2 = StringUtils.matcherColorSpan(sp1, Color.RED, "测试", "(H", "")
-            tv_test.text = sp2
-            tv_test.textSize = 18f
-
-            val sp3 = StringUtils.matcherDrawableSpan(
-                "1 ", "我是一段测试文字(Has En)",
-                drawable = drawable
-            )
-            val sp4 = StringUtils.matcherColorSpan(sp3, Color.BLUE, "文字", "n)")
-
-            tv_test2.text = sp4
+            val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.balance_bg)
+            iv_code_test.setImageBitmap(bitmap.blurBitmap(mContext, 1f, 5f))
         }
     }
 
