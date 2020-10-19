@@ -26,7 +26,7 @@ fun View.viewHeight(): Int {
     return h
 }
 
-fun TextView.getTrimString(): String = text.toString().trim()
+fun TextView.trimString(): String = text.toString().trim()
 
 fun EditText.toLastSelection() {
     setSelection(text.length)

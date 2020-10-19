@@ -270,9 +270,9 @@ object EasyDialogUtils {
                 override fun convertView(holder: ViewHolder, dialogFragment: DialogFragment) {
                     val progressBar = holder.findViewById<ProgressBar>(R.id.edf_pb_loading_edl)
                     val padding = when (size) {
-                        LOADING_B -> 5.dp(mActivity!!)
-                        LOADING_N -> 20.dp(mActivity!!)
-                        else -> 35.dp(mActivity!!)
+                        LOADING_B -> 5.dp(mActivity!!).toInt()
+                        LOADING_N -> 20.dp(mActivity!!).toInt()
+                        else -> 35.dp(mActivity!!).toInt()
                     }
                     progressBar?.setPadding(padding, padding, padding, padding)
                 }

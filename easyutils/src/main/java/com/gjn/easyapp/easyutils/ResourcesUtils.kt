@@ -9,6 +9,7 @@ import androidx.annotation.LayoutRes
 
 object ResourcesUtils {
 
+    @JvmOverloads
     fun inflate(
         context: Context?,
         @LayoutRes resource: Int,
@@ -16,6 +17,7 @@ object ResourcesUtils {
         attachToRoot: Boolean = false
     ): View? = LayoutInflater.from(context).inflate(resource, root, attachToRoot)
 
+    @JvmOverloads
     fun inflate(
         inflater: LayoutInflater,
         @LayoutRes resource: Int,

@@ -19,13 +19,11 @@ fun Bitmap.toByte(
 
 @JvmOverloads
 fun Bitmap.compress(quality: Int = 90): Bitmap? {
-    if (quality == 90) {
-        return this
-    }
+    if (quality == 90) return this
     return toByte(quality = quality)?.toBitmap()
 }
 
-fun ByteArray.toBitmap(): Bitmap? = BitmapFactory.decodeByteArray(this, 0, size)
+inline fun ByteArray.toBitmap(): Bitmap? = BitmapFactory.decodeByteArray(this, 0, size)
 
 @JvmOverloads
 fun File.toByte(quality: Int = 90): ByteArray? {
@@ -49,31 +47,23 @@ fun File.toBitmap(
                 val width = options.outWidth
                 if (width > maxWidth) {
                     sampleSize = width / maxWidth
-                    if (sampleSize <= 1) {
-                        sampleSize = 2
-                    }
+                    if (sampleSize <= 1) sampleSize = 2
                 }
             } else if (maxHeight != null) {
                 val height = options.outHeight
                 if (height > maxHeight) {
                     sampleSize = height / maxHeight
-                    if (sampleSize <= 1) {
-                        sampleSize = 2
-                    }
+                    if (sampleSize <= 1) sampleSize = 2
                 }
             }
             options.inSampleSize = sampleSize
             options.inJustDecodeBounds = false
             bitmap = BitmapFactory.decodeFile(path, options)
-            if (quality == 90) {
-                return bitmap
-            }
+            if (quality == 90) return bitmap
             return bitmap.toByte(quality = quality)?.toBitmap()
         }
         else -> {
-            if (quality == 90) {
-                return BitmapFactory.decodeFile(path)
-            }
+            if (quality == 90) return BitmapFactory.decodeFile(path)
             return toByte(quality = quality)?.toBitmap()
         }
     }
@@ -85,7 +75,6 @@ fun Bitmap.scale(
     newWidth: Int? = null,
     newHeight: Int? = null
 ): Bitmap {
-
     when {
         newWidth != null && newHeight != null -> {
             val sx = newWidth / width.toFloat()
@@ -95,9 +84,7 @@ fun Bitmap.scale(
             return Bitmap.createBitmap(this, 0, 0, width, height, matrix, false)
         }
         else -> {
-            if (ratio == 1f) {
-                return this
-            }
+            if (ratio == 1f) return this
             val matrix = Matrix()
             matrix.postScale(ratio, ratio)
             return Bitmap.createBitmap(this, 0, 0, width, height, matrix, false)
@@ -120,8 +107,6 @@ fun Bitmap.drawBitmap(
     canvas.drawBitmap(bmp, left, top, null)
     canvas.save()
     canvas.restore()
-    if (bitmap.isRecycled) {
-        bitmap.recycle()
-    }
+    if (bitmap.isRecycled) bitmap.recycle()
     return bitmap
 }

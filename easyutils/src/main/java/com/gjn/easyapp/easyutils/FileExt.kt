@@ -60,9 +60,7 @@ fun File.fileSize(): Long {
 }
 
 fun File.create(): Boolean {
-    if (!exists()) {
-        return mkdirs()
-    }
+    if (!exists()) return mkdirs()
     return true
 }
 
@@ -128,9 +126,7 @@ object FileUtils {
     }
 
     fun getFileFromUri(context: Context, uri: Uri?): File? {
-        if (uri == null) {
-            return null
-        }
+        if (uri == null) return null
         return when (uri.scheme) {
             ContentResolver.SCHEME_CONTENT -> getFileFormContentUri(context, uri)
             ContentResolver.SCHEME_FILE -> uri.file()
@@ -150,9 +146,7 @@ object FileUtils {
                 cursor?.run {
                     if (moveToFirst()) {
                         val index = getColumnIndex(DATA)
-                        if (index != -1) {
-                            filePath = getString(index)
-                        }
+                        if (index != -1) filePath = getString(index)
                     }
                     close()
                 }
@@ -166,7 +160,7 @@ object FileUtils {
     @Throws(IOException::class)
     fun unZip(
         context: Context,
-        assetName: String?,
+        assetName: String,
         outputDirectory: String
     ) {
         // 创建解压目标目录
@@ -174,7 +168,7 @@ object FileUtils {
         // 如果目标目录不存在，则创建
         file.create()
         // 打开压缩文件
-        val inputStream = context.assets.open(assetName!!)
+        val inputStream = context.assets.open(assetName)
         val zipInputStream = ZipInputStream(inputStream)
         // 读取一个进入点
         var zipEntry = zipInputStream.nextEntry

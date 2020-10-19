@@ -2,42 +2,42 @@ package com.gjn.easyapp.easyutils
 
 import android.content.Context
 
-fun Float.dp(context: Context): Int {
+fun Float.px2dp(context: Context): Float {
     val scale = context.resources.displayMetrics.density
-    return (this / scale + 0.5f).toInt()
+    return this / scale + 0.5f
 }
 
-fun Int.dp(context: Context): Int {
+fun Int.px2dp(context: Context): Float {
     val scale = context.resources.displayMetrics.density
-    return (this / scale + 0.5f).toInt()
+    return this / scale + 0.5f
 }
 
-fun Float.sp(context: Context): Int {
+fun Float.px2sp(context: Context): Float {
     val fontScale = context.resources.displayMetrics.scaledDensity
-    return (this / fontScale + 0.5f).toInt()
+    return this / fontScale + 0.5f
 }
 
-fun Int.sp(context: Context): Int {
+fun Int.px2sp(context: Context): Float {
     val fontScale = context.resources.displayMetrics.scaledDensity
-    return (this / fontScale + 0.5f).toInt()
+    return this / fontScale + 0.5f
 }
 
-fun Float.dp2px(context: Context): Int {
+fun Float.dp(context: Context): Float {
     val scale = context.resources.displayMetrics.density
-    return (this * scale + 0.5f).toInt()
+    return this * scale + 0.5f
 }
 
-fun Int.dp2px(context: Context): Int {
+fun Int.dp(context: Context): Float {
     val scale = context.resources.displayMetrics.density
-    return (this * scale + 0.5f).toInt()
+    return this * scale + 0.5f
 }
 
-fun Float.sp2px(context: Context): Int {
+fun Float.sp(context: Context): Float {
     val fontScale = context.resources.displayMetrics.scaledDensity
-    return (this * fontScale + 0.5f).toInt()
+    return this * fontScale + 0.5f
 }
 
-fun Int.sp2px(context: Context): Int {
+fun Int.sp(context: Context): Float {
     val fontScale = context.resources.displayMetrics.scaledDensity
-    return (this * fontScale + 0.5f).toInt()
+    return this * fontScale + 0.5f
 }

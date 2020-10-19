@@ -10,7 +10,7 @@ object JsonUtil {
             var current: Char
             val ln = '\n'
             var line = 0
-            for (i in 0..clearJson.length) {
+            for (i in 0 until clearJson.length) {
                 current = clearJson[i]
                 when (current) {
                     //换行 并且加一级tab
@@ -39,7 +39,7 @@ object JsonUtil {
     }
 
     private fun addTab(sb: StringBuilder, line: Int) {
-        for (i in 0..line) {
+        for (i in 0 until line) {
             sb.append('\t')
         }
     }
