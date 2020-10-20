@@ -14,7 +14,7 @@ class MainActivity : ABaseActivity() {
     var name by MySP("name", "")
     var age by MySP("age", -1)
 
-//    var mySP = MySP()
+    var mySP = MySP<Any>()
 
     override fun layoutId(): Int = R.layout.activity_main
 
@@ -184,7 +184,7 @@ class MainActivity : ABaseActivity() {
         }
 
         tv_test2.click {
-
+            mySP.clearPref()
         }
     }
 

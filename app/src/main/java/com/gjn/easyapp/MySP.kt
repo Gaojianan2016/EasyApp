@@ -1,9 +1,10 @@
 package com.gjn.easyapp
 
-import android.content.Context
 import com.gjn.easyapp.easyutils.SharedPref
 
-class MySP<T>(context: Context = App.INSTANCE) : SharedPref<T>(context) {
+class MySP<T> : SharedPref<T> {
+
+    constructor() : super(App.INSTANCE)
 
     constructor(
         key: String,
