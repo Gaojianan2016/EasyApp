@@ -1,20 +1,20 @@
 package com.gjn.easyapp
 
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import androidx.core.app.ActivityCompat
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easybase.BaseLog
 import com.gjn.easyapp.easydialoger.EasyDialogUtils
-import com.gjn.easyapp.easyutils.StringUtils
-import com.gjn.easyapp.easyutils.blurBitmap
+import com.gjn.easyapp.easyutils.SharedPref
+import com.gjn.easyapp.easyutils.click
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : ABaseActivity() {
 
     var size = -1
+    val mEasyDialogUtils = EasyDialogUtils
+    var name by MySP("name", "")
+    var age by MySP("age", -1)
 
-    private val mEasyDialogUtils = EasyDialogUtils
+//    var mySP = MySP()
 
     override fun layoutId(): Int = R.layout.activity_main
 
@@ -25,7 +25,8 @@ class MainActivity : ABaseActivity() {
     }
 
     override fun initView() {
-        tv_test.setOnClickListener {
+
+        tv_test.click {
 //            size++
 //            showToast("测试 $size")
 
@@ -148,8 +149,42 @@ class MainActivity : ABaseActivity() {
 //
 //            tv_test2.text = sp4
 
-            val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.balance_bg)
-            iv_code_test.setImageBitmap(bitmap.blurBitmap(mContext, 1f, 5f))
+//            val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.test_img)
+//            iv_code_test.setImageBitmap(bitmap.blurBitmap(mContext, 24f))
+//
+//            println("1-5 ${7.intervalOpen(1, 5)}")
+//            println("1f-5f ${0f.intervalOpen(1f, 5f)}")
+//            println("1-10 ${8.intervalOpen(1, 10)}")
+
+//            val list = arrayListOf("1", "2")
+//            val list2 = mutableListOf("2")
+//            val list3: ArrayList<String>? = null
+//            val list4: MutableList<String>? = null
+//
+//            println("list isEmpty ${ListUtils.isEmpty(list)}")
+//            println("list2 isEmpty ${ListUtils.isEmpty(list2)}")
+//            println("list3 isEmpty ${ListUtils.isEmpty(list3)}")
+//            println("list4 isEmpty ${ListUtils.isEmpty(list4)}")
+//
+//            println("list isList ${ListUtils.isList(list)}")
+//            println("list2 isList ${ListUtils.isList(list2)}")
+//            println("list3 isList ${ListUtils.isList(list3)}")
+//            println("list4 isList ${ListUtils.isList(list4)}")
+
+            println("name = $name age = $age")
+            if (name == "张三") {
+                name = "李四"
+                age = 26
+            } else {
+                name = "张三"
+                age = 18
+            }
+            println("new name = $name new age = $age")
+
+        }
+
+        tv_test2.click {
+
         }
     }
 

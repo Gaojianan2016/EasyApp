@@ -44,6 +44,18 @@ fun EditText.togglePassword(): Boolean {
     return isHide
 }
 
+fun View.click(block: (v: View) -> Unit){
+    this.setOnClickListener{
+        block.invoke(this)
+    }
+}
+
+fun View.clickLong(block: (v: View) -> Boolean){
+    this.setOnLongClickListener{
+        return@setOnLongClickListener block.invoke(this)
+    }
+}
+
 object ViewUtils {
 
     fun dispatchTouchView(

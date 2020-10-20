@@ -99,7 +99,7 @@ object FileUtils {
     fun openFile(context: Context, file: File) {
         val mimeType = file.suffixToType()
         val uri = getFileUri(context, file)
-        mimeType?.let {
+        mimeType?.run {
             val intent = Intent(Intent.ACTION_VIEW)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 intent.flags = (Intent.FLAG_ACTIVITY_NEW_TASK
@@ -108,7 +108,7 @@ object FileUtils {
             } else {
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
-            intent.setDataAndType(uri, it)
+            intent.setDataAndType(uri, this)
             context.startActivity(intent)
         }
     }
@@ -117,13 +117,13 @@ object FileUtils {
         return getFileUri(context, path.file())
     }
 
-    fun getFileUri(context: Context, file: File): Uri {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+    fun getFileUri(context: Context, file: File): Uri =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             FileProvider.getUriForFile(context, context.packageName + FILEPROVIDER, file)
         } else {
             Uri.fromFile(file)
         }
-    }
+
 
     fun getFileFromUri(context: Context, uri: Uri?): File? {
         if (uri == null) return null
