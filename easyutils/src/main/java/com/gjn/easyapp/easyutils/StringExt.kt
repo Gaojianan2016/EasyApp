@@ -13,7 +13,6 @@ import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.abs
 
-
 const val MINUTE = 60.toLong()
 const val HOUR = 60 * 60.toLong()
 const val DAY = 60 * 60 * 24.toLong()
@@ -26,6 +25,9 @@ const val MB = 1024 * 1024.toLong()
 const val GB = 1024 * 1024 * 1024.toLong()
 const val TB = 1024 * 1024 * 1024 * 1024.toLong()
 
+/**
+ * MD5加密
+ * */
 fun String.toMd5(): String {
     try {
         //获取摘要器 MessageDigest
@@ -52,6 +54,9 @@ fun String.toMd5(): String {
 
 fun String.toSpannableStringBuilder(): SpannableStringBuilder = SpannableStringBuilder(this)
 
+/**
+ * 格式转译字符  \ -> \\
+ * */
 fun String.escapeSpecialWord(): String {
     if (isEmpty()) return this
     var result = this
@@ -64,10 +69,16 @@ fun String.escapeSpecialWord(): String {
     return result
 }
 
-
+/**
+ * 强制取小数点后几位 0.110 0.25 0.10 1.00
+ * */
 @JvmOverloads
 fun Double.decimalFormat(prefix: String = "", suffix: String? = null, len: Int = 2): String {
-    val pattern = StringBuilder("${prefix}0.")
+    val pattern = if (len > 0) {
+        StringBuilder("${prefix}0.")
+    } else {
+        StringBuilder("${prefix}0")
+    }
     for (i in 0 until len) {
         pattern.append("0")
     }
@@ -120,19 +131,26 @@ fun Char.isEmojiChar(): Boolean = !(this.toInt() == 0x0
         || this.toInt() in 0x20..0xD7FF
         || this.toInt() in 0xE000..0xFFFD)
 
+/**
+ * 字节转gb mb kb字符串 1.20G 60.00M 798.35K 666b
+ * */
 fun Long.byteToStr(): String = when {
-    this >= GB -> (this / 1024 / 1024 / 1024.toDouble()).decimalFormat(suffix = "GB")
-    this >= MB -> (this / 1024 / 1024.toDouble()).decimalFormat(suffix = "MB")
-    this >= KB -> (this / 1024.toDouble()).decimalFormat(suffix = "KB")
-    else -> (this.toDouble()).decimalFormat(suffix = "B")
+    this >= GB -> (this / 1024 / 1024 / 1024.toDouble()).decimalFormat(suffix = "G")
+    this >= MB -> (this / 1024 / 1024.toDouble()).decimalFormat(suffix = "M")
+    this >= KB -> (this / 1024.toDouble()).decimalFormat(suffix = "K")
+    else -> (this.toDouble()).decimalFormat(suffix = "b", len = 0)
 }
 
 fun String.hidePhone(): String = hideSubstring(3, 4)
 
 fun String.hideName(): String = hideSubstring(1, 1)
 
+/**
+ * 隐藏中间字段 177****1234  张*良 张*
+ * */
 fun String.hideSubstring(start: Int, end: Int): String {
-    if (length < 3) return this
+    if (length < 2) return this
+    if (length == 2) return "${substring(0, 1)}*"
     val result = StringBuilder()
     val head = substring(0, start)
     val foot = substring(length - end)
@@ -145,34 +163,40 @@ fun String.hideSubstring(start: Int, end: Int): String {
     return result.toString()
 }
 
+/**
+ * 秒转时间格式 01:50:00 or 16:18 中文版 01时50分00秒 or 16分18秒
+ * */
+@JvmOverloads
+fun Int.toSecondFormat(isChinese: Boolean = false): String =
+    (this * 1000).toLong().toSecondFormat(isChinese)
+
+/**
+ * 毫秒转时间格式 01:50:00 or 16:18 中文版 01时50分00秒 or 16分18秒
+ * */
 @JvmOverloads
 fun Long.toSecondFormat(isChinese: Boolean = false): String {
     val second = this / 1000
     return when {
         second > HOUR -> if (isChinese) String.format(
             "%02d时%02d分%02d秒",
-            second / HOUR,
-            second / MINUTE % MINUTE,
-            second % MINUTE
+            second / HOUR, second / MINUTE % MINUTE, second % MINUTE
         ) else String.format(
             "%02d:%02d:%02d",
-            second / HOUR,
-            second / MINUTE % MINUTE,
-            second % MINUTE
+            second / HOUR, second / MINUTE % MINUTE, second % MINUTE
         )
         second > MINUTE -> if (isChinese) String.format(
-            "%02d分%02d秒",
-            second / MINUTE,
-            second % MINUTE
-        ) else String.format("%02d:%02d", second / MINUTE, second % MINUTE)
-        second > 0 -> if (isChinese) String.format(
-            "00分%02d秒",
-            second % MINUTE
-        ) else String.format("00:%02d", second % MINUTE)
+            "%02d分%02d秒", second / MINUTE, second % MINUTE
+        )
+        else String.format("%02d:%02d", second / MINUTE, second % MINUTE)
+        second > 0 -> if (isChinese) String.format("00分%02d秒", second % MINUTE)
+        else String.format("00:%02d", second % MINUTE)
         else -> if (isChinese) "00分00秒" else "00:00"
     }
 }
 
+/**
+ * 毫秒时差显示
+ * */
 fun Long.elapsedTime(): String {
     val second = abs(this) / 1000
     return when {

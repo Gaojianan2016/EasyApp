@@ -3,8 +3,7 @@ package com.gjn.easyapp
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easybase.BaseLog
 import com.gjn.easyapp.easydialoger.EasyDialogUtils
-import com.gjn.easyapp.easyutils.SharedPref
-import com.gjn.easyapp.easyutils.click
+import com.gjn.easyapp.easyutils.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : ABaseActivity() {
@@ -171,20 +170,26 @@ class MainActivity : ABaseActivity() {
 //            println("list3 isList ${ListUtils.isList(list3)}")
 //            println("list4 isList ${ListUtils.isList(list4)}")
 
-            println("name = $name age = $age")
-            if (name == "张三") {
-                name = "李四"
-                age = 26
-            } else {
-                name = "张三"
-                age = 18
-            }
-            println("new name = $name new age = $age")
+//            println("name = $name age = $age")
+//            if (name == "张三") {
+//                name = "李四"
+//                age = 26
+//            } else {
+//                name = "张三"
+//                age = 18
+//            }
+//            println("new name = $name new age = $age")
 
+//            mContext.openQQ()
+
+//            iv_code_test.setImageDrawable(mContext.getAppIcon())
+//            iv_code_test.setImageDrawable(mContext.getAppIcon(QQ_PACKAGE_NAME))
+//            iv_code_test.setImageDrawable(mContext.getAppIcon(WECHAT_PACKAGE_NAME))
         }
 
         tv_test2.click {
-            mySP.clearPref()
+//            mySP.clearPref()
+//            mContext.openWeChat()
         }
     }
 

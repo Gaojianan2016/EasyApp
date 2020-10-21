@@ -6,6 +6,7 @@ class MySP<T> : SharedPref<T> {
 
     constructor() : super(App.INSTANCE)
 
+    @JvmOverloads
     constructor(
         key: String,
         defValue: T,

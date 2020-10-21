@@ -1,13 +1,23 @@
 package com.gjn.easyapp.easyutils
 
-import android.content.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+
+const val QQ_PACKAGE_NAME = "com.tencent.mobileqq"
+const val WECHAT_PACKAGE_NAME = "com.tencent.mm"
 
 fun Context.openWeChat() {
-    startActivity(Intent(Intent.ACTION_VIEW).apply {
-        addCategory(Intent.CATEGORY_LAUNCHER)
-        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        component = ComponentName("com.tencent.mm", "com.tencent.mm.ui.LauncherUI")
-    })
+    if (isInstalled(WECHAT_PACKAGE_NAME)) startActivity(
+        Intent(packageManager.getLaunchIntentForPackage(WECHAT_PACKAGE_NAME))
+    )
+}
+
+fun Context.openQQ() {
+    if (isInstalled(QQ_PACKAGE_NAME)) startActivity(
+        Intent(packageManager.getLaunchIntentForPackage(QQ_PACKAGE_NAME))
+    )
 }
 
 fun Context.callPhone(phone: String) {
@@ -19,18 +29,4 @@ fun Context.callPhone(phone: String) {
 fun Context.clipData(str: String) {
     val cm = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     cm.setPrimaryClip(ClipData.newPlainText(null, str))
-}
-
-fun Context.assetsStr(fileName: String): String {
-    try {
-        val stream = assets.open(fileName)
-        val size = stream.available()
-        val buffer = ByteArray(size)
-        stream.read(buffer)
-        stream.close()
-        return String(buffer)
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-    return ""
 }
