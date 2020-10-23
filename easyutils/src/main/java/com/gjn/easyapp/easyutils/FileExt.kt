@@ -84,6 +84,16 @@ fun File.toBytes(): ByteArray? {
     return bytes
 }
 
+/**
+ * 通知相册更新图片
+ * */
+fun File.scanFile(context: Context) {
+    context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
+        .apply {
+            data = Uri.fromFile(this@scanFile)
+        })
+}
+
 object FileUtils {
 
     const val FILEPROVIDER = ".fileprovider"
