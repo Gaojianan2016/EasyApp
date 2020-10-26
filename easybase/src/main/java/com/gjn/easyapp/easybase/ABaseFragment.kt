@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentActivity
 import com.gjn.easyapp.easytoaster.ToastUtil
 import com.gjn.easyapp.easyutils.ActivityUtils
 
-abstract class ABaseFragment : Fragment(), UIEvent{
+abstract class ABaseFragment : Fragment(), UIEvent {
 
     protected lateinit var mFragment: Fragment
     protected lateinit var mActivity: FragmentActivity

@@ -1,6 +1,7 @@
 package com.gjn.easyapp.easyutils
 
 import android.net.Uri
+import android.util.Log
 import kotlin.math.asin
 import kotlin.math.cos
 import kotlin.math.sin
@@ -16,6 +17,30 @@ fun Double.intervalOpen(min: Double, max: Double): Double =
     min.coerceAtLeast(this.coerceAtMost(max))
 
 fun Long.intervalOpen(min: Long, max: Long): Long = min.coerceAtLeast(this.coerceAtMost(max))
+
+fun String.logV(tag: String = "LogExt", tr: Throwable? = null) {
+    Log.v(tag, this, tr)
+}
+
+fun String.logD(tag: String = "LogExt", tr: Throwable? = null) {
+    Log.d(tag, this, tr)
+}
+
+fun String.logI(tag: String = "LogExt", tr: Throwable? = null) {
+    Log.i(tag, this, tr)
+}
+
+fun String.logW(tag: String = "LogExt", tr: Throwable? = null) {
+    Log.w(tag, this, tr)
+}
+
+fun String.logE(tag: String = "LogExt", tr: Throwable? = null) {
+    Log.e(tag, this, tr)
+}
+
+fun String.logWTF(tag: String = "LogExt", tr: Throwable? = null) {
+    Log.wtf(tag, this, tr)
+}
 
 /**
  * 计算地球坐标两点距离

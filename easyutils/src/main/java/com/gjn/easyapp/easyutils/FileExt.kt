@@ -85,7 +85,7 @@ fun File.toBytes(): ByteArray? {
 }
 
 /**
- * 通知相册更新图片
+ * 通知相册更新图片 android 10之后Deprecated
  * */
 fun File.scanFile(context: Context) {
     context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
@@ -133,7 +133,6 @@ object FileUtils {
         } else {
             Uri.fromFile(file)
         }
-
 
     fun getFileFromUri(context: Context, uri: Uri?): File? {
         if (uri == null) return null

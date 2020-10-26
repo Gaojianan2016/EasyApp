@@ -3,7 +3,6 @@ package com.gjn.easyapp.easybase
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.gjn.easyapp.easytoaster.ToastUtil
 import com.gjn.easyapp.easyutils.ActivityUtils

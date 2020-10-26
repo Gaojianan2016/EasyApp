@@ -188,6 +188,7 @@ class MainActivity : ABaseActivity() {
         }
 
         tv_test2.click {
+            GalleryActivity::class.java.start(mActivity)
 //            mySP.clearPref()
 //            mContext.openWeChat()
         }
