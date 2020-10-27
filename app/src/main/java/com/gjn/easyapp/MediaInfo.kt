@@ -1,4 +1,6 @@
-package com.gjn.easyapp.easyutils
+package com.gjn.easyapp
+
+import android.graphics.Bitmap
 
 data class MediaInfo(
     var name: String? = null,
@@ -14,6 +16,7 @@ data class MediaInfo(
     var rotation: Int? = 0,
     var resolution: String? = null,
     var thumbnailPath: String? = null,
+    var thumbnailBitmap: Bitmap? = null,
     var isVideo: Boolean = false,
     var dirSize: Int? = 0,
     var expand: String? = null
