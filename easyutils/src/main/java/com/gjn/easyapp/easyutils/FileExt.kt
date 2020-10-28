@@ -87,10 +87,15 @@ fun File.toBytes(): ByteArray? {
 /**
  * 通知相册更新图片 android 10之后Deprecated
  * */
-fun File.scanFile(context: Context) {
+fun File.scanFile(context: Context) = this.uri().scanFile(context)
+
+/**
+ * 通知相册更新图片 android 10之后Deprecated
+ * */
+fun Uri.scanFile(context: Context){
     context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
         .apply {
-            data = Uri.fromFile(this@scanFile)
+            data = this@scanFile
         })
 }
 

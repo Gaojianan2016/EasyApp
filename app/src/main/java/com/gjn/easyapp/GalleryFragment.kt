@@ -5,6 +5,7 @@ import androidx.loader.app.LoaderManager
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.gjn.easyapp.easybase.ABaseFragment
+import com.gjn.easyapp.easydialoger.EasyDialogUtils
 import com.gjn.universaladapterlibrary.BaseRecyclerAdapter
 import com.gjn.universaladapterlibrary.RecyclerViewHolder
 import kotlinx.android.synthetic.main.fragment_gallery.*
@@ -14,6 +15,8 @@ class GalleryFragment : ABaseFragment() {
 
     private val mLoaderCallback by lazy { MediaLoaderCallback(mActivity) }
     private val mLoaderCallback2 by lazy { MediaLoaderCallback(mActivity) }
+
+    private val mMediaStorageManager by lazy { MediaStorageManager(mActivity) }
 
     private val imgAdapter by lazy { ImgAdapter(mActivity) }
 
@@ -28,27 +31,37 @@ class GalleryFragment : ABaseFragment() {
 
     override fun initData() {
         //获取数据
-        LoaderManager.getInstance(mActivity).initLoader(LOADER_PHOTO, null, mLoaderCallback)
+//        LoaderManager.getInstance(mActivity).initLoader(LOADER_PHOTO, null, mLoaderCallback)
+//
+//        mLoaderCallback.callback = object : MediaLoaderCallback.Callback{
+//            override fun complete(
+//                infos: MutableList<MediaInfo>,
+//                files: MutableMap<String, MediaInfo>
+//            ) {
+//                imgAdapter.add(infos)
+//            }
+//        }
+//        LoaderManager.getInstance(mActivity).initLoader(LOADER_VIDEO, null, mLoaderCallback2)
+//        mLoaderCallback2.callback = object : MediaLoaderCallback.Callback{
+//            override fun complete(
+//                infos: MutableList<MediaInfo>,
+//                files: MutableMap<String, MediaInfo>
+//            ) {
+//                imgAdapter.add(infos)
+//            }
+//        }
 
-        mLoaderCallback.callback = object : MediaLoaderCallback.Callback{
-            override fun complete(
-                infos: MutableList<MediaInfo>,
-                files: MutableMap<String, MediaInfo>
-            ) {
-                imgAdapter.data = infos
-
-                LoaderManager.getInstance(mActivity).initLoader(LOADER_VIDEO, null, mLoaderCallback2)
-                mLoaderCallback2.callback = object : MediaLoaderCallback.Callback{
-                    override fun complete(
-                        infos: MutableList<MediaInfo>,
-                        files: MutableMap<String, MediaInfo>
-                    ) {
-                        imgAdapter.add(infos)
-                    }
+        mMediaStorageManager.run {
+            callback = object : MediaStorageManager.Callback{
+                override fun complete(
+                    infoList: MutableList<MediaInfo>,
+                    fileList: MutableMap<String, MediaInfo>
+                ) {
+                    imgAdapter.add(infoList)
                 }
             }
+            startScan()
         }
-
     }
 
     class ImgAdapter(context: Context): BaseRecyclerAdapter<MediaInfo>(context, R.layout.adapter_img_list, null){
@@ -68,7 +81,6 @@ class GalleryFragment : ABaseFragment() {
     }
 
     companion object {
-        const val LOADER_PHOTO = 1
-        const val LOADER_VIDEO = 2
+
     }
 }

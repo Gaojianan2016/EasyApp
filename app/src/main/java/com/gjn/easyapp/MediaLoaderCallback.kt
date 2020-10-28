@@ -21,6 +21,7 @@ class MediaLoaderCallback(private val context: Context) : LoaderManager.LoaderCa
     var videoSortOrder = "${MediaStore.Video.Media.DATE_ADDED} DESC"
 
     private var loaderId = -1
+    private var scaned = false
 
     var callback: Callback? = null
 
@@ -42,6 +43,7 @@ class MediaLoaderCallback(private val context: Context) : LoaderManager.LoaderCa
 
     override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor?) {
         println("-----------onLoadFinished-----------")
+        if (scaned) return
         data?.run {
             val infos = mutableListOf<MediaInfo>()
             val files = mutableMapOf<String, MediaInfo>()
@@ -63,6 +65,7 @@ class MediaLoaderCallback(private val context: Context) : LoaderManager.LoaderCa
                     }
                 } while (moveToNext())
 
+                scaned = true
                 //所有数据
                 "$loaderId 总文件数量 ${infos.size}".logV()
                 "$loaderId 总文件夹数量 ${files.size}".logV()
@@ -168,6 +171,7 @@ class MediaLoaderCallback(private val context: Context) : LoaderManager.LoaderCa
             this.resolution = resolution
             this.rotation = rotation
             this.thumbnailPath = thumbnailPath
+            this.thumbnailBitmap = thumbnailBitmap
             this.isVideo = true
         }
     }

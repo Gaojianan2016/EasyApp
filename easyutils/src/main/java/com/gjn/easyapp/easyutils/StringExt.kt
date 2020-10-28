@@ -212,6 +212,9 @@ fun Long.elapsedTime(): String {
     }
 }
 
+fun String.urlObtainName(): String? =
+    uri().lastPathSegment ?: substring(lastIndexOf('/') + 1)
+
 object StringUtils {
 
     @JvmOverloads

@@ -2,12 +2,15 @@ package com.gjn.easyapp.easyutils
 
 import android.net.Uri
 import android.util.Log
+import java.io.File
 import kotlin.math.asin
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
 fun String.uri(): Uri = Uri.parse(this)
+
+fun File.uri(): Uri = Uri.fromFile(this)
 
 fun Int.intervalOpen(min: Int, max: Int): Int = min.coerceAtLeast(this.coerceAtMost(max))
 
