@@ -185,12 +185,14 @@ class MainActivity : ABaseActivity() {
 //            iv_code_test.setImageDrawable(mContext.getAppIcon())
 //            iv_code_test.setImageDrawable(mContext.getAppIcon(QQ_PACKAGE_NAME))
 //            iv_code_test.setImageDrawable(mContext.getAppIcon(WECHAT_PACKAGE_NAME))
+
+//            MySP::class.java.printInfo()
         }
 
         tv_test2.click {
-            GalleryActivity::class.java.start(mActivity)
 //            mySP.clearPref()
 //            mContext.openWeChat()
+//            GalleryActivity::class.java.start(mActivity)
         }
     }
 

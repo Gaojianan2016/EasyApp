@@ -11,6 +11,7 @@ import androidx.loader.app.LoaderManager
 import androidx.loader.content.CursorLoader
 import androidx.loader.content.Loader
 import com.gjn.easyapp.easyutils.logV
+import com.gjn.easyapp.easyutils.media.MediaInfo
 
 class MediaLoaderCallback(private val context: Context) : LoaderManager.LoaderCallbacks<Cursor> {
 

@@ -1,6 +1,7 @@
-package com.gjn.easyapp
+package com.gjn.easyapp.easyutils.media
 
 import android.graphics.Bitmap
+import java.io.Serializable
 
 data class MediaInfo(
     var name: String? = null,
@@ -21,4 +22,4 @@ data class MediaInfo(
     var isVideo: Boolean = false,
     var dirSize: Int = 0,
     var expand: String? = null
-)
+): Serializable

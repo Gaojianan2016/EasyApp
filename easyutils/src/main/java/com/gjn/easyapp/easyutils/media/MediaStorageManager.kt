@@ -1,4 +1,4 @@
-package com.gjn.easyapp
+package com.gjn.easyapp.easyutils.media
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Environment
 import android.provider.MediaStore
+import com.gjn.easyapp.easyutils.launchMain
 import com.gjn.easyapp.easyutils.scanFile
 import com.gjn.easyapp.easyutils.urlObtainName
 
@@ -21,6 +22,8 @@ class MediaStorageManager(private val context: Context) {
     private val mTask = MediaStorageTask()
 
     private var mConnection: MediaScannerConnection? = null
+    private val videoObserver = MediaObserver(videoUri, TYPE_VIDEO)
+    private val photoObserver = MediaObserver(photoUri, TYPE_PHOTO)
 
     val mMediaList: MutableList<MediaInfo> = mutableListOf()
     val mFileMap: MutableMap<String, MediaInfo> = mutableMapOf()
@@ -30,17 +33,38 @@ class MediaStorageManager(private val context: Context) {
     var photoSortOrder = "date_added DESC"
     var videoSortOrder = "date_added DESC"
 
-    var callback: Callback? = null
-
+    var scanCallback: ScanCallback? = null
+    var changeCallback: ChangeCallback? = null
 
     fun startScan() {
-
-        scanFileListener()
-
+        connectScanFileListener()
+        registerMediaObserver()
         mTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
-    private fun scanFileListener(
+    fun stopScan() {
+        disconnectScanFileListener()
+        unregisterMediaObserver()
+        mTask.cancel(false)
+    }
+
+    private fun registerMediaObserver() {
+        context.contentResolver.registerContentObserver(
+            videoUri,
+            true, videoObserver
+        )
+        context.contentResolver.registerContentObserver(
+            photoUri,
+            true, photoObserver
+        )
+    }
+
+    private fun unregisterMediaObserver() {
+        context.contentResolver.unregisterContentObserver(videoObserver)
+        context.contentResolver.unregisterContentObserver(photoObserver)
+    }
+
+    private fun connectScanFileListener(
         paths: Array<String> = arrayOf(Environment.getExternalStorageDirectory().toString()),
         mimeTypes: Array<String>? = null,
         client: OnScanCompletedListener? = OnScanCompletedListener { path, uri ->
@@ -51,6 +75,10 @@ class MediaStorageManager(private val context: Context) {
         mConnection = MediaScannerConnection(context, proxy)
         proxy.connection = mConnection
         mConnection?.connect()
+    }
+
+    private fun disconnectScanFileListener() {
+        mConnection?.disconnect()
     }
 
     private fun generatePhotoInfo(cursor: Cursor): MediaInfo? {
@@ -150,11 +178,11 @@ class MediaStorageManager(private val context: Context) {
     inner class MediaStorageTask : AsyncTask<Void, Void, Void>() {
 
         override fun onPreExecute() {
-
+            scanCallback?.preStart()
         }
 
         override fun onPostExecute(result: Void?) {
-            callback?.complete(mMediaList, mFileMap)
+            scanCallback?.complete(mMediaList, mFileMap)
         }
 
         override fun doInBackground(vararg params: Void?): Void? {
@@ -172,8 +200,10 @@ class MediaStorageManager(private val context: Context) {
         }
 
         private fun generatePhoto() {
-            val cursor: Cursor? =
-                context.contentResolver.query(photoUri, null, null, null, photoSortOrder)
+            val cursor = context.contentResolver.query(
+                photoUri, null,
+                null, null, photoSortOrder
+            )
             cursor?.run {
                 moveToFirst()
                 do {
@@ -185,8 +215,10 @@ class MediaStorageManager(private val context: Context) {
         }
 
         private fun generateVideo() {
-            val cursor: Cursor? =
-                context.contentResolver.query(videoUri, null, null, null, videoSortOrder)
+            val cursor = context.contentResolver.query(
+                videoUri, null,
+                null, null, videoSortOrder
+            )
             cursor?.run {
                 moveToFirst()
                 do {
@@ -234,33 +266,54 @@ class MediaStorageManager(private val context: Context) {
         }
     }
 
-    inner class MediaObserver(private val uri: Uri,private val type: Int): ContentObserver(null){
+    inner class MediaObserver(private val uri: Uri, private val type: Int) : ContentObserver(null) {
         override fun onChange(selfChange: Boolean, uri: Uri?) {
             super.onChange(selfChange, uri)
-
-            if (uri.toString() == "content://media/external") {
-
+            launchMain {
+                changeCallback?.onChange(
+                    selfChange,
+                    uri,
+                    uri.toString() == "content://media/external"
+                )
+            }
+            val cursor = context.contentResolver.query(
+                this.uri, null, null,
+                null, "_id DESC LIMIT 1"
+            )
+            cursor?.run {
+                if (cursor.moveToNext()) {
+                    val mediaInfo = when (type) {
+                        TYPE_PHOTO -> generatePhotoInfo(cursor)
+                        TYPE_VIDEO -> generateVideoInfo(cursor)
+                        else -> null
+                    }
+                    println("更新mediaInfo ${mediaInfo?.name}")
+                    launchMain {
+                        changeCallback?.onChangeMediaInfo(mediaInfo)
+                    }
+                }
+                close()
             }
 
-            when (type) {
-                TYPE_PHOTO -> {
-                }
-                TYPE_VIDEO -> {
-                }
-                else -> {
-                }
-            }
         }
     }
 
-    interface Callback {
+    interface ScanCallback {
+        fun preStart()
+
         fun complete(
             infoList: MutableList<MediaInfo>,
             fileList: MutableMap<String, MediaInfo>
         )
     }
 
-    companion object{
+    interface ChangeCallback {
+        fun onChange(selfChange: Boolean, uri: Uri?, isMediaExternal: Boolean)
+
+        fun onChangeMediaInfo(mediaInfo: MediaInfo?)
+    }
+
+    companion object {
         const val TYPE_PHOTO = 0
         const val TYPE_VIDEO = 1
     }

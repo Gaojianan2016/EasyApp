@@ -1,20 +1,17 @@
 package com.gjn.easyapp
 
 import android.content.Context
-import androidx.loader.app.LoaderManager
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.gjn.easyapp.easybase.ABaseFragment
-import com.gjn.easyapp.easydialoger.EasyDialogUtils
+import com.gjn.easyapp.easyutils.media.MediaInfo
+import com.gjn.easyapp.easyutils.media.MediaStorageManager
 import com.gjn.universaladapterlibrary.BaseRecyclerAdapter
 import com.gjn.universaladapterlibrary.RecyclerViewHolder
 import kotlinx.android.synthetic.main.fragment_gallery.*
 
-
 class GalleryFragment : ABaseFragment() {
-
-    private val mLoaderCallback by lazy { MediaLoaderCallback(mActivity) }
-    private val mLoaderCallback2 by lazy { MediaLoaderCallback(mActivity) }
 
     private val mMediaStorageManager by lazy { MediaStorageManager(mActivity) }
 
@@ -31,37 +28,27 @@ class GalleryFragment : ABaseFragment() {
 
     override fun initData() {
         //获取数据
-//        LoaderManager.getInstance(mActivity).initLoader(LOADER_PHOTO, null, mLoaderCallback)
-//
-//        mLoaderCallback.callback = object : MediaLoaderCallback.Callback{
-//            override fun complete(
-//                infos: MutableList<MediaInfo>,
-//                files: MutableMap<String, MediaInfo>
-//            ) {
-//                imgAdapter.add(infos)
-//            }
-//        }
-//        LoaderManager.getInstance(mActivity).initLoader(LOADER_VIDEO, null, mLoaderCallback2)
-//        mLoaderCallback2.callback = object : MediaLoaderCallback.Callback{
-//            override fun complete(
-//                infos: MutableList<MediaInfo>,
-//                files: MutableMap<String, MediaInfo>
-//            ) {
-//                imgAdapter.add(infos)
-//            }
-//        }
-
         mMediaStorageManager.run {
-            callback = object : MediaStorageManager.Callback{
+            scanCallback = object : MediaStorageManager.ScanCallback{
+                override fun preStart() {
+                    pb_fg.visibility = View.VISIBLE
+                }
+
                 override fun complete(
                     infoList: MutableList<MediaInfo>,
                     fileList: MutableMap<String, MediaInfo>
                 ) {
+                    pb_fg.visibility = View.GONE
                     imgAdapter.add(infoList)
                 }
             }
             startScan()
         }
+    }
+
+    override fun onDestroy() {
+        mMediaStorageManager.stopScan()
+        super.onDestroy()
     }
 
     class ImgAdapter(context: Context): BaseRecyclerAdapter<MediaInfo>(context, R.layout.adapter_img_list, null){
@@ -73,14 +60,12 @@ class GalleryFragment : ABaseFragment() {
                 }else{
                     Glide.with(mActivity).load(item.thumbnailBitmap).into(holder!!.getImageView(R.id.iv_ail))
                 }
+                holder.getTextView(R.id.tv_ail).visibility = View.VISIBLE
             }else{
                 Glide.with(mActivity).load(item.path).into(holder!!.getImageView(R.id.iv_ail))
+                holder.getTextView(R.id.tv_ail).visibility = View.INVISIBLE
             }
         }
-
-    }
-
-    companion object {
 
     }
 }
