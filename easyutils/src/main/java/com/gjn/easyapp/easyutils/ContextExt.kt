@@ -4,10 +4,19 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 
 fun Context.widthPixels(): Int = resources.displayMetrics.widthPixels
 
 fun Context.heightPixels(): Int = resources.displayMetrics.heightPixels
+
+fun Context.showToast(msg: CharSequence, duration: Int = Toast.LENGTH_SHORT){
+    Toast.makeText(this, msg, duration).show()
+}
+
+fun Context.showToast(resId: Int, duration: Int = Toast.LENGTH_SHORT){
+    Toast.makeText(this, resId, duration).show()
+}
 
 fun Context.toggleKeyboard(){
     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

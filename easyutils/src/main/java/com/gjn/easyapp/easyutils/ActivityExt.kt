@@ -4,8 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 
-fun Class<*>.start(activity: Activity, bundle: Bundle? = null) {
-    activity.startActivity(Intent(activity, this).apply { if (bundle != null) putExtras(bundle) })
+fun Class<*>.startActivity(activity: Activity, bundle: Bundle? = null) {
+    activity.startActivity(Intent(activity, this).apply { bundle?.let { putExtras(it) } })
 }
 
 object ActivityUtils {
@@ -18,6 +18,6 @@ object ActivityUtils {
 
     @JvmOverloads
     fun showNextActivity(activity: Activity, cls: Class<*>, bundle: Bundle? = null) {
-        cls.start(activity, bundle)
+        cls.startActivity(activity, bundle)
     }
 }

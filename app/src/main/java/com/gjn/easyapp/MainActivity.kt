@@ -3,7 +3,7 @@ package com.gjn.easyapp
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easybase.BaseLog
 import com.gjn.easyapp.easydialoger.EasyDialogUtils
-import com.gjn.easyapp.easyutils.*
+import com.gjn.easyapp.easyutils.click
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : ABaseActivity() {
@@ -192,7 +192,9 @@ class MainActivity : ABaseActivity() {
         tv_test2.click {
 //            mySP.clearPref()
 //            mContext.openWeChat()
-//            GalleryActivity::class.java.start(mActivity)
+//            showNextActivity(GalleryActivity::class.java, Bundle().apply {
+//                putString("msg", "测试数据")
+//            })
         }
     }
 
