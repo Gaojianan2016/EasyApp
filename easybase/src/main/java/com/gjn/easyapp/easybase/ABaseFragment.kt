@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.gjn.easyapp.easydialoger.EasyDialogManager
+import com.gjn.easyapp.easydialoger.base.BaseDialogFragment
 import com.gjn.easyapp.easytoaster.ToastUtil
 import com.gjn.easyapp.easyutils.ActivityUtils
 
@@ -15,6 +17,7 @@ abstract class ABaseFragment : Fragment(), UIEvent {
     protected lateinit var mFragment: Fragment
     protected lateinit var mActivity: FragmentActivity
     protected lateinit var mBundle: Bundle
+    protected lateinit var mDialogManager: EasyDialogManager
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -26,6 +29,7 @@ abstract class ABaseFragment : Fragment(), UIEvent {
         super.onCreate(savedInstanceState)
         mFragment = this
         mBundle = arguments ?: Bundle()
+        mDialogManager = EasyDialogManager(this)
         onBundle()
     }
 
@@ -68,5 +72,22 @@ abstract class ABaseFragment : Fragment(), UIEvent {
 
     override fun toNextActivity(cls: Class<*>, bundle: Bundle?) {
         ActivityUtils.toNextActivity(mActivity, cls, bundle)
+    }
+
+    override fun showEasyDialog(dialog: BaseDialogFragment) {
+        mDialogManager.showDialog(dialog)
+    }
+
+    override fun dismissEasyDialog(dialog: BaseDialogFragment) {
+        mDialogManager.dismissDialog(dialog)
+    }
+
+    override fun dismissAllEasyDialog() {
+        mDialogManager.clearDialogs()
+    }
+
+    override fun onDestroyView() {
+        dismissAllEasyDialog()
+        super.onDestroyView()
     }
 }

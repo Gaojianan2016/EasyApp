@@ -1,6 +1,6 @@
 package com.gjn.easyapp.easybase
 
-abstract class BaseLazyFragment : ABaseFragment(){
+abstract class BaseLazyFragment : ABaseFragment() {
     private var isFirstVisible = true
     private var isPrepared = false
 
@@ -13,20 +13,20 @@ abstract class BaseLazyFragment : ABaseFragment(){
         if (isFirstVisible) {
             initPrepare()
             isFirstVisible = false
-        }else{
-            lazyData()
+        } else {
+            againUpdateData()
         }
     }
 
     private fun initPrepare() {
         if (isPrepared) {
-            firstLazyData()
-        }else{
+            lazyData()
+        } else {
             isPrepared = true
         }
     }
 
-    protected abstract fun firstLazyData()
+    protected open fun againUpdateData() {}
 
     protected abstract fun lazyData()
 }

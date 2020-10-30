@@ -23,30 +23,18 @@ import com.gjn.easyapp.easyutils.dp
 import com.gjn.easyapp.easyutils.widthPixels
 import java.util.*
 
-object EasyDialogUtils {
-
-    const val LOADING_S = 3
-    const val LOADING_N = 5
-    const val LOADING_B = 7
-    private const val TAG = "EasyDialogUtils"
+class EasyDialogManager {
 
     private val fragmentStack: Stack<BaseDialogFragment> = Stack()
-
     private var mFragmentManager: FragmentManager? = null
     private var mActivity: Activity? = null
 
-    private val mDialogCancelListener: OnDialogCancelListener = object : OnDialogCancelListener {
-        override fun onCancel(dialog: DialogInterface, dialogFragment: DialogFragment) {
-            fragmentStack.remove(dialogFragment)
-        }
-    }
-
-    fun instance(activity: FragmentActivity) {
+    constructor(activity: FragmentActivity){
         mFragmentManager = activity.supportFragmentManager
         mActivity = activity
     }
 
-    fun instance(fragment: Fragment) {
+    constructor(fragment: Fragment){
         mFragmentManager = fragment.childFragmentManager
         mActivity = fragment.activity
     }
@@ -294,7 +282,11 @@ object EasyDialogUtils {
         }
         log("show $dialogFragment")
         fragmentStack.push(dialogFragment)
-        dialogFragment.addOnDialogCancelListener(mDialogCancelListener)
+        dialogFragment.addOnDialogCancelListener(object : OnDialogCancelListener {
+            override fun onCancel(dialog: DialogInterface, dialogFragment: DialogFragment) {
+                fragmentStack.remove(dialogFragment)
+            }
+        })
         dialogFragment.show(mFragmentManager!!, dialogFragment.tag)
     }
 
@@ -310,5 +302,12 @@ object EasyDialogUtils {
 
     private fun log(msg: String) {
         Log.i(TAG, msg)
+    }
+
+    companion object {
+        const val LOADING_S = 3
+        const val LOADING_N = 5
+        const val LOADING_B = 7
+        private const val TAG = "EasyDialogUtils"
     }
 }

@@ -61,7 +61,7 @@ object ToastUtil {
                 mToast = null
             }
             if (isApplication) {
-                mToast = Toast.makeText(mContext, null, duration)
+                mToast = Toast.makeText(mContext, "", duration)
                 mToast!!.setText(msg)
             } else {
                 mToast = Toast.makeText(mContext, msg, duration)

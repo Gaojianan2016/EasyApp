@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.gjn.easyapp.easydialoger.EasyDialogManager
+import com.gjn.easyapp.easydialoger.base.BaseDialogFragment
 import com.gjn.easyapp.easytoaster.ToastUtil
 import com.gjn.easyapp.easyutils.ActivityUtils
 import com.gjn.easyapp.easyutils.AppManager
@@ -14,6 +16,7 @@ abstract class ABaseActivity
     protected lateinit var mActivity: AppCompatActivity
     protected lateinit var mContext: Context
     protected lateinit var mBundle: Bundle
+    protected lateinit var mDialogManager: EasyDialogManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AppManager.instance.addActivity(this)
@@ -25,6 +28,7 @@ abstract class ABaseActivity
         mActivity = this
         mContext = this
         mBundle = intent.extras ?: Bundle()
+        mDialogManager = EasyDialogManager(this)
         onBundle()
         init()
         initView()
@@ -58,8 +62,21 @@ abstract class ABaseActivity
         ActivityUtils.toNextActivity(mActivity, cls, bundle)
     }
 
+    override fun showEasyDialog(dialog: BaseDialogFragment) {
+        mDialogManager.showDialog(dialog)
+    }
+
+    override fun dismissEasyDialog(dialog: BaseDialogFragment) {
+        mDialogManager.dismissDialog(dialog)
+    }
+
+    override fun dismissAllEasyDialog() {
+        mDialogManager.clearDialogs()
+    }
+
     override fun onDestroy() {
-        super.onDestroy()
         AppManager.instance.removeActivity(this)
+        dismissAllEasyDialog()
+        super.onDestroy()
     }
 }

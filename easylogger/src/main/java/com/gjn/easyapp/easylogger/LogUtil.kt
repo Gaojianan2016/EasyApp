@@ -1,7 +1,6 @@
 package com.gjn.easyapp.easylogger
 
-import android.util.Log
-import com.gjn.easyapp.easyutils.JsonUtil
+import com.gjn.easyapp.easyutils.*
 import com.google.gson.Gson
 import org.json.JSONObject
 
@@ -14,49 +13,49 @@ object LogUtil {
     private const val LEVEL_E = 6
     private const val LEVEL_WTF = 7
 
-    private fun println(level: Int, tag: String? = "easyLog", msg: String?, tr: Throwable? = null) {
+    private fun println(level: Int, tag: String = "easyLog", msg: String?, tr: Throwable? = null) {
         when (level) {
-            LEVEL_D -> Log.d(tag, msg, tr)
-            LEVEL_I -> Log.i(tag, msg, tr)
-            LEVEL_W -> Log.w(tag, msg, tr)
-            LEVEL_E -> Log.e(tag, msg, tr)
-            LEVEL_WTF -> Log.wtf(tag, msg, tr)
-            else -> Log.v(tag, msg, tr)
+            LEVEL_D -> msg?.logD(tag, tr)
+            LEVEL_I -> msg?.logI(tag, tr)
+            LEVEL_W -> msg?.logW(tag, tr)
+            LEVEL_E -> msg?.logE(tag, tr)
+            LEVEL_WTF -> msg?.logWTF(tag, tr)
+            else -> msg?.logV(tag, tr)
         }
     }
 
     @JvmOverloads
-    fun d(tag: String? = "easyLog", msg: String?, tr: Throwable? = null) {
+    fun d(tag: String = "easyLog", msg: String?, tr: Throwable? = null) {
         println(LEVEL_D, tag, msg, tr)
     }
 
     @JvmOverloads
-    fun v(tag: String? = "easyLog", msg: String?, tr: Throwable? = null) {
+    fun v(tag: String = "easyLog", msg: String?, tr: Throwable? = null) {
         println(LEVEL_V, tag, msg, tr)
     }
 
     @JvmOverloads
-    fun i(tag: String? = "easyLog", msg: String?, tr: Throwable? = null) {
+    fun i(tag: String = "easyLog", msg: String?, tr: Throwable? = null) {
         println(LEVEL_I, tag, msg, tr)
     }
 
     @JvmOverloads
-    fun w(tag: String? = "easyLog", msg: String?, tr: Throwable? = null) {
+    fun w(tag: String = "easyLog", msg: String?, tr: Throwable? = null) {
         println(LEVEL_W, tag, msg, tr)
     }
 
     @JvmOverloads
-    fun e(tag: String? = "easyLog", msg: String?, tr: Throwable? = null) {
+    fun e(tag: String = "easyLog", msg: String?, tr: Throwable? = null) {
         println(LEVEL_E, tag, msg, tr)
     }
 
     @JvmOverloads
-    fun wtf(tag: String? = "easyLog", msg: String?, tr: Throwable? = null) {
+    fun wtf(tag: String = "easyLog", msg: String?, tr: Throwable? = null) {
         println(LEVEL_WTF, tag, msg, tr)
     }
 
     @JvmOverloads
-    fun json(tag: String? = "easyLog", any: Any?) {
+    fun json(tag: String = "easyLog", any: Any?) {
         if (any == null) {
             e(tag, "json is null")
             return
