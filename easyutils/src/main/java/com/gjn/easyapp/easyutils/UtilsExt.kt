@@ -1,5 +1,6 @@
 package com.gjn.easyapp.easyutils
 
+import android.graphics.Color
 import android.net.Uri
 import android.util.Log
 import java.io.File
@@ -20,6 +21,8 @@ fun Double.intervalOpen(min: Double, max: Double): Double =
     min.coerceAtLeast(this.coerceAtMost(max))
 
 fun Long.intervalOpen(min: Long, max: Long): Long = min.coerceAtLeast(this.coerceAtMost(max))
+
+fun String.parseColor(): Int = Color.parseColor(this)
 
 fun String.logV(tag: String = "LogExt", tr: Throwable? = null) {
     Log.v(tag, this, tr)

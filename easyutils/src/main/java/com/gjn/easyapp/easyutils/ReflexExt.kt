@@ -6,7 +6,7 @@ import java.lang.reflect.Modifier
 /**
  * 完整类名转Class对象 例如：com.gjn.easyapp.easyutils.ReflexExt -> ReflexExt.Class
  * */
-fun <T> String.toClass(): Class<T>? =
+fun <T> String.toClazz(): Class<T>? =
     try {
         Class.forName(this) as Class<T>
     } catch (e: ClassNotFoundException) {
@@ -15,13 +15,18 @@ fun <T> String.toClass(): Class<T>? =
     }
 
 /**
+ * 完整类名转Class com.gjn.easyapp.easyutils.ReflexExt -> Class
+ * */
+fun String.toClass(): Class<*> = Class.forName(this)
+
+/**
  * 创建一个无参对象
  * */
 @JvmOverloads
 fun <T> String.newInstanceClazz(
     parameterTypes: Array<Class<*>> = arrayOf(),
     initArgs: Array<Any> = arrayOf()
-): T? = toClass<T>()?.newInstanceClazz(parameterTypes, initArgs)
+): T? = toClazz<T>()?.newInstanceClazz(parameterTypes, initArgs)
 
 /**
  * 创建一个无参对象
@@ -46,30 +51,49 @@ fun <T> Class<T>.newInstanceClazz(
 fun Any.getDeclaredFields(): Array<Field> = javaClass.declaredFields
 
 /**
- * 执行当前类方法
+ * 执行父类方法
  * */
-@JvmOverloads
-fun Any.invokeDeclaredMethod(
+fun Class<*>.invokeMethod(
     methodName: String,
-    parameterTypes: Array<Class<*>> = arrayOf(),
-    args: Array<Any> = arrayOf()
-): Any? = try {
-    val method = javaClass.getDeclaredMethod(methodName, *parameterTypes)
-    if (!method.modifiers.isPublic()) {
-        method.isAccessible = true
+    parameterTypes: Array<Class<*>?>,
+    args: Array<Any?>
+): Any? =
+    try {
+        val method = getMethod(methodName, *parameterTypes)
+        if (method.modifiers.isPublic()) {
+            method.isAccessible = true
+        }
+        method.invoke(this, *args)
+    } catch (e: java.lang.Exception) {
+        e.printStackTrace()
+        null
     }
-    method.invoke(this, args)
-} catch (e: Exception) {
-    e.printStackTrace()
-    null
-}
 
 /**
- * 设置当前类父类成员参数
+ * 执行当前类方法
  * */
-fun Any.setField(fieldName: String, any: Any?) {
+fun Class<*>.invokeDeclaredMethod(
+    methodName: String,
+    parameterTypes: Array<Class<*>?>,
+    args: Array<Any?>
+): Any? =
     try {
-        val field = javaClass.getField(fieldName)
+        val method = getDeclaredMethod(methodName, *parameterTypes)
+        if (method.modifiers.isPublic()) {
+            method.isAccessible = true
+        }
+        method.invoke(this, *args)
+    } catch (e: java.lang.Exception) {
+        e.printStackTrace()
+        null
+    }
+
+/**
+ * 设置父类成员参数
+ * */
+fun Class<*>.setField(fieldName: String, any: Any?) {
+    try {
+        val field = getField(fieldName)
         if (!field.modifiers.isPublic()) {
             field.isAccessible = true
         }
@@ -82,9 +106,9 @@ fun Any.setField(fieldName: String, any: Any?) {
 /**
  * 设置当前类成员参数
  * */
-fun Any.setDeclaredField(fieldName: String, any: Any?) {
+fun Class<*>.setDeclaredField(fieldName: String, any: Any?) {
     try {
-        val field = javaClass.getDeclaredField(fieldName)
+        val field = getDeclaredField(fieldName)
         if (!field.modifiers.isPublic()) {
             field.isAccessible = true
         }

@@ -142,6 +142,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="媒体相册测试" />
+
+            <Button
+                android:id="@+id/btn13"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="状态栏 底边栏" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

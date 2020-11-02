@@ -57,7 +57,7 @@ class A1Fragment : BaseLazyFragment() {
             println("解码2 = ${QRCodeUtils.bitmapDecode(qrBmp)}")
         }
         btn5.click {
-            "屏幕宽度 ${mActivity.widthPixels()} 屏幕高度 ${mActivity.heightPixels()}".logI()
+            "屏幕宽度 ${mActivity.screenWidth()} 屏幕高度 ${mActivity.screenHeight()}".logI()
             val d = 35.7
             println(
                 "${d.decimalFormat()} , ${d.decimalFormat(prefix = "￥")}, ${d.decimalFormat(
@@ -196,10 +196,10 @@ class A1Fragment : BaseLazyFragment() {
                 "1 ", "我是一段测试文字(Has En)",
                 imageSpan = CenterAlignImageSpan(drawable)
             )
-            val sp2 = StringUtils.matcherColorSpan(sp1, Color.RED, "测试", "(H", "")
+            val sp2 = StringUtils.matcherColorSpan(sp1, Color.RED, "测试", "(H")
             tv_wz.run {
                 text = sp2
-                textSize = 18f
+                textSize = 24f
             }
 
             val sp3 = StringUtils.matcherDrawableSpan(
@@ -225,6 +225,12 @@ class A1Fragment : BaseLazyFragment() {
             showNextActivity(GalleryActivity::class.java, Bundle().apply {
                 putString("msg", "测试数据")
             })
+        }
+        btn13.click {
+            val status = mActivity.statusBarHeight()
+            val navigation = mActivity.navigationBarHeight()
+            println("状态栏 ${status}px -> ${status.px2dp(mActivity)}dp")
+            println("底边栏 ${navigation}px -> ${navigation.px2dp(mActivity)}dp")
         }
     }
 

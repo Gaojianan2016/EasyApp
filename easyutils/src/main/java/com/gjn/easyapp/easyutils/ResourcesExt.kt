@@ -92,6 +92,10 @@ object ResourcesUtils {
 
     fun getInternalColors(name: String?): Int = getInternal(name, "colors")
 
+    fun getInternalDimen(name: String?): Int = getInternal(name, "dimen")
+
+    fun getInternalBoolean(name: String?): Int = getInternal(name, "bool")
+
     fun getInternal(name: String?, type: String?): Int =
         Resources.getSystem().getIdentifier(name, type, "android")
 

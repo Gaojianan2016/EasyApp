@@ -51,7 +51,7 @@ abstract class ABaseActivity
     abstract fun initData()
 
     override fun showToast(msg: String?) {
-        ToastUtil.instanceApplication(mContext).showToast(msg)
+        ToastUtil.instance(mContext).showToast(msg)
     }
 
     override fun showNextActivity(cls: Class<*>, bundle: Bundle?) {

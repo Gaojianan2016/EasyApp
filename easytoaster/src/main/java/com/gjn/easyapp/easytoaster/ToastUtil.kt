@@ -26,24 +26,19 @@ object ToastUtil {
     private var mEasyToastView: View? = null
     private var isApplication = false
 
-    fun instance(context: Context): ToastUtil {
-        isApplication = false
-        init(context)
-        return this
-    }
-
-    fun instanceApplication(context: Context): ToastUtil {
-        isApplication = true
-        init(context)
-        return this
-    }
-
-    private fun init(context: Context) {
-        mContext = context
+    @JvmOverloads
+    fun instance(context: Context, isApplication: Boolean = true): ToastUtil {
+        this.isApplication = isApplication
+        mContext = if (isApplication) {
+            context.applicationContext
+        } else {
+            context
+        }
         if (mEasyToastView == null) {
             mEasyToastView = LayoutInflater.from(mContext)
                 .inflate(R.layout.easytoast_transient_notification, null)
         }
+        return this
     }
 
     @JvmOverloads

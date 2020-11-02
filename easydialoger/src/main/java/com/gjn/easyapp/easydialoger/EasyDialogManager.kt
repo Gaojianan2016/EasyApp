@@ -20,7 +20,7 @@ import com.gjn.easyapp.easydialoger.base.ConvertLayoutDialogFragment
 import com.gjn.easyapp.easydialoger.base.OnDialogCancelListener
 import com.gjn.easyapp.easydialoger.base.ViewHolder
 import com.gjn.easyapp.easyutils.dp
-import com.gjn.easyapp.easyutils.widthPixels
+import com.gjn.easyapp.easyutils.screenWidth
 import java.util.*
 
 class EasyDialogManager {
@@ -249,9 +249,9 @@ class EasyDialogManager {
             return null
         }
         val edge = when (size) {
-            LOADING_B -> mActivity!!.widthPixels() / LOADING_B
-            LOADING_N -> mActivity!!.widthPixels() / LOADING_N
-            else -> mActivity!!.widthPixels() / LOADING_S
+            LOADING_B -> mActivity!!.screenWidth() / LOADING_B
+            LOADING_N -> mActivity!!.screenWidth() / LOADING_N
+            else -> mActivity!!.screenWidth() / LOADING_S
         }
         val dialogFragment = EasyDialogFragment.newInstance(R.layout.edf_dialog_loading,
             object : ConvertLayoutDialogFragment {

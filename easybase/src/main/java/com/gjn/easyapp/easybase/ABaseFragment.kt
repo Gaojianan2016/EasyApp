@@ -38,7 +38,11 @@ abstract class ABaseFragment : Fragment(), UIEvent {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(layoutId(), container, false)
+        return if (layoutId() != View.NO_ID) {
+            inflater.inflate(layoutId(), container, false)
+        } else {
+            super.onCreateView(inflater, container, savedInstanceState)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,7 +67,7 @@ abstract class ABaseFragment : Fragment(), UIEvent {
     abstract fun initData()
 
     override fun showToast(msg: String?) {
-        ToastUtil.instanceApplication(mActivity).showToast(msg)
+        ToastUtil.instance(mActivity).showToast(msg)
     }
 
     override fun showNextActivity(cls: Class<*>, bundle: Bundle?) {
