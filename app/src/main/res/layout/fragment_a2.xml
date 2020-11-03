@@ -30,7 +30,7 @@
                     android:id="@+id/tv_cs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{vm.url}" />
+                    android:text="@{vm.data}" />
 
                 <Button
                     android:id="@+id/btn1"

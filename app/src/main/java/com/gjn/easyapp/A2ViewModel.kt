@@ -5,12 +5,9 @@ import androidx.lifecycle.ViewModel
 
 class A2ViewModel : ViewModel(){
 
-    private val url = MutableLiveData<String>()
+    var data = MutableLiveData<String>()
 
-
-    fun changeUrl(){
-        url.value = "url 变化 "
+    fun updateData(){
+        data.postValue("1-100随机数 ${(1..100).random()}")
     }
-
-    fun getUrl(): MutableLiveData<String> = url
 }

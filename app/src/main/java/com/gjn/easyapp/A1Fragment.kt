@@ -25,39 +25,32 @@ class A1Fragment : BaseLazyFragment() {
     override fun lazyData() {
         println("A1Fragment lazyData")
 
-        btn1.click {
-            size++
-            showToast("测试 $size")
+        setOnClickListeners(btn1, btn2, btn3) {
+            when (this) {
+                btn1 -> {
+                    size++
+                    showToast("测试 $size")
+                }
+                btn2 -> {
+                    mDialogManager.showAndroidDialog("标题", "测试")
+                    mDialogManager.showEasyNormalDialog("消息",
+                        positive = "按钮1",
+                        positiveClickListener = View.OnClickListener { showToast("关闭按钮1") }
+                    )
+                    mDialogManager.showSmallLoadingDialog()
+                }
+                btn3 -> {
+                    et_pwd.togglePassword()
+                }
+                else -> {
+                }
+            }
         }
 
-        btn2.click {
-            mDialogManager.showAndroidDialog("标题", "测试")
-            mDialogManager.showEasyNormalDialog("消息",
-                positive = "按钮1",
-                positiveClickListener = View.OnClickListener { showToast("关闭按钮1") }
-            )
-            mDialogManager.showSmallLoadingDialog()
-        }
-        btn3.click {
-            et_pwd.togglePassword()
-        }
-        btn4.click {
-            val bmp = QRCodeUtils.stringEncode("你好，我是正常二维码")
-            println("解码 = ${QRCodeUtils.bitmapDecode(bmp)}")
+        setOnClickListeners(btn4, btn6, btn8, btn9, btn10, btn11, btn12, btn13, listener = Click())
 
-            val enMap = QRCodeUtils.defaultEncodeMap
-            enMap[EncodeHintType.MARGIN] = 1
-            val qrBmp = QRCodeUtils.stringEncode(
-                "你好，我是有图标的二维码",
-                positiveColor = Color.RED, negativeColor = Color.YELLOW, hints = enMap,
-                logoBitmap = BitmapFactory.decodeResource(resources, R.mipmap.balance_bg),
-                scale = 0.1f
-            )
-            iv_qrcode.setImageBitmap(qrBmp)
-            println("解码2 = ${QRCodeUtils.bitmapDecode(qrBmp)}")
-        }
         btn5.click {
-            "屏幕宽度 ${mActivity.screenWidth()} 屏幕高度 ${mActivity.screenHeight()}".logI()
+            println("屏幕宽度 ${mActivity.screenWidth()} 屏幕高度 ${mActivity.screenHeight()}")
             val d = 35.7
             println(
                 "${d.decimalFormat()} , ${d.decimalFormat(prefix = "￥")}, ${d.decimalFormat(
@@ -103,13 +96,8 @@ class A1Fragment : BaseLazyFragment() {
                 age = 18
             }
             println("new name = $name new age = $age")
+        }
 
-        }
-        btn6.click {
-            println("是否连接网络 ${mActivity.isNetworkConnected()}")
-            println("是否连接wifi ${mActivity.isWifiConnected()}")
-            println("是否连接流量 ${mActivity.isMobileConnected()}")
-        }
         btn7.click {
             val data1 = 2 * 1000
             val data2 = 3 * MINUTE * 1000
@@ -188,49 +176,79 @@ class A1Fragment : BaseLazyFragment() {
             println("day6 ${StringUtils.elapsedTime(day0, day6)}")
             println("day7 ${StringUtils.elapsedTime(day0, day7)}")
         }
-        btn8.click {
 
-            val drawable = ActivityCompat.getDrawable(mActivity, R.mipmap.icon_bargain)
+    }
 
-            val sp1 = StringUtils.matcherDrawableSpan(
-                "1 ", "我是一段测试文字(Has En)",
-                imageSpan = CenterAlignImageSpan(drawable)
-            )
-            val sp2 = StringUtils.matcherColorSpan(sp1, Color.RED, "测试", "(H")
-            tv_wz.run {
-                text = sp2
-                textSize = 24f
+    inner class Click : View.OnClickListener {
+
+        override fun onClick(v: View?) {
+            when (v) {
+                btn4 -> {
+                    val bmp = QRCodeUtils.stringEncode("你好，我是正常二维码")
+                    println("解码 = ${QRCodeUtils.bitmapDecode(bmp)}")
+
+                    val enMap = QRCodeUtils.defaultEncodeMap
+                    enMap[EncodeHintType.MARGIN] = 1
+                    val qrBmp = QRCodeUtils.stringEncode(
+                        "你好，我是有图标的二维码",
+                        positiveColor = Color.RED, negativeColor = Color.YELLOW, hints = enMap,
+                        logoBitmap = BitmapFactory.decodeResource(resources, R.mipmap.balance_bg),
+                        scale = 0.1f
+                    )
+                    iv_qrcode.setImageBitmap(qrBmp)
+                    println("解码2 = ${QRCodeUtils.bitmapDecode(qrBmp)}")
+                }
+                btn6 -> {
+                    println("是否连接网络 ${mActivity.isNetworkConnected()}")
+                    println("是否连接wifi ${mActivity.isWifiConnected()}")
+                    println("是否连接流量 ${mActivity.isMobileConnected()}")
+                }
+                btn8 -> {
+                    val drawable = ActivityCompat.getDrawable(mActivity, R.mipmap.icon_bargain)
+
+                    val sp1 = StringUtils.matcherDrawableSpan(
+                        "1 ", "我是一段测试文字(Has En)",
+                        imageSpan = CenterAlignImageSpan(drawable)
+                    )
+                    val sp2 = StringUtils.matcherColorSpan(sp1, Color.RED, "测试", "(H")
+                    tv_wz.run {
+                        text = sp2
+                        textSize = 24f
+                    }
+
+                    val sp3 = StringUtils.matcherDrawableSpan(
+                        "1 ", "我是一段测试文字(Has En)",
+                        drawable = drawable
+                    )
+                    val sp4 = StringUtils.matcherColorSpan(sp3, Color.BLUE, "文字", "n)")
+                    tv_wz2.text = sp4
+                }
+                btn9 -> {
+                    val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.test_img)
+                    iv_bitmap.setImageBitmap(bitmap.blurBitmap(mActivity, 24f))
+                }
+                btn10 -> {
+                    mActivity.openQQ()
+                }
+                btn11 -> {
+                    iv_icon.setImageDrawable(mActivity.getAppIcon())
+                    iv_icon2.setImageDrawable(mActivity.getAppIcon(QQ_PACKAGE_NAME))
+                    iv_icon3.setImageDrawable(mActivity.getAppIcon(WECHAT_PACKAGE_NAME))
+                }
+                btn12 -> {
+                    showNextActivity(GalleryActivity::class.java, Bundle().apply {
+                        putString("msg", "测试数据")
+                    })
+                }
+                btn13 -> {
+                    val status = mActivity.statusBarHeight()
+                    val navigation = mActivity.navigationBarHeight()
+                    println("状态栏 ${status}px -> ${status.px2dp(mActivity)}dp")
+                    println("底边栏 ${navigation}px -> ${navigation.px2dp(mActivity)}dp")
+                }
+                else -> {
+                }
             }
-
-            val sp3 = StringUtils.matcherDrawableSpan(
-                "1 ", "我是一段测试文字(Has En)",
-                drawable = drawable
-            )
-            val sp4 = StringUtils.matcherColorSpan(sp3, Color.BLUE, "文字", "n)")
-            tv_wz2.text = sp4
-        }
-        btn9.click {
-            val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.test_img)
-            iv_bitmap.setImageBitmap(bitmap.blurBitmap(mActivity, 24f))
-        }
-        btn10.click {
-            mActivity.openQQ()
-        }
-        btn11.click {
-            iv_icon.setImageDrawable(mActivity.getAppIcon())
-            iv_icon2.setImageDrawable(mActivity.getAppIcon(QQ_PACKAGE_NAME))
-            iv_icon3.setImageDrawable(mActivity.getAppIcon(WECHAT_PACKAGE_NAME))
-        }
-        btn12.click {
-            showNextActivity(GalleryActivity::class.java, Bundle().apply {
-                putString("msg", "测试数据")
-            })
-        }
-        btn13.click {
-            val status = mActivity.statusBarHeight()
-            val navigation = mActivity.navigationBarHeight()
-            println("状态栏 ${status}px -> ${status.px2dp(mActivity)}dp")
-            println("底边栏 ${navigation}px -> ${navigation.px2dp(mActivity)}dp")
         }
     }
 

@@ -26,15 +26,15 @@ fun View.viewHeight(): Int {
     return h
 }
 
-fun View.visible(){
+fun View.visible() {
     visibility = View.VISIBLE
 }
 
-fun View.gone(){
+fun View.gone() {
     visibility = View.GONE
 }
 
-fun View.invisible(){
+fun View.invisible() {
     visibility = View.INVISIBLE
 }
 
@@ -56,16 +56,32 @@ fun EditText.togglePassword(): Boolean {
     return isHide
 }
 
-fun View.click(block: (v: View) -> Unit){
-    this.setOnClickListener{
-        block.invoke(this)
+fun View.click(block: View.() -> Unit) {
+    this.setOnClickListener { it.block() }
+}
+
+fun View.clickLong(block: View.() -> Boolean) {
+    this.setOnLongClickListener {
+        return@setOnLongClickListener it.block()
     }
 }
 
-fun View.clickLong(block: (v: View) -> Boolean){
-    this.setOnLongClickListener{
-        return@setOnLongClickListener block.invoke(this)
-    }
+fun setOnClickListeners(vararg view: View?, block: View.() -> Unit) {
+    val listener = View.OnClickListener { it.block() }
+    view.forEach { it?.setOnClickListener(listener) }
+}
+
+fun setOnClickListeners(vararg view: View?, listener: View.OnClickListener) {
+    view.forEach { it?.setOnClickListener(listener) }
+}
+
+fun setOnLongClickListeners(vararg view: View?, block: View.() -> Boolean) {
+    val listener = View.OnLongClickListener { return@OnLongClickListener it.block() }
+    view.forEach { it?.setOnLongClickListener(listener) }
+}
+
+fun setOnLongClickListeners(vararg view: View?, listener: View.OnLongClickListener) {
+    view.forEach { it?.setOnLongClickListener(listener) }
 }
 
 object ViewUtils {

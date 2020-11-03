@@ -1,8 +1,5 @@
 package com.gjn.easyapp
 
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -14,7 +11,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : ABaseActivity() {
 
     val tabs = arrayOf(A1Fragment(), A2Fragment(), A3Fragment())
-    val tabTitles = arrayOf("A1Fragment", "A2Fragment", "A3Fragment")
+//    val tabTitles = arrayOf("A1Fragment", "A2Fragment", "A3Fragment")
 
     override fun layoutId(): Int = R.layout.activity_main
 
@@ -54,25 +51,24 @@ class MainActivity : ABaseActivity() {
             }
         })
 
-        val mediator = TabLayoutMediator(
-            tl_am,
-            vp_am,
+        val mediator = TabLayoutMediator(tl_am, vp_am,
             TabLayoutMediator.TabConfigurationStrategy { tab, position ->
-                //自定义 TabView
-                val tabView = TextView(mActivity)
-
-                val states = arrayOfNulls<IntArray>(2)
-                states[0] = intArrayOf(android.R.attr.state_selected)
-                states[1] = intArrayOf()
-                val colors = intArrayOf(Color.RED, Color.BLACK)
-                val colorList = ColorStateList(states, colors)
-
-                tabView.run {
-                    text = tabTitles[position]
-                    setTextColor(colorList)
-                }
-
-                tab.customView = tabView
+//                //自定义 TabView
+//                val tabView = TextView(mActivity)
+//
+//                val states = arrayOfNulls<IntArray>(2)
+//                states[0] = intArrayOf(android.R.attr.state_selected)
+//                states[1] = intArrayOf()
+//                val colors = intArrayOf(Color.RED, Color.BLACK)
+//                val colorList = ColorStateList(states, colors)
+//
+//                tabView.run {
+//                    text = tabTitles[position]
+//                    setTextColor(colorList)
+//                }
+//
+//                tab.customView = tabView
+                tab.text = "TAB $position"
             })
 
         //绑定TabLayout ViewPager2

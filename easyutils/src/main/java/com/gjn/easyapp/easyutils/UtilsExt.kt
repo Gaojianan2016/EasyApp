@@ -1,8 +1,12 @@
 package com.gjn.easyapp.easyutils
 
+import android.app.Application
 import android.graphics.Color
 import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import java.io.File
 import kotlin.math.asin
 import kotlin.math.cos
@@ -47,6 +51,26 @@ fun String.logE(tag: String = "LogExt", tr: Throwable? = null) {
 fun String.logWTF(tag: String = "LogExt", tr: Throwable? = null) {
     Log.wtf(tag, this, tr)
 }
+
+/**
+ * 创建ViewModel对象
+ * */
+fun <T : ViewModel> Class<T>.createViewModel(
+    owner: ViewModelStoreOwner
+): T = ViewModelProvider(
+    owner, ViewModelProvider.NewInstanceFactory()
+).get(this)
+
+/**
+ * 创建AndroidViewModel对象
+ * */
+fun <T : ViewModel> Class<T>.createAndroidViewModel(
+    owner: ViewModelStoreOwner,
+    application: Application
+): T = ViewModelProvider(
+    owner, ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+).get(this)
+
 
 /**
  * 计算地球坐标两点距离

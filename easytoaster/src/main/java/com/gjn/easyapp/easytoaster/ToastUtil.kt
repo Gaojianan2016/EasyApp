@@ -44,7 +44,7 @@ object ToastUtil {
     @JvmOverloads
     @SuppressLint("ShowToast")
     fun showToast(
-        msg: CharSequence?, view: View? = null, duration: Int = Toast.LENGTH_SHORT,
+        msg: CharSequence?, duration: Int = Toast.LENGTH_SHORT, view: View? = null,
         gravity: Int = Gravity.BOTTOM, xOffset: Int = 0, yOffset: Int = 0
     ) {
         if (mContext == null) {
@@ -163,6 +163,6 @@ object ToastUtil {
             EASY_TYPE_PROHIBIT -> iv.setImageResource(R.drawable.easy_toast_prohibit)
             else -> iv.visibility = View.GONE
         }
-        showToast(msg, mEasyToastView, duration, gravity, xOffset, yOffset)
+        showToast(msg, duration, mEasyToastView, gravity, xOffset, yOffset)
     }
 }
