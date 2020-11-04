@@ -1,3 +1,4 @@
+include ':easynetworker'
 include ':easyutils'
 include ':easydialoger'
 include ':easytoaster'
