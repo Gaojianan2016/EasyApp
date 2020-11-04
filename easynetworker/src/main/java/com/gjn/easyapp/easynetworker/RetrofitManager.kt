@@ -16,7 +16,7 @@ object RetrofitManager {
 
     var baseUrl = ""
 
-    var listener: OnCustomHeaderListener? = null
+    var customInterceptorListener: OnCustomInterceptorListener? = null
 
     var okHttpClient = OkHttpClient.Builder()
         .addInterceptor(LoggingInterceptor())
@@ -35,12 +35,12 @@ object RetrofitManager {
         override fun intercept(chain: Interceptor.Chain): Response {
             val original = chain.request()
             val request = original.newBuilder().apply {
-                listener?.customRequest(original.url.toString(), this)
+                customInterceptorListener?.customRequest(original.url.toString(), this)
             }.build()
             val t1 = System.nanoTime()
 
             val response = chain.proceed(request)
-            listener?.getResponse(response)
+            customInterceptorListener?.getResponse(response)
             val t2 = System.nanoTime()
 
             "${printRequest(request)}${printResponse(response, t1, t2)}".logD(TAG)
@@ -115,7 +115,7 @@ object RetrofitManager {
         }
     }
 
-    interface OnCustomHeaderListener {
+    interface OnCustomInterceptorListener {
         fun customRequest(url: String, builder: Request.Builder)
 
         fun getResponse(response: Response)
