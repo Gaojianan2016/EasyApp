@@ -10,8 +10,7 @@ import com.gjn.easyapp.easytoaster.ToastUtil
 import com.gjn.easyapp.easyutils.ActivityUtils
 import com.gjn.easyapp.easyutils.AppManager
 
-abstract class ABaseActivity
-    : AppCompatActivity(), UIEvent {
+abstract class ABaseActivity : AppCompatActivity(), UIEvent {
 
     protected lateinit var mActivity: AppCompatActivity
     protected lateinit var mContext: Context
@@ -20,7 +19,7 @@ abstract class ABaseActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AppManager.instance.addActivity(this)
-        preCreate()
+        preCreate(savedInstanceState)
         super.onCreate(savedInstanceState)
         if (layoutId() != View.NO_ID) {
             setContentView(layoutId())
@@ -30,18 +29,18 @@ abstract class ABaseActivity
         mBundle = intent.extras ?: Bundle()
         mDialogManager = EasyDialogManager(this)
         onBundle()
-        init()
+        init(savedInstanceState)
         initView()
         initData()
     }
 
-    protected open fun preCreate() {
+    protected open fun preCreate(savedInstanceState: Bundle?) {
     }
 
     protected open fun onBundle() {
     }
 
-    protected open fun init() {
+    protected open fun init(savedInstanceState: Bundle?) {
     }
 
     abstract fun layoutId(): Int

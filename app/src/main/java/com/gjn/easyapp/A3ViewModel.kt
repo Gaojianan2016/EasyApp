@@ -13,7 +13,6 @@ class A3ViewModel : ViewModel() {
     var girlData = MutableLiveData<GirlBean>()
 
     fun loadData() {
-
         RetrofitManager.baseUrl = GankUrl.API_BASE
         RetrofitManager.customInterceptorListener =
             object : RetrofitManager.OnCustomInterceptorListener {

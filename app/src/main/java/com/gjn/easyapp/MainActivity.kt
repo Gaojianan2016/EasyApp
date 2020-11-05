@@ -1,5 +1,6 @@
 package com.gjn.easyapp
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -15,8 +16,8 @@ class MainActivity : ABaseActivity() {
 
     override fun layoutId(): Int = R.layout.activity_main
 
-    override fun init() {
-        super.init()
+    override fun init(savedInstanceState: Bundle?) {
+        super.init(savedInstanceState)
         BaseLog.isDebug = true
     }
 
