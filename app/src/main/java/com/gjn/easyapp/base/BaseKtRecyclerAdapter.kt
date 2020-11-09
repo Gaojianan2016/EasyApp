@@ -63,7 +63,7 @@ abstract class BaseKtRecyclerAdapter<T>(
         add(data.size, item)
     }
 
-    override fun add(data: MutableList<T?>?) {
+    override fun add(data: MutableList<T>?) {
         data?.forEach {
             add(it)
         }

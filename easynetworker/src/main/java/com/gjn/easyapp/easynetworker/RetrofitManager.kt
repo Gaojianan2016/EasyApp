@@ -53,7 +53,7 @@ object RetrofitManager {
 
         private fun printRequest(request: Request): String {
             val log = StringBuilder()
-            log.append("\n----------Request HEAD----------\n")
+            log.append("http\n----------Request HEAD----------\n")
                 .append("--> ${request.method} ${request.url}\n")
             request.headers.forEach { (name, value) ->
                 log.append("-> $name = $value\n")

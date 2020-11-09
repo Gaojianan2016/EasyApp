@@ -8,11 +8,11 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        INSTANCE = this
+        instance = this
         MultiDex.install(this)
     }
 
     companion object{
-        lateinit var INSTANCE: Context
+        lateinit var instance: Context
     }
 }

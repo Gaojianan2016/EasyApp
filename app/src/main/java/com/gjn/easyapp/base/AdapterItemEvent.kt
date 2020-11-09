@@ -4,7 +4,7 @@ interface AdapterItemEvent<T> {
 
     fun add(item: T?)
 
-    fun add(data: MutableList<T?>?)
+    fun add(data: MutableList<T>?)
 
     fun add(position: Int, item: T?)
 

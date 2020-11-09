@@ -4,14 +4,14 @@ import com.gjn.easyapp.easyutils.SharedPref
 
 class MySP<T> : SharedPref<T> {
 
-    constructor() : super(App.INSTANCE)
+    constructor() : super(App.instance)
 
     @JvmOverloads
     constructor(
         key: String,
         defValue: T,
-        name: String = "${App.INSTANCE.packageName}_sp",
+        name: String = "${App.instance.packageName}_sp",
         commit: Boolean = false
-    ) : super(App.INSTANCE, key, defValue, name, commit)
+    ) : super(App.instance, key, defValue, name, commit)
 
 }

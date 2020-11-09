@@ -20,7 +20,9 @@ import com.gjn.easyapp.easydialoger.base.ConvertLayoutDialogFragment
 import com.gjn.easyapp.easydialoger.base.OnDialogCancelListener
 import com.gjn.easyapp.easydialoger.base.ViewHolder
 import com.gjn.easyapp.easyutils.dp
+import com.gjn.easyapp.easyutils.gone
 import com.gjn.easyapp.easyutils.screenWidth
+import com.gjn.easyapp.easyutils.visible
 import java.util.*
 
 class EasyDialogManager {
@@ -29,12 +31,12 @@ class EasyDialogManager {
     private var mFragmentManager: FragmentManager? = null
     private var mActivity: Activity? = null
 
-    constructor(activity: FragmentActivity){
+    constructor(activity: FragmentActivity) {
         mFragmentManager = activity.supportFragmentManager
         mActivity = activity
     }
 
-    constructor(fragment: Fragment){
+    constructor(fragment: Fragment) {
         mFragmentManager = fragment.childFragmentManager
         mActivity = fragment.activity
     }
@@ -118,11 +120,11 @@ class EasyDialogManager {
             object : ConvertLayoutDialogFragment {
                 override fun convertView(holder: ViewHolder, dialogFragment: DialogFragment) {
                     if (negative == null) {
-                        holder.findViewById<View>(R.id.edf_v_line_edb)?.visibility = View.GONE
-                        holder.findViewById<TextView>(R.id.edf_tv_no_edb)?.visibility = View.GONE
+                        holder.findViewById<View>(R.id.edf_v_line_edb)?.gone()
+                        holder.findViewById<View>(R.id.edf_tv_no_edb)?.gone()
                     } else {
-                        holder.findViewById<View>(R.id.edf_v_line_edb)?.visibility = View.VISIBLE
-                        holder.findViewById<TextView>(R.id.edf_tv_no_edb)?.visibility = View.VISIBLE
+                        holder.findViewById<View>(R.id.edf_v_line_edb)?.visible()
+                        holder.findViewById<View>(R.id.edf_tv_no_edb)?.visible()
                     }
                     holder.findViewById<TextView>(R.id.edf_tv_msg_edn)?.text = msg
                     holder.findViewById<TextView>(R.id.edf_tv_yes_edb)?.run {
@@ -166,11 +168,11 @@ class EasyDialogManager {
             object : ConvertLayoutDialogFragment {
                 override fun convertView(holder: ViewHolder, dialogFragment: DialogFragment) {
                     if (negative == null) {
-                        holder.findViewById<View>(R.id.edf_v_line_edb)?.visibility = View.GONE
-                        holder.findViewById<TextView>(R.id.edf_tv_no_edb)?.visibility = View.GONE
+                        holder.findViewById<View>(R.id.edf_v_line_edb)?.gone()
+                        holder.findViewById<View>(R.id.edf_tv_no_edb)?.gone()
                     } else {
-                        holder.findViewById<View>(R.id.edf_v_line_edb)?.visibility = View.VISIBLE
-                        holder.findViewById<TextView>(R.id.edf_tv_no_edb)?.visibility = View.VISIBLE
+                        holder.findViewById<View>(R.id.edf_v_line_edb)?.visible()
+                        holder.findViewById<View>(R.id.edf_tv_no_edb)?.visible()
                     }
                     holder.findViewById<TextView>(R.id.edf_tv_msg_edi)?.text = msg
                     val et = holder.findViewById<EditText>(R.id.edf_et_content_edi)

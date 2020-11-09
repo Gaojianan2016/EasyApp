@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <data>
         <variable
             name="vm"
             type="com.gjn.easyapp.A2ViewModel" />
+        <variable
+            name="click"
+            type="com.gjn.easyapp.A2Fragment.ClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,7 +40,27 @@
                     android:id="@+id/btn1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:onClick="@{()->click.btn1()}"
                     android:text="测试mvvm按钮" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{()->click.btn2()}"
+                    android:text="访问网络请求" />
+
+                <ImageView
+                    android:id="@+id/iv_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    drawImage="@{vm.data2.data.get(0).url}"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+                <ImageView
+                    android:id="@+id/iv_img2"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    tools:srcCompat="@tools:sample/avatars" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
