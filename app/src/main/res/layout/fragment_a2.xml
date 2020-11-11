@@ -61,6 +61,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     tools:srcCompat="@tools:sample/avatars" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{()->click.btn3()}"
+                    android:text="获取WanAndroid的Banner数据" />
+
+                <ImageView
+                    android:id="@+id/iv_img3"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    tools:srcCompat="@tools:sample/avatars" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

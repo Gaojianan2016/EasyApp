@@ -20,6 +20,12 @@ fun Context.openQQ() {
     )
 }
 
+fun Context.openApp(packageName: String){
+    if (isInstalled(packageName)) startActivity(
+        Intent(packageManager.getLaunchIntentForPackage(packageName))
+    )
+}
+
 fun Context.callPhone(phone: String) {
     startActivity(Intent(Intent.ACTION_DIAL).apply {
         data = "tel:${phone}".uri()

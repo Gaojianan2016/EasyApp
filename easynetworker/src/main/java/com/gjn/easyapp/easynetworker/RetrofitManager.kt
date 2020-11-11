@@ -2,6 +2,14 @@ package com.gjn.easyapp.easynetworker
 
 import com.gjn.easyapp.easyutils.JsonUtil
 import com.gjn.easyapp.easyutils.logD
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.TypeAdapter
+import com.google.gson.TypeAdapterFactory
+import com.google.gson.reflect.TypeToken
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonToken
+import com.google.gson.stream.JsonWriter
 import okhttp3.*
 import okio.Buffer
 import retrofit2.Retrofit
@@ -25,9 +33,36 @@ object RetrofitManager {
     fun <T> create(clazz: Class<T>): T = Retrofit.Builder()
         .baseUrl(baseUrl)
         .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create())
+        //添加过滤gson解析失败异常
+        .addConverterFactory(
+            GsonConverterFactory.create(
+                GsonBuilder().registerTypeAdapterFactory(
+                    GsonTypeAdapterFactory()
+                ).create()
+            )
+        )
         .build()
         .create(clazz)
+
+    fun isPlaintext(buffer: Buffer): Boolean {
+        return try {
+            val prefix = Buffer()
+            val byteCount = if (buffer.size < 64) buffer.size else 64
+            buffer.copyTo(prefix, 0, byteCount)
+            for (i in 0..15) {
+                if (prefix.exhausted()) {
+                    break
+                }
+                val codePoint = prefix.readUtf8CodePoint()
+                if (Character.isISOControl(codePoint) && !Character.isWhitespace(codePoint)) {
+                    return false
+                }
+            }
+            true
+        } catch (e: EOFException) {
+            false
+        }
+    }
 
     class LoggingInterceptor : Interceptor {
 
@@ -115,30 +150,79 @@ object RetrofitManager {
         }
     }
 
-    interface OnCustomInterceptorListener {
-        fun customRequest(url: String, builder: Request.Builder)
+    /**
+     * 处理gson解析时类型不匹配或者空值问题。https://www.jianshu.com/p/d8dcc656a06e
+     */
+    class GsonTypeAdapterFactory : TypeAdapterFactory {
 
-        fun getResponse(response: Response)
-    }
+        override fun <T : Any?> create(gson: Gson?, type: TypeToken<T>?): TypeAdapter<T> {
+            val adapter = gson?.getDelegateAdapter(this, type)
 
-    fun isPlaintext(buffer: Buffer): Boolean {
-        return try {
-            val prefix = Buffer()
-            val byteCount = if (buffer.size < 64) buffer.size else 64
-            buffer.copyTo(prefix, 0, byteCount)
-            for (i in 0..15) {
-                if (prefix.exhausted()) {
-                    break
+            return object : TypeAdapter<T>() {
+                @Throws(IOException::class)
+                override fun write(out: JsonWriter?, value: T) {
+                    adapter?.write(out, value)
                 }
-                val codePoint = prefix.readUtf8CodePoint()
-                if (Character.isISOControl(codePoint) && !Character.isWhitespace(codePoint)) {
-                    return false
+
+                @Throws(IOException::class)
+                override fun read(jr: JsonReader): T? {
+                    return try {
+                        adapter?.read(jr)
+                    } catch (e: Throwable) {
+                        consumeAll(jr)
+                        null
+                    }
+                }
+
+            }
+        }
+
+        @Throws(IOException::class)
+        private fun consumeAll(jr: JsonReader) {
+            if (jr.hasNext()) {
+                when (jr.peek()) {
+                    JsonToken.STRING -> jr.nextString()
+                    JsonToken.BEGIN_ARRAY -> {
+                        jr.beginArray()
+                        consumeAll(jr)
+                        jr.endArray()
+                    }
+                    JsonToken.BEGIN_OBJECT -> {
+                        jr.beginObject()
+                        consumeAll(jr)
+                        jr.endObject()
+                    }
+                    JsonToken.END_ARRAY -> jr.endArray()
+                    JsonToken.END_OBJECT -> jr.endObject()
+                    JsonToken.NUMBER -> jr.nextString()
+                    JsonToken.BOOLEAN -> jr.nextBoolean()
+                    JsonToken.NAME -> {
+                        jr.nextName()
+                        consumeAll(jr)
+                    }
+                    JsonToken.NULL -> jr.nextNull()
+                    else -> {
+                    }
                 }
             }
-            true
-        } catch (e: EOFException) {
-            false
         }
+
     }
 
+    abstract class OnSimpleInterceptorListener : OnCustomInterceptorListener {
+
+        override fun customRequest(url: String, builder: Request.Builder) {
+        }
+
+        override fun getResponse(response: Response) {
+        }
+
+    }
+
+    interface OnCustomInterceptorListener {
+
+        fun customRequest(url: String, builder: Request.Builder)
+        fun getResponse(response: Response)
+
+    }
 }

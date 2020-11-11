@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.gjn.easyapp.easynetworker.RetrofitManager
 import kotlinx.coroutines.launch
 import okhttp3.Request
-import okhttp3.Response
 
 class A3ViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -16,12 +15,9 @@ class A3ViewModel(application: Application) : AndroidViewModel(application) {
     fun loadData() {
         RetrofitManager.baseUrl = GankUrl.API_BASE
         RetrofitManager.customInterceptorListener =
-            object : RetrofitManager.OnCustomInterceptorListener {
+            object : RetrofitManager.OnSimpleInterceptorListener() {
                 override fun customRequest(url: String, builder: Request.Builder) {
                     builder.header("111", "222")
-                }
-
-                override fun getResponse(response: Response) {
                 }
             }
         val api = RetrofitManager.create(GankUrl::class.java)

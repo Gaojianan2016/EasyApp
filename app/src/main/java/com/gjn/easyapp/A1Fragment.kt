@@ -228,7 +228,8 @@ class A1Fragment : BaseLazyFragment() {
                     iv_bitmap.setImageBitmap(bitmap.blurBitmap(mActivity, 24f))
                 }
                 btn10 -> {
-                    mActivity.openQQ()
+//                    mActivity.openQQ()
+                    mActivity.openApp("com.tencent.tmgp.sgame")
                 }
                 btn11 -> {
                     iv_icon.setImageDrawable(mActivity.getAppIcon())

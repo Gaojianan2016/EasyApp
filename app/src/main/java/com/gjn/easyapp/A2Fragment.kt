@@ -39,6 +39,11 @@ class A2Fragment : BaseVmFragment<FragmentA2Binding>() {
             if(size > 9) size = 0
             DataBindingHelper.drawImage(dataBinding.ivImg2, it.data[size].url)
         })
+
+        vm.banner.observe(this, Observer {
+
+            DataBindingHelper.drawImage(dataBinding.ivImg3, it[0].imagePath)
+        })
     }
 
     open inner class ClickListener{
@@ -51,6 +56,10 @@ class A2Fragment : BaseVmFragment<FragmentA2Binding>() {
         fun btn2(){
             showToast("点击btn2按钮")
             vm.getGirls()
+        }
+
+        fun btn3(){
+            vm.getBanner()
         }
     }
 }
