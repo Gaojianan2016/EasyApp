@@ -1,18 +1,16 @@
 package com.gjn.easyapp
 
 import androidx.lifecycle.Observer
-import com.gjn.easyapp.base.BaseVmFragment
+import com.bumptech.glide.Glide
+import com.gjn.easyapp.base.BaseDataBindingFragment
 import com.gjn.easyapp.databinding.FragmentA2Binding
-import com.gjn.easyapp.easyutils.click
 import com.gjn.easyapp.easyutils.createAndroidViewModel
 
-class A2Fragment : BaseVmFragment<FragmentA2Binding>() {
+class A2Fragment : BaseDataBindingFragment<FragmentA2Binding>() {
 
     private val vm by lazy {
         A2ViewModel::class.java.createAndroidViewModel(this, mActivity.application)
     }
-
-    private var size = -1
 
     override fun layoutId(): Int = R.layout.fragment_a2
 
@@ -27,22 +25,13 @@ class A2Fragment : BaseVmFragment<FragmentA2Binding>() {
 
     override fun lazyData() {
         println("A2Fragment lazyData")
-//        //ViewModel默认绑定方式
-//        vm.data.observe(this, Observer {
-//            dataBinding.tvCs.text = it
-//        })
-        //绑定DataBinding
-        dataBinding.vm = vm
 
-        vm.data2.observe(this,  Observer {
-            size++
-            if(size > 9) size = 0
-            DataBindingHelper.drawImage(dataBinding.ivImg2, it.data[size].url)
+        vm.girls.observe(this, Observer {
+            DataBindingHelper.drawImage(dataBinding.ivImg1, it[0].url)
         })
 
-        vm.banner.observe(this, Observer {
-
-            DataBindingHelper.drawImage(dataBinding.ivImg3, it[0].imagePath)
+        vm.banners.observe(this, Observer {
+            DataBindingHelper.drawImage(dataBinding.ivImg2, it[0].imagePath)
         })
     }
 
@@ -50,16 +39,17 @@ class A2Fragment : BaseVmFragment<FragmentA2Binding>() {
 
         fun btn1(){
             showToast("点击btn1按钮")
-            vm.updateData()
+            vm.updateGirls()
         }
 
         fun btn2(){
             showToast("点击btn2按钮")
-            vm.getGirls()
+            vm.updateBanner()
         }
 
         fun btn3(){
-            vm.getBanner()
+            showToast("点击btn3按钮")
+            vm.mergeData()
         }
     }
 }

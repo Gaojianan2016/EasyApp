@@ -4,41 +4,39 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gjn.easyapp.model.WanBannerBean
-import com.gjn.easyapp.model.WanResultData
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class A2ViewModel : ViewModel(){
 
-    var data = MutableLiveData<String>()
+    val girls = MutableLiveData<List<GirlBean>>()
 
-    var data2 = MutableLiveData<GirlBean>()
-
-    var banner = MutableLiveData<List<WanBannerBean>>()
+    val banners = MutableLiveData<List<WanBannerBean>>()
 
     private val a2Repository by lazy { A2Repository() }
 
-    fun getGirls(){
+    fun updateGirls(){
         viewModelScope.launch {
-            if (data2.value == null) {
-                data2.postValue(a2Repository.getGirls())
-            }else{
-                data2.postValue(data2.value)
-            }
+            girls.value = a2Repository.getGirls()
         }
     }
 
-    fun getBanner(){
+    fun updateBanner(){
         viewModelScope.launch {
-
-            try {
-                banner.value = a2Repository.getBanner()
-            }catch (e: Exception){
-
-            }
+            banners.value = a2Repository.getBanner()
         }
     }
 
-    fun updateData(){
-        data.postValue("1-100随机数 ${(1..100).random()}")
+    fun mergeData(){
+        viewModelScope.launch {
+            val data1 =async {
+                a2Repository.getGirls()
+            }.await()
+            val data2 =async {
+                a2Repository.getBanner()
+            }.await()
+            val result = data1 + data2
+            println("大小 ${result.size}")
+        }
     }
 }

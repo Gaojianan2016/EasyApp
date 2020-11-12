@@ -8,7 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.gjn.easyapp.easybase.BaseLazyFragment
 
-abstract class BaseVmFragment<VDB: ViewDataBinding>: BaseLazyFragment(){
+abstract class BaseDataBindingFragment<VDB: ViewDataBinding>: BaseLazyFragment(){
 
     protected lateinit var dataBinding: VDB
 

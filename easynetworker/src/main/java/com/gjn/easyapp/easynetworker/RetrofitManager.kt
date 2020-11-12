@@ -30,8 +30,8 @@ object RetrofitManager {
         .addInterceptor(LoggingInterceptor())
         .build()
 
-    fun <T> create(clazz: Class<T>): T = Retrofit.Builder()
-        .baseUrl(baseUrl)
+    fun <T> create(clazz: Class<T>, url: String = baseUrl): T = Retrofit.Builder()
+        .baseUrl(url)
         .client(okHttpClient)
         //添加过滤gson解析失败异常
         .addConverterFactory(

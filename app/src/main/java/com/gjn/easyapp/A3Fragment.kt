@@ -36,14 +36,14 @@ class A3Fragment : BaseLazyFragment() {
             vm.loadData()
         }
 
-        adapter.onItemClickListener = object : BaseKtRecyclerAdapter.OnItemClickListener<Data> {
-            override fun onClick(view: View, item: Data, position: Int) {
+        adapter.onItemClickListener = object : BaseKtRecyclerAdapter.OnItemClickListener<GirlBean> {
+            override fun onClick(view: View, item: GirlBean, position: Int) {
                 showToast("点击 ${item.url}")
             }
         }
 
         vm.girlData.observe(this, Observer {
-            adapter.data = it.data.toMutableList()
+            adapter.data = it.toMutableList()
         })
 
     }
@@ -58,9 +58,9 @@ class A3Fragment : BaseLazyFragment() {
 
 
     class GirlAdapter(context: Context) :
-        BaseKtRecyclerAdapter<Data>(context, R.layout.adapter_girl) {
+        BaseKtRecyclerAdapter<GirlBean>(context, R.layout.adapter_girl) {
 
-        override fun convertData(holder: BaseVH, item: Data, position: Int) {
+        override fun convertData(holder: BaseVH, item: GirlBean, position: Int) {
             Glide.with(context).load(item.url).into(holder.itemView.iv_ag)
         }
     }

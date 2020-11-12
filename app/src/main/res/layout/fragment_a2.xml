@@ -4,9 +4,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <data>
         <variable
-            name="vm"
-            type="com.gjn.easyapp.A2ViewModel" />
-        <variable
             name="click"
             type="com.gjn.easyapp.A2Fragment.ClickListener" />
     </data>
@@ -30,46 +27,32 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/tv_cs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{vm.data}" />
-
                 <Button
-                    android:id="@+id/btn1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="@{()->click.btn1()}"
-                    android:text="测试mvvm按钮" />
+                    android:text="Button" />
 
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="@{()->click.btn2()}"
-                    android:text="访问网络请求" />
-
-                <ImageView
-                    android:id="@+id/iv_img"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    drawImage="@{vm.data2.data.get(0).url}"
-                    tools:srcCompat="@tools:sample/avatars" />
-
-                <ImageView
-                    android:id="@+id/iv_img2"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    tools:srcCompat="@tools:sample/avatars" />
+                    android:text="Button" />
 
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="@{()->click.btn3()}"
-                    android:text="获取WanAndroid的Banner数据" />
+                    android:text="Button" />
 
                 <ImageView
-                    android:id="@+id/iv_img3"
+                    android:id="@+id/iv_img1"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+                <ImageView
+                    android:id="@+id/iv_img2"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     tools:srcCompat="@tools:sample/avatars" />
