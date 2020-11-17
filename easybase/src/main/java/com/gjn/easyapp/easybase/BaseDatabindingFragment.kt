@@ -1,4 +1,4 @@
-package com.gjn.easyapp.base
+package com.gjn.easyapp.easybase
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,9 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import com.gjn.easyapp.easybase.BaseLazyFragment
 
-abstract class BaseDataBindingFragment<VDB: ViewDataBinding>: BaseLazyFragment(){
+abstract class BaseDatabindingFragment<VDB : ViewDataBinding> : BaseLazyFragment() {
 
     protected lateinit var dataBinding: VDB
 
@@ -21,5 +20,4 @@ abstract class BaseDataBindingFragment<VDB: ViewDataBinding>: BaseLazyFragment()
         dataBinding.lifecycleOwner = this
         return dataBinding.root
     }
-
 }

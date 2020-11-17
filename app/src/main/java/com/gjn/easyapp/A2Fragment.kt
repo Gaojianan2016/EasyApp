@@ -1,12 +1,11 @@
 package com.gjn.easyapp
 
 import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
-import com.gjn.easyapp.base.BaseDataBindingFragment
 import com.gjn.easyapp.databinding.FragmentA2Binding
+import com.gjn.easyapp.easybase.BaseDatabindingFragment
 import com.gjn.easyapp.easyutils.createAndroidViewModel
 
-class A2Fragment : BaseDataBindingFragment<FragmentA2Binding>() {
+class A2Fragment : BaseDatabindingFragment<FragmentA2Binding>() {
 
     private val vm by lazy {
         A2ViewModel::class.java.createAndroidViewModel(this, mActivity.application)

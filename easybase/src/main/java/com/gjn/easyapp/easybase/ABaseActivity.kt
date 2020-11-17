@@ -21,9 +21,7 @@ abstract class ABaseActivity : AppCompatActivity(), UIEvent {
         AppManager.instance.addActivity(this)
         preCreate(savedInstanceState)
         super.onCreate(savedInstanceState)
-        if (layoutId() != View.NO_ID) {
-            setContentView(layoutId())
-        }
+        bindContentView()
         mActivity = this
         mContext = this
         mBundle = intent.extras ?: Bundle()
@@ -35,6 +33,12 @@ abstract class ABaseActivity : AppCompatActivity(), UIEvent {
     }
 
     protected open fun preCreate(savedInstanceState: Bundle?) {
+    }
+
+    protected open fun bindContentView() {
+        if (layoutId() != View.NO_ID) {
+            setContentView(layoutId())
+        }
     }
 
     protected open fun onBundle() {
