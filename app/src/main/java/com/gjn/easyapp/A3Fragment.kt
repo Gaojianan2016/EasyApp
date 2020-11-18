@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.gjn.easyapp.base.BaseKtRecyclerAdapter
 import com.gjn.easyapp.base.BaseVH
 import com.gjn.easyapp.easybase.BaseLazyFragment
+import com.gjn.easyapp.easyutils.HookActivityUtils
 import com.gjn.easyapp.easyutils.click
 import com.gjn.easyapp.easyutils.createAndroidViewModel
 import kotlinx.android.synthetic.main.adapter_girl.view.*
@@ -36,6 +37,10 @@ class A3Fragment : BaseLazyFragment() {
             vm.loadData()
         }
 
+        btn_test.click {
+            toNextActivity(TestActivity::class.java)
+        }
+
         adapter.onItemClickListener = object : BaseKtRecyclerAdapter.OnItemClickListener<GirlBean> {
             override fun onClick(view: View, item: GirlBean, position: Int) {
                 showToast("点击 ${item.url}")
@@ -50,6 +55,8 @@ class A3Fragment : BaseLazyFragment() {
 
     override fun lazyData() {
         println("A3Fragment lazyData")
+
+
     }
 
     override fun againUpdateData() {
