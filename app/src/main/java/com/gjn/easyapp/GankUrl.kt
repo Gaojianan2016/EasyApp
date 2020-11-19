@@ -10,6 +10,7 @@ interface GankUrl {
     @GET("category/Girl/type/Girl/page/{page}/count/{count}")
     suspend fun girls(@Path("page") page: Int, @Path("count") count: Int): GankResultData<List<GirlBean>>
 
+
     companion object {
         const val BASE_URL = "https://gank.io/api/v2/data/"
     }

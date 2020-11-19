@@ -1,4 +1,4 @@
-package com.gjn.easyapp
+package com.gjn.easyapp.network
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

@@ -33,7 +33,9 @@ class A3Fragment : BaseLazyFragment() {
         }
 
         btn_load.click {
-            vm.loadData()
+//            vm.loadData()
+
+            vm.dslNet()
         }
 
         btn_next.click {

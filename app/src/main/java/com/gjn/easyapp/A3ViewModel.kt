@@ -1,10 +1,12 @@
 package com.gjn.easyapp
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
+import com.gjn.easyapp.model.GankResultData
+import com.gjn.easyapp.network.AppNetWorker
+import com.gjn.easyapp.network.RequestStatus
+import com.gjn.easyapp.network.ResultData
+import com.gjn.easyapp.network.requestLiveData
 
 class A3ViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -29,5 +31,21 @@ class A3ViewModel(application: Application) : AndroidViewModel(application) {
         }else{
             page.value = page.value!! + 1
         }
+    }
+
+
+    //dsl 方法调用网络
+    val dslData = MutableLiveData<ResultData<GankResultData<List<GirlBean>>>>()
+
+    fun  dslNet(){
+        val liveData =
+            viewModelScope.requestLiveData<GankResultData<List<GirlBean>>> {
+                api { AppNetWorker.getInstant().gankApi.girls(1, 10) }
+            }
+
+        if(liveData.value?.requestStatus == RequestStatus.COMPLETE){
+            dslData.value = liveData.value
+        }
+
     }
 }
