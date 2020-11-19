@@ -101,6 +101,7 @@ abstract class BaseKtRecyclerAdapter<T>(
 
     override fun clear() {
         data.clear()
+        notifyDataSetChanged()
     }
 
     interface OnItemClickListener<T> {

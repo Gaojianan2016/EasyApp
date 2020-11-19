@@ -25,7 +25,6 @@
         </activity>
 
         <activity android:name=".GalleryActivity" />
-        <activity android:name=".ProxyActivity" />
     </application>
 
 </manifest>

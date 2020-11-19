@@ -8,7 +8,6 @@ import com.bumptech.glide.Glide
 import com.gjn.easyapp.base.BaseKtRecyclerAdapter
 import com.gjn.easyapp.base.BaseVH
 import com.gjn.easyapp.easybase.BaseLazyFragment
-import com.gjn.easyapp.easyutils.HookActivityUtils
 import com.gjn.easyapp.easyutils.click
 import com.gjn.easyapp.easyutils.createAndroidViewModel
 import kotlinx.android.synthetic.main.adapter_girl.view.*
@@ -37,8 +36,8 @@ class A3Fragment : BaseLazyFragment() {
             vm.loadData()
         }
 
-        btn_test.click {
-            toNextActivity(TestActivity::class.java)
+        btn_next.click {
+            vm.nextData()
         }
 
         adapter.onItemClickListener = object : BaseKtRecyclerAdapter.OnItemClickListener<GirlBean> {
@@ -47,16 +46,19 @@ class A3Fragment : BaseLazyFragment() {
             }
         }
 
-        vm.girlData.observe(this, Observer {
-            adapter.data = it.toMutableList()
+        vm.page.observe(this, Observer {
+            if (it == 1) {
+                adapter.clear()
+            }
         })
 
+        vm.data.observe(this, Observer {
+            adapter.add(it.toMutableList())
+        })
     }
 
     override fun lazyData() {
         println("A3Fragment lazyData")
-
-
     }
 
     override fun againUpdateData() {
