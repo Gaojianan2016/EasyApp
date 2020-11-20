@@ -33,13 +33,11 @@ class A3Fragment : BaseLazyFragment() {
         }
 
         btn_load.click {
-//            vm.loadData()
-
-            vm.dslNet()
+            vm.onRefresh()
         }
 
         btn_next.click {
-            vm.nextData()
+            vm.onLoadMore()
         }
 
         adapter.onItemClickListener = object : BaseKtRecyclerAdapter.OnItemClickListener<GirlBean> {
@@ -48,14 +46,18 @@ class A3Fragment : BaseLazyFragment() {
             }
         }
 
-        vm.page.observe(this, Observer {
-            if (it == 1) {
-                adapter.clear()
-            }
-        })
+        vm.data.observe(this, Observer { result ->
+            val data = result.getOrNull()
 
-        vm.data.observe(this, Observer {
-            adapter.add(it.toMutableList())
+            if (data == null) {
+                showToast("不存在数据")
+                return@Observer
+            }
+            if (data.page == 1) {
+                adapter.data = data.data.toMutableList()
+            }else{
+                adapter.add(data.data.toMutableList())
+            }
         })
     }
 
