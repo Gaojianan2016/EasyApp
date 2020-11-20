@@ -26,10 +26,7 @@ class UnPeekLiveData<T> : MutableLiveData<T>() {
             val observers = mObservers[this]
             val observersClass: Class<*> = observers.javaClass
             //获取SafeIterableMap的get(Object obj)方法
-            val methodGet = observersClass.getDeclaredMethod(
-                "get",
-                Any::class.java
-            )
+            val methodGet = observersClass.getDeclaredMethod("get", Any::class.java)
             methodGet.isAccessible = true
             //获取到observer在集合中对应的ObserverWrapper对象
             val objectWrapperEntry = methodGet.invoke(observers, observer)
@@ -43,8 +40,7 @@ class UnPeekLiveData<T> : MutableLiveData<T>() {
             //获取ObserverWrapper的Class对象  LifecycleBoundObserver extends ObserverWrapper
             val wrapperClass: Class<*>? = objectWrapper.javaClass.superclass
             //获取ObserverWrapper的field mLastVersion
-            val mLastVersion =
-                wrapperClass!!.getDeclaredField("mLastVersion")
+            val mLastVersion = wrapperClass!!.getDeclaredField("mLastVersion")
             mLastVersion.isAccessible = true
             //获取liveData的field mVersion
             val mVersion = liveDataClass.getDeclaredField("mVersion")
@@ -56,7 +52,7 @@ class UnPeekLiveData<T> : MutableLiveData<T>() {
             methodGet.isAccessible = false
             mLastVersion.isAccessible = false
             mVersion.isAccessible = false
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
