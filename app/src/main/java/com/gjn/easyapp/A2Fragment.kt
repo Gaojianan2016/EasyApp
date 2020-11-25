@@ -4,11 +4,12 @@ import androidx.lifecycle.Observer
 import com.gjn.easyapp.databinding.FragmentA2Binding
 import com.gjn.easyapp.easybase.BaseDatabindingFragment
 import com.gjn.easyapp.easyutils.createAndroidViewModel
+import com.gjn.easyapp.easyutils.createViewModel
 
 class A2Fragment : BaseDatabindingFragment<FragmentA2Binding>() {
 
     private val vm by lazy {
-        A2ViewModel::class.java.createAndroidViewModel(this, mActivity.application)
+        A2ViewModel::class.java.createViewModel(this)
     }
 
     override fun layoutId(): Int = R.layout.fragment_a2

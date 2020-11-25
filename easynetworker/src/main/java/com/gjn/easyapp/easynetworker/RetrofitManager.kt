@@ -88,7 +88,7 @@ object RetrofitManager {
 
         private fun printRequest(request: Request): String {
             val log = StringBuilder()
-            log.append("http\n----------Request HEAD----------\n")
+            log.append("http request\n----------Request HEAD----------\n")
                 .append("--> ${request.method} ${request.url}\n")
             request.headers.forEach { (name, value) ->
                 log.append("-> $name = $value\n")
@@ -103,9 +103,9 @@ object RetrofitManager {
                 } else {
                     val buffer = Buffer()
                     it.writeTo(buffer)
-                    val charset = it.contentType()?.charset(StandardCharsets.UTF_8)
-                        ?: StandardCharsets.UTF_8
                     if (isPlaintext(buffer)) {
+                        val charset = it.contentType()?.charset(StandardCharsets.UTF_8)
+                            ?: StandardCharsets.UTF_8
                         log.append(buffer.readString(charset))
                     }
                 }
@@ -133,13 +133,15 @@ object RetrofitManager {
                 val source = it.source()
                 source.request(Long.MAX_VALUE)
                 val buffer = source.buffer
-                val charset = it.contentType()?.charset(StandardCharsets.UTF_8)
-                    ?: StandardCharsets.UTF_8
-                val result = buffer.clone().readString(charset)
-                if (result.startsWith("{\"") || result.startsWith("[{")) {
-                    log.append(JsonUtil.formatJson(result))
-                } else {
-                    log.append(result)
+                if (isPlaintext(buffer)) {
+                    val charset = it.contentType()?.charset(StandardCharsets.UTF_8)
+                        ?: StandardCharsets.UTF_8
+                    val result = buffer.clone().readString(charset)
+                    if (result.startsWith("{\"") || result.startsWith("[{")) {
+                        log.append(JsonUtil.formatJson(result))
+                    } else {
+                        log.append(result)
+                    }
                 }
             }
             return log.toString()
@@ -210,19 +212,16 @@ object RetrofitManager {
     }
 
     abstract class OnSimpleInterceptorListener : OnCustomInterceptorListener {
-
         override fun customRequest(url: String, builder: Request.Builder) {
         }
 
         override fun getResponse(response: Response) {
         }
-
     }
 
     interface OnCustomInterceptorListener {
-
         fun customRequest(url: String, builder: Request.Builder)
-        fun getResponse(response: Response)
 
+        fun getResponse(response: Response)
     }
 }

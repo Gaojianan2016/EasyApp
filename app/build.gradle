@@ -15,9 +15,15 @@ android {
         versionName "1.0"
         multiDexEnabled true
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    //kotlin 默认使用1.6编译 这里修改为使用1.8编译
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 
     buildFeatures {

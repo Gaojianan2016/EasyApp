@@ -9,15 +9,13 @@ import com.gjn.easyapp.base.BaseKtRecyclerAdapter
 import com.gjn.easyapp.base.BaseVH
 import com.gjn.easyapp.easybase.BaseLazyFragment
 import com.gjn.easyapp.easyutils.click
-import com.gjn.easyapp.easyutils.createAndroidViewModel
+import com.gjn.easyapp.easyutils.createViewModel
 import kotlinx.android.synthetic.main.adapter_girl.view.*
 import kotlinx.android.synthetic.main.fragment_a3.*
 
 class A3Fragment : BaseLazyFragment() {
 
-    private val vm by lazy {
-        A3ViewModel::class.java.createAndroidViewModel(this, mActivity.application)
-    }
+    private val vm by lazy { A3ViewModel::class.java.createViewModel(this) }
 
     private lateinit var adapter: GirlAdapter
 
@@ -33,11 +31,13 @@ class A3Fragment : BaseLazyFragment() {
         }
 
         btn_load.click {
-            vm.onRefresh()
+//            vm.getGirl()
+//            vm.getGirl2()
+            vm.getGirlsFlow()
         }
 
         btn_next.click {
-            vm.onLoadMore()
+
         }
 
         adapter.onItemClickListener = object : BaseKtRecyclerAdapter.OnItemClickListener<GirlBean> {
@@ -46,13 +46,27 @@ class A3Fragment : BaseLazyFragment() {
             }
         }
 
-        vm.data.observe(this, Observer { result ->
-            val data = result.getOrNull()
+    }
 
-            if (data == null) {
-                showToast("不存在数据")
-                return@Observer
-            }
+    override fun lazyData() {
+        println("A3Fragment lazyData")
+//        vm.gankData.observe(this, Observer { data->
+//            if (data.page == 1) {
+//                adapter.data = data.data.toMutableList()
+//            }else{
+//                adapter.add(data.data.toMutableList())
+//            }
+//        })
+
+//        vm.gankData2.observe(this, Observer { data ->
+//            if (data.page == 1) {
+//                adapter.data = data.data.toMutableList()
+//            }else{
+//                adapter.add(data.data.toMutableList())
+//            }
+//        })
+
+        vm.gankData3.observe(this, Observer { data ->
             if (data.page == 1) {
                 adapter.data = data.data.toMutableList()
             }else{
@@ -61,14 +75,9 @@ class A3Fragment : BaseLazyFragment() {
         })
     }
 
-    override fun lazyData() {
-        println("A3Fragment lazyData")
-    }
-
     override fun againUpdateData() {
         println("A3Fragment againUpdateData")
     }
-
 
     class GirlAdapter(context: Context) :
         BaseKtRecyclerAdapter<GirlBean>(context, R.layout.adapter_girl) {

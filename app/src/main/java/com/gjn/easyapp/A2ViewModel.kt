@@ -9,11 +9,11 @@ import kotlinx.coroutines.launch
 
 class A2ViewModel : ViewModel(){
 
+    private val a2Repository by lazy { A2Repository() }
+
     val girls = MutableLiveData<List<GirlBean>>()
 
     val banners = MutableLiveData<List<WanBannerBean>>()
-
-    private val a2Repository by lazy { A2Repository() }
 
     fun updateGirls(){
         viewModelScope.launch {

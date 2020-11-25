@@ -1,36 +1,67 @@
 package com.gjn.easyapp
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
+import com.gjn.easyapp.model.GankResultData
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 
-class A3ViewModel(application: Application) : AndroidViewModel(application) {
+class A3ViewModel : ViewModel() {
 
     private val a3Repository by lazy { A3Repository() }
 
-    private val page = MutableLiveData<Int>()
+//    //基础的ViewModel监听绑定
+//    //私有的 可变
+//    private val _gankData = MutableLiveData<GankResultData<List<GirlBean>>>()
+//
+//    //公有的 只可读
+//    val gankData: LiveData<GankResultData<List<GirlBean>>> = _gankData
+//
+//    fun getGirl(){
+//        viewModelScope.launch {
+//            _gankData.value = a3Repository.getGirls()
+//        }
+//    }
 
-    val data = Transformations.switchMap(page) {
+//    //LiveDataScope 简化
+//    private val girlPage = MutableLiveData<Int>()
+//
+//    val gankData2 = girlPage.switchMap {
+//        liveData { emit(a3Repository.getGirls(it)) }
+//    }
+//
+//    fun getGirl2(){
+//        girlPage.value = 1
+//    }
+
+    //加入flow
+    private val girlPage = MutableLiveData<Int>()
+
+    @ExperimentalCoroutinesApi
+    val gankData3 = girlPage.switchMap {
         liveData {
-            val result = kotlin.runCatching {
-//                a3Repository.getGirls(it)
-                a3Repository.getGirls2(it)
-            }
-            emit(result)
+            a3Repository.getGirlsFlow(it)
+                .onStart {
+                    //开始请求
+                    println("开始请求")
+                }
+                .catch {
+                    //报错
+                    println("请求出错")
+                }
+                .onCompletion {
+                    //完成
+                    println("完成请求")
+                }
+                .collectLatest {
+                    emit(it)
+                }
         }
     }
 
-    fun onRefresh() {
-        page.value = 1
-    }
-
-    fun onLoadMore() {
-        if (page.value == null) {
-            page.value = 1
-        } else {
-            page.value = page.value!! + 1
-        }
+    fun getGirlsFlow(){
+        girlPage.value = 1
     }
 }
