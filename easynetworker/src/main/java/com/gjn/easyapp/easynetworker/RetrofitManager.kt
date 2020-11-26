@@ -22,6 +22,8 @@ object RetrofitManager {
 
     var printBody = true
 
+    var isDebug = true
+
     var baseUrl = ""
 
     var customInterceptorListener: OnCustomInterceptorListener? = null
@@ -64,6 +66,12 @@ object RetrofitManager {
         }
     }
 
+    private fun log(msg: String) {
+        if (isDebug) {
+            msg.logD(LoggingInterceptor.TAG)
+        }
+    }
+
     class LoggingInterceptor : Interceptor {
 
         @Throws(IOException::class)
@@ -78,9 +86,9 @@ object RetrofitManager {
             customInterceptorListener?.getResponse(response)
             val t2 = System.nanoTime()
 
-            "${printRequest(request)}${printResponse(response, t1, t2)}".logD(TAG)
+            log("${printRequest(request)}${printResponse(response, t1, t2)}")
             if (printBody) {
-                "${request.url}\n${printResponseBody(response)}".logD(TAG)
+                log("${request.url}\n${printResponseBody(response)}")
             }
 
             return response
