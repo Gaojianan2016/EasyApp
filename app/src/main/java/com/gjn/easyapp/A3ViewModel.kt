@@ -1,7 +1,7 @@
 package com.gjn.easyapp
 
 import androidx.lifecycle.*
-import com.gjn.easyapp.model.GankResultData
+import androidx.paging.cachedIn
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
@@ -39,7 +39,7 @@ class A3ViewModel : ViewModel() {
     //加入flow
     private val girlPage = MutableLiveData<Int>()
 
-    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalCoroutinesApi::class)
     val gankData3 = girlPage.switchMap {
         liveData {
             a3Repository.getGirlsFlow(it)
@@ -61,7 +61,12 @@ class A3ViewModel : ViewModel() {
         }
     }
 
-    fun getGirlsFlow(){
+    //paging 3
+    fun getGirlsPagingData() =
+        a3Repository.getGirlsPagingData().cachedIn(viewModelScope).asLiveData()
+
+    fun getGirlsFlow() {
         girlPage.value = 1
     }
+
 }
