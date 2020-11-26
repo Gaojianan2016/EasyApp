@@ -4,12 +4,15 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.gjn.easyapp.easybase.ABaseActivity
+import com.gjn.easyapp.databinding.ActivityMainBinding
+import com.gjn.easyapp.easybase.BaseDatabindingActivity
 import com.gjn.easyapp.easybase.BaseLog
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : ABaseActivity() {
+class MainActivity : BaseDatabindingActivity<ActivityMainBinding>() {
+
+//    val vm by bindViewModel(A2ViewModel::class.java)
 
     val tabs = arrayOf(A1Fragment(), A2Fragment(), A3Fragment())
 //    val tabTitles = arrayOf("A1Fragment", "A2Fragment", "A3Fragment")
@@ -23,7 +26,7 @@ class MainActivity : ABaseActivity() {
 
     override fun initView() {
 
-        vp_am.run {
+        dataBinding.vpAm.run {
             //禁止预加载
             offscreenPageLimit = ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
 
@@ -77,6 +80,6 @@ class MainActivity : ABaseActivity() {
     }
 
     override fun initData() {
-
+//        vm.updateBanner()
     }
 }

@@ -3,7 +3,7 @@ package com.gjn.easyapp.easybase
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 
-abstract class BaseDatabindingActivity<VDB: ViewDataBinding> : ABaseActivity(){
+abstract class BaseDatabindingActivity<VDB : ViewDataBinding> : ABaseActivity() {
 
     protected lateinit var dataBinding: VDB
 
@@ -11,5 +11,4 @@ abstract class BaseDatabindingActivity<VDB: ViewDataBinding> : ABaseActivity(){
         dataBinding = DataBindingUtil.setContentView(mActivity, layoutId())
         dataBinding.lifecycleOwner = this
     }
-
 }

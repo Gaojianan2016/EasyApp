@@ -7,10 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModel
 import com.gjn.easyapp.easydialoger.EasyDialogManager
 import com.gjn.easyapp.easydialoger.base.BaseDialogFragment
 import com.gjn.easyapp.easytoaster.ToastUtil
 import com.gjn.easyapp.easyutils.ActivityUtils
+import com.gjn.easyapp.easyutils.createAndroidViewModel
+import com.gjn.easyapp.easyutils.createViewModel
 
 abstract class ABaseFragment : Fragment(), UIEvent {
 
@@ -94,4 +97,12 @@ abstract class ABaseFragment : Fragment(), UIEvent {
         dismissAllEasyDialog()
         super.onDestroyView()
     }
+
+    protected inline fun <reified T : ViewModel> bindViewModel(
+        clz: Class<T>
+    ): Lazy<T> = lazy { clz.createViewModel(this) }
+
+    protected inline fun <reified T : ViewModel> bindAndroidViewModel(
+        clz: Class<T>
+    ): Lazy<T> = lazy { clz.createAndroidViewModel(this, mActivity.application) }
 }

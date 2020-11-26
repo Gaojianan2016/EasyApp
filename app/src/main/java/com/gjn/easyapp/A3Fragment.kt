@@ -15,7 +15,6 @@ import com.gjn.easyapp.base.BaseVH
 import com.gjn.easyapp.easybase.BaseLazyFragment
 import com.gjn.easyapp.easyutils.ResourcesUtils
 import com.gjn.easyapp.easyutils.click
-import com.gjn.easyapp.easyutils.createViewModel
 import com.gjn.easyapp.network.AppNetWorker
 import kotlinx.android.synthetic.main.adapter_girl.view.*
 import kotlinx.android.synthetic.main.fragment_a3.*
@@ -23,7 +22,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 class A3Fragment : BaseLazyFragment() {
 
-    private val vm by lazy { A3ViewModel::class.java.createViewModel(this) }
+    private val vm by bindViewModel(A3ViewModel::class.java)
 
     private lateinit var adapter: GirlAdapter
     private lateinit var pagingDataAdapter: GirlPagingDataAdapter

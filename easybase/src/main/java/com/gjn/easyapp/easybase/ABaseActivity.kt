@@ -4,11 +4,14 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
 import com.gjn.easyapp.easydialoger.EasyDialogManager
 import com.gjn.easyapp.easydialoger.base.BaseDialogFragment
 import com.gjn.easyapp.easytoaster.ToastUtil
 import com.gjn.easyapp.easyutils.ActivityUtils
 import com.gjn.easyapp.easyutils.AppManager
+import com.gjn.easyapp.easyutils.createAndroidViewModel
+import com.gjn.easyapp.easyutils.createViewModel
 
 abstract class ABaseActivity : AppCompatActivity(), UIEvent {
 
@@ -21,11 +24,11 @@ abstract class ABaseActivity : AppCompatActivity(), UIEvent {
         AppManager.instance.addActivity(this)
         preCreate(savedInstanceState)
         super.onCreate(savedInstanceState)
-        bindContentView()
         mActivity = this
         mContext = this
         mBundle = intent.extras ?: Bundle()
         mDialogManager = EasyDialogManager(this)
+        bindContentView()
         onBundle()
         init(savedInstanceState)
         initView()
@@ -82,4 +85,12 @@ abstract class ABaseActivity : AppCompatActivity(), UIEvent {
         dismissAllEasyDialog()
         super.onDestroy()
     }
+
+    protected inline fun <reified T : ViewModel> bindViewModel(
+        clz: Class<T>
+    ): Lazy<T> = lazy { clz.createViewModel(this) }
+
+    protected inline fun <reified T : ViewModel> bindAndroidViewModel(
+        clz: Class<T>
+    ): Lazy<T> = lazy { clz.createAndroidViewModel(this, mActivity.application) }
 }
