@@ -29,7 +29,7 @@ fun Bitmap.compress(quality: Int = 90): Bitmap? {
     return toByte(quality = quality)?.toBitmap()
 }
 
-inline fun ByteArray.toBitmap(): Bitmap? = BitmapFactory.decodeByteArray(this, 0, size)
+fun ByteArray.toBitmap(): Bitmap? = BitmapFactory.decodeByteArray(this, 0, size)
 
 @JvmOverloads
 fun File.toByte(quality: Int = 90): ByteArray? {
@@ -116,12 +116,12 @@ fun Bitmap.drawBitmap(
     return bitmap
 }
 
+/**
+ * @param context    上下文
+ * @param blurRadius 模糊半径 1-25f
+ * @param scaleSize  缩放比例 0.1-1f
+ * */
 @JvmOverloads
-        /**
-         * @param context    上下文
-         * @param blurRadius 模糊半径 1-25f
-         * @param scaleSize  缩放比例 0.1-1f
-         * */
 fun Bitmap.blurBitmap(
     context: Context,
     blurRadius: Float = 13f,

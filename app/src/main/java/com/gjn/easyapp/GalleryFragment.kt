@@ -32,6 +32,7 @@ class GalleryFragment : ABaseFragment() {
     override fun initData() {
         //获取数据
         mMediaStorageManager.run {
+//            isFindVideo = false
             scanCallback = object : MediaStorageManager.ScanCallback {
                 override fun preStart() {
                     pb_fg.visible()
@@ -43,6 +44,14 @@ class GalleryFragment : ABaseFragment() {
                 ) {
                     pb_fg.gone()
                     imgAdapter.add(infoList)
+                }
+            }
+            filterListener = object : MediaStorageManager.FilterListener() {
+                override fun onFilterPhoto(fileName: String): Boolean {
+                    if (fileName.contains(".gif")) {
+                        return true
+                    }
+                    return false
                 }
             }
             startScan()

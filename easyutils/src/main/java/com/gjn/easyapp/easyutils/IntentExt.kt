@@ -9,18 +9,14 @@ const val QQ_PACKAGE_NAME = "com.tencent.mobileqq"
 const val WECHAT_PACKAGE_NAME = "com.tencent.mm"
 
 fun Context.openWeChat() {
-    if (isInstalled(WECHAT_PACKAGE_NAME)) startActivity(
-        Intent(packageManager.getLaunchIntentForPackage(WECHAT_PACKAGE_NAME))
-    )
+    openApp(WECHAT_PACKAGE_NAME)
 }
 
 fun Context.openQQ() {
-    if (isInstalled(QQ_PACKAGE_NAME)) startActivity(
-        Intent(packageManager.getLaunchIntentForPackage(QQ_PACKAGE_NAME))
-    )
+    openApp(QQ_PACKAGE_NAME)
 }
 
-fun Context.openApp(packageName: String){
+fun Context.openApp(packageName: String) {
     if (isInstalled(packageName)) startActivity(
         Intent(packageManager.getLaunchIntentForPackage(packageName))
     )

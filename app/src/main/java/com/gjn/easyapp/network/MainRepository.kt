@@ -19,7 +19,7 @@ object MainRepository {
 
     suspend fun getGirlsFlow(page: Int = 1, count: Int = 10) = flow {
         val result = AppNetWorker.getInstant().gankApi.girls(page, count)
-//        throw RuntimeException("手动创建的错误")
+        throw RuntimeException("手动创建的错误")
         //可以做 缓存数据 等操作
         //...
         emit(result)

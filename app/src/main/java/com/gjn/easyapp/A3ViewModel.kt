@@ -47,9 +47,9 @@ class A3ViewModel : ViewModel() {
                     //开始请求
                     println("开始请求")
                 }
-                .catch {
+                .catch { t: Throwable ->
                     //报错
-                    println("请求出错")
+                    println("请求出错 ${t.message}")
                 }
                 .onCompletion {
                     //完成

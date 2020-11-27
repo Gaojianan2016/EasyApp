@@ -51,9 +51,10 @@ class A3Fragment : BaseLazyFragment() {
 
 
         btn_load.click {
+            showToast("load")
 //            vm.getGirl()
 //            vm.getGirl2()
-//            vm.getGirlsFlow()
+            vm.getGirlsFlow()
         }
 
         btn_next.click {
@@ -87,11 +88,11 @@ class A3Fragment : BaseLazyFragment() {
 //        })
 
         vm.gankData3.observe(this, Observer { data ->
-            if (data.page == 1) {
-                adapter.data = data.data.toMutableList()
-            }else{
-                adapter.add(data.data.toMutableList())
-            }
+//            if (data.page == 1) {
+//                adapter.data = data.data.toMutableList()
+//            }else{
+//                adapter.add(data.data.toMutableList())
+//            }
         })
 
         vm.getGirlsPagingData().observe(this, Observer { data ->

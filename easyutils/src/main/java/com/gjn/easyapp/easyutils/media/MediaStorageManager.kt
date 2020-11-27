@@ -35,6 +35,7 @@ class MediaStorageManager(private val context: Context) {
 
     var scanCallback: ScanCallback? = null
     var changeCallback: ChangeCallback? = null
+    var filterListener: FilterListener? = null
 
     fun startScan() {
         connectScanFileListener()
@@ -99,6 +100,8 @@ class MediaStorageManager(private val context: Context) {
         if (name == null) return null
         val parentPath = path.replace(name, "")
 
+        if (!filterListener?.onFilterPhoto(name)!!) return null
+
         return MediaInfo(name, path, parent, parentPath, mimeType, width, height, size, addData)
             .apply {
                 this.orientation = orientation
@@ -138,6 +141,8 @@ class MediaStorageManager(private val context: Context) {
 
         if (name == null) return null
         val parentPath = path.replace(name, "")
+
+        if (!filterListener?.onFilterVideo(name)!!) return null
 
         val thumbCursor: Cursor? = context.contentResolver.query(
             MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI,
@@ -311,6 +316,12 @@ class MediaStorageManager(private val context: Context) {
         fun onChange(selfChange: Boolean, uri: Uri?, isMediaExternal: Boolean)
 
         fun onChangeMediaInfo(mediaInfo: MediaInfo?)
+    }
+
+    abstract class FilterListener {
+        open fun onFilterVideo(fileName: String): Boolean = true
+
+        open fun onFilterPhoto(fileName: String): Boolean = true
     }
 
     companion object {

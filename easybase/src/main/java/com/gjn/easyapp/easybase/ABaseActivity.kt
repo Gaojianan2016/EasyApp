@@ -1,5 +1,6 @@
 package com.gjn.easyapp.easybase
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -60,11 +61,11 @@ abstract class ABaseActivity : AppCompatActivity(), UIEvent {
         ToastUtil.instance(mContext).showToast(msg)
     }
 
-    override fun showNextActivity(cls: Class<*>, bundle: Bundle?) {
+    override fun showNextActivity(cls: Class<out Activity>, bundle: Bundle?) {
         ActivityUtils.showNextActivity(mActivity, cls, bundle)
     }
 
-    override fun toNextActivity(cls: Class<*>, bundle: Bundle?) {
+    override fun toNextActivity(cls: Class<out Activity>, bundle: Bundle?) {
         ActivityUtils.toNextActivity(mActivity, cls, bundle)
     }
 

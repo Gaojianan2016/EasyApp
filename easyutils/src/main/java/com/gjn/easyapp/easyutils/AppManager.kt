@@ -26,9 +26,9 @@ class AppManager private constructor() {
         }
     }
 
-    fun finishActivity(clz: Class<*>) {
-        for (activity in activityStack) {
-            if (activity::class.java == clz) {
+    fun finishActivity(vararg clz: Class<out Activity>) {
+        activityStack.forEach { activity ->
+            if (clz.contains(activity::class.java)) {
                 finishActivity(activity)
             }
         }
