@@ -3,10 +3,10 @@ package com.gjn.easyapp.easytoaster
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import com.gjn.easyapp.easyutils.ResourcesUtils
 import kotlinx.coroutines.runBlocking
 
 object ToastUtil {
@@ -35,8 +35,8 @@ object ToastUtil {
             context
         }
         if (mEasyToastView == null) {
-            mEasyToastView = LayoutInflater.from(mContext)
-                .inflate(R.layout.easytoast_transient_notification, null)
+            mEasyToastView =
+                ResourcesUtils.inflate(mContext, R.layout.easytoast_transient_notification, null)
         }
         return this
     }

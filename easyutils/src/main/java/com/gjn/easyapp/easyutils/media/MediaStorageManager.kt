@@ -28,6 +28,7 @@ class MediaStorageManager(private val context: Context) {
     val mMediaList: MutableList<MediaInfo> = mutableListOf()
     val mFileMap: MutableMap<String, MediaInfo> = mutableMapOf()
 
+    var allFileName = "相册"
     var isFindPhoto = true
     var isFindVideo = true
     var photoSortOrder = "date_added DESC"
@@ -100,7 +101,9 @@ class MediaStorageManager(private val context: Context) {
         if (name == null) return null
         val parentPath = path.replace(name, "")
 
-        if (!filterListener?.onFilterPhoto(name)!!) return null
+        if (filterListener != null) {
+            if (!filterListener!!.onFilterPhoto(name)) return null
+        }
 
         return MediaInfo(name, path, parent, parentPath, mimeType, width, height, size, addData)
             .apply {
@@ -142,7 +145,10 @@ class MediaStorageManager(private val context: Context) {
         if (name == null) return null
         val parentPath = path.replace(name, "")
 
-        if (!filterListener?.onFilterVideo(name)!!) return null
+
+        if (filterListener != null) {
+            if (!filterListener!!.onFilterVideo(name)) return null
+        }
 
         val thumbCursor: Cursor? = context.contentResolver.query(
             MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI,
@@ -170,11 +176,15 @@ class MediaStorageManager(private val context: Context) {
             }
     }
 
-    private fun addData(info: MediaInfo) {
+    private fun addMedia(info: MediaInfo) {
         if (info.parent != null) {
             mMediaList.add(info)
             if (!mFileMap.containsKey(info.parent!!)) {
+                info.dirSize = 1
                 mFileMap[info.parent!!] = info
+            } else {
+                val size = mFileMap[info.parent!!]!!.dirSize
+                mFileMap[info.parent!!]!!.dirSize = size + 1
             }
         }
     }
@@ -187,6 +197,18 @@ class MediaStorageManager(private val context: Context) {
         }
 
         override fun onPostExecute(result: Void?) {
+            var allSize = 0
+            var first: MediaInfo? = null
+            mFileMap.forEach { (_, v) ->
+                allSize += v.dirSize
+                if (first == null) {
+                    first = v
+                }
+            }
+            first?.let {
+                it.dirSize = allSize
+                mFileMap.put(allFileName, it)
+            }
             scanCallback?.complete(mMediaList, mFileMap)
         }
 
@@ -213,7 +235,7 @@ class MediaStorageManager(private val context: Context) {
                 moveToFirst()
                 do {
                     val info = generatePhotoInfo(this)
-                    info?.let { addData(it) }
+                    info?.let { addMedia(it) }
                 } while (moveToNext())
                 close()
             }
@@ -228,7 +250,7 @@ class MediaStorageManager(private val context: Context) {
                 moveToFirst()
                 do {
                     val info = generateVideoInfo(this)
-                    info?.let { addData(it) }
+                    info?.let { addMedia(it) }
                 } while (moveToNext())
                 close()
             }

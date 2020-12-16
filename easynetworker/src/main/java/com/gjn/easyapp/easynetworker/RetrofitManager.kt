@@ -38,9 +38,7 @@ object RetrofitManager {
         //添加过滤gson解析失败异常
         .addConverterFactory(
             GsonConverterFactory.create(
-                GsonBuilder().registerTypeAdapterFactory(
-                    GsonTypeAdapterFactory()
-                ).create()
+                GsonBuilder().registerTypeAdapterFactory(GsonTypeAdapterFactory()).create()
             )
         )
         .build()
@@ -114,7 +112,7 @@ object RetrofitManager {
                     if (isPlaintext(buffer)) {
                         val charset = it.contentType()?.charset(StandardCharsets.UTF_8)
                             ?: StandardCharsets.UTF_8
-                        log.append(buffer.readString(charset))
+                        log.append(buffer.readString(charset)).append("\n")
                     }
                 }
             }

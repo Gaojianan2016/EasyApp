@@ -2,7 +2,6 @@ package com.gjn.easyapp.easyutils
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -44,7 +43,7 @@ object ThreadUtils {
 
     fun runOnSubThread(runnable: Runnable) {
         if (THREAD_POOL_EXECUTOR.queue.size == 128 || THREAD_POOL_EXECUTOR.isShutdown) {
-            Log.e(TAG, "线程池爆满警告，请查看是否开启了过多的耗时线程")
+            "线程池爆满警告，请查看是否开启了过多的耗时线程".logE(TAG)
             return
         }
         THREAD_POOL_EXECUTOR.execute(runnable)

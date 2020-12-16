@@ -44,16 +44,19 @@ class GalleryFragment : ABaseFragment() {
                 ) {
                     pb_fg.gone()
                     imgAdapter.add(infoList)
-                }
-            }
-            filterListener = object : MediaStorageManager.FilterListener() {
-                override fun onFilterPhoto(fileName: String): Boolean {
-                    if (fileName.contains(".gif")) {
-                        return true
+                    fileList.forEach{(k, v)->
+                        println("$k size ${v.dirSize}")
                     }
-                    return false
                 }
             }
+//            filterListener = object : MediaStorageManager.FilterListener() {
+//                override fun onFilterPhoto(fileName: String): Boolean {
+//                    if (fileName.contains(".gif")) {
+//                        return true
+//                    }
+//                    return false
+//                }
+//            }
             startScan()
         }
     }
