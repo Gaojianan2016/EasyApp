@@ -92,7 +92,7 @@ fun File.scanFile(context: Context) = this.uri().scanFile(context)
 /**
  * 通知相册更新图片 android 10之后Deprecated
  * */
-fun Uri.scanFile(context: Context){
+fun Uri.scanFile(context: Context) {
     context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
         .apply {
             data = this@scanFile
@@ -101,10 +101,8 @@ fun Uri.scanFile(context: Context){
 
 object FileUtils {
 
-    const val FILEPROVIDER = ".fileprovider"
-
-    const val APP = "/app"
-
+    private const val FILEPROVIDER = ".fileprovider"
+    private const val APP = "/app"
     private const val DATA = "_data"
 
     fun openFile(context: Context, path: String) {

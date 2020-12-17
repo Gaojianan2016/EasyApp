@@ -22,6 +22,20 @@ fun Context.getApplicationMetaData(key: String): String? {
     return applicationInfo?.metaData?.getString(key) ?: ""
 }
 
+fun Context.hasPermission(permission: String): Boolean {
+    val packageInfo = try {
+        packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
+    } catch (e: Exception) {
+        null
+    }
+    packageInfo?.run {
+        if (requestedPermissions.contains(permission)) {
+            return true
+        }
+    }
+    return false
+}
+
 /**
  * 判断某个应用是否安装。
  * */

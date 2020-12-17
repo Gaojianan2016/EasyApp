@@ -1,14 +1,16 @@
 package com.gjn.easyapp.easyutils.media
 
 import android.graphics.Bitmap
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class MediaInfo(
-    var name: String? = null,
-    var path: String? = null,
-    var parent: String? = null,
-    var parentPath: String? = null,
-    var mimeType: String? = null,
+    var name: String,
+    var path: String,
+    var parent: String,
+    var parentPath: String,
+    var mimeType: String,
     var width: Int = 0,
     var height: Int = 0,
     var size: Int = 0,
@@ -22,4 +24,4 @@ data class MediaInfo(
     var isVideo: Boolean = false,
     var dirSize: Int = 0,
     var expand: String? = null
-): Serializable
+): Parcelable

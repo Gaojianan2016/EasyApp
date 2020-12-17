@@ -1,5 +1,7 @@
 package com.gjn.easyapp
 
+import android.Manifest
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
@@ -47,7 +49,18 @@ class A1Fragment : BaseLazyFragment() {
             }
         }
 
-        setOnClickListeners(btn4, btn6, btn8, btn9, btn10, btn11, btn12, btn13, listener = Click())
+        setOnClickListeners(
+            btn4,
+            btn6,
+            btn8,
+            btn9,
+            btn10,
+            btn11,
+            btn12,
+            btn13,
+            btn14,
+            listener = Click()
+        )
 
         btn5.click {
             println("屏幕宽度 ${mActivity.screenWidth()} 屏幕高度 ${mActivity.screenHeight()}")
@@ -177,6 +190,32 @@ class A1Fragment : BaseLazyFragment() {
             println("day7 ${StringUtils.elapsedTime(day0, day7)}")
         }
 
+        btn15.click {
+            mActivity.simpleRequestPermissions(
+                arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            ) {
+                showToast("获取成功")
+            }
+        }
+
+        btn16.click {
+            mActivity.simpleActivityResult(
+                Intent(
+                    mActivity,
+                    ActivityResultActivity::class.java
+                )
+            ) { code, data ->
+                println("code $code data $data")
+                data?.run {
+                    val result = getStringExtra("msg")
+                    showToast("获取到结果 $result")
+                }
+            }
+        }
+
     }
 
     inner class Click : View.OnClickListener {
@@ -247,7 +286,9 @@ class A1Fragment : BaseLazyFragment() {
                     println("状态栏 ${status}px -> ${status.px2dp(mActivity)}dp")
                     println("底边栏 ${navigation}px -> ${navigation.px2dp(mActivity)}dp")
                 }
-                else -> {
+                btn14 -> {
+                    val result = mActivity.hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    println("是否含有权限 $result")
                 }
             }
         }

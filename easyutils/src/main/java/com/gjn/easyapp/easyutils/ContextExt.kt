@@ -1,10 +1,11 @@
 package com.gjn.easyapp.easyutils
 
-import android.app.Activity
 import android.content.Context
-import android.graphics.Rect
+import android.content.pm.PackageManager
+import android.os.Build
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 
 fun Context.screenWidth(): Int = resources.displayMetrics.widthPixels
 
@@ -31,9 +32,7 @@ fun Context.navigationBarHeight(): Int {
 fun Context.hasNavigationBar(): Boolean {
     var result = false
     val resId = ResourcesUtils.getInternalBoolean("config_showNavigationBar")
-    if(resId > 0){
-        result = resources.getBoolean(resId)
-    }
+    if (resId > 0) result = resources.getBoolean(resId)
     try {
         //判断是否修改过底边栏
         val navBarOverride = "android.os.SystemProperties".toClass().invokeMethod(
@@ -42,7 +41,6 @@ fun Context.hasNavigationBar(): Boolean {
         when (navBarOverride) {
             "0" -> result = true
             "1" -> result = false
-            else -> {}
         }
     } catch (e: Exception) {
         e.printStackTrace()
@@ -63,14 +61,9 @@ fun Context.toggleKeyboard() {
     imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS)
 }
 
-fun Activity.isKeyboardShowing(): Boolean {
-    //获取当前屏幕内容的高度
-    val screenHeight = window.decorView.height
-    //获取View可见区域的bottom
-    val rect = Rect()
-    //DecorView即为activity的顶级view
-    window.decorView.getWindowVisibleDisplayFrame(rect)
-    //考虑到虚拟导航栏的情况（虚拟导航栏情况下：screenHeight = rect.bottom + 虚拟导航栏高度）
-    //选取screenHeight*2/3进行判断
-    return screenHeight * 2 / 3 > rect.bottom
-}
+fun Context.checkPermission(permission: String): Boolean =
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        true
+    } else {
+        ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+    }
