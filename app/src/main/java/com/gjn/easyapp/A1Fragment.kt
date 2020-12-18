@@ -5,10 +5,12 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Environment
 import android.view.View
 import androidx.core.app.ActivityCompat
 import com.gjn.easyapp.easybase.BaseLazyFragment
 import com.gjn.easyapp.easyutils.*
+import com.gjn.easyapp.easyutils.media.MediaInfo
 import com.google.zxing.EncodeHintType
 import kotlinx.android.synthetic.main.fragment_a1.*
 
@@ -17,6 +19,7 @@ class A1Fragment : BaseLazyFragment() {
     var size = -1
     var name by MySP("name", "")
     var age by MySP("age", -1)
+    var fileName = ""
 
     override fun layoutId(): Int = R.layout.fragment_a1
 
@@ -212,6 +215,19 @@ class A1Fragment : BaseLazyFragment() {
                 data?.run {
                     val result = getStringExtra("msg")
                     showToast("获取到结果 $result")
+                }
+            }
+        }
+
+        btn17.click {
+            fileName = mActivity.takePictures(
+                Environment.getExternalStorageDirectory().toString() + "/Test/"
+            ) { code, data ->
+                val file = fileName.file()
+                if (file.exists()) {
+                    println("$fileName 文件存在")
+                }else{
+                    println("$fileName 文件不存在")
                 }
             }
         }

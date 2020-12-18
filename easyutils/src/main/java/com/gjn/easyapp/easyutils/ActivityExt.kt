@@ -1,23 +1,42 @@
 package com.gjn.easyapp.easyutils
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 
-fun Class<out Activity>.startActivity(activity: Activity, bundle: Bundle? = null) {
-    activity.startActivity(Intent(activity, this).apply { bundle?.let { putExtras(it) } })
+fun Class<out Activity>.startActivity(context: Context?, bundle: Bundle? = null) {
+    Intent(context, this).apply { bundle?.let { putExtras(it) } }.startActivity(context)
+}
+
+fun Class<out Activity>.startActivity(context: Context?, map: Map<String, Any?> = mapOf()) {
+    Intent(context, this).put(map).startActivity(context)
+}
+
+fun Intent.startActivity(context: Context?) {
+    context?.startActivity(this)
 }
 
 fun Class<out Activity>.startActivityForResult(
-    activity: Activity,
+    activity: Activity?,
     requestCode: Int,
     bundle: Bundle? = null
 ) {
-    activity.startActivityForResult(
-        Intent(activity, this).apply { bundle?.let { putExtras(it) } },
-        requestCode
-    )
+    Intent(activity, this).apply { bundle?.let { putExtras(it) } }
+        .startActivityForResult(activity, requestCode)
+}
+
+fun Class<out Activity>.startActivityForResult(
+    activity: Activity?,
+    requestCode: Int,
+    map: Map<String, Any?> = mapOf()
+) {
+    Intent(activity, this).put(map).startActivityForResult(activity, requestCode)
+}
+
+fun Intent.startActivityForResult(activity: Activity?, requestCode: Int) {
+    activity?.startActivityForResult(this, requestCode)
 }
 
 /**

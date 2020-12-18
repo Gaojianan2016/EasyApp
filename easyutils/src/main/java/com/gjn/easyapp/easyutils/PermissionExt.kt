@@ -123,9 +123,7 @@ internal class PermissionFragment : Fragment() {
     ) {
         val listener = mEventListeners[requestCode]
         mEventListeners.remove(requestCode)
-        if (listener == null) {
-            return
-        }
+        if (listener == null) return
         try {
             var allGranted = false
             for (i in grantResults.indices) {
@@ -154,9 +152,7 @@ internal class PermissionFragment : Fragment() {
     ) {
         val listener = mFragmentListeners[requestCode]
         mFragmentListeners.remove(requestCode)
-        if (listener == null) {
-            return
-        }
+        if (listener == null) return
         try {
             val refuseList = mutableListOf<Permission>()
             var hasShouldShowRequestPermissionRationale = false
@@ -338,11 +334,10 @@ class PermissionHelper {
 
         fun startAppSetting(activity: Activity) {
             try {
-                val intent = Intent().apply {
+                Intent().apply {
                     action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                     data = Uri.fromParts("package", activity.packageName, null)
-                }
-                activity.startActivityForResult(intent, CODE_SETTING)
+                }.startActivityForResult(activity, CODE_SETTING)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

@@ -7,10 +7,10 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class MediaInfo(
     var name: String,
-    var path: String,
-    var parent: String,
-    var parentPath: String,
-    var mimeType: String,
+    var path: String = "",
+    var parent: String = "",
+    var parentPath: String = "",
+    var mimeType: String = "",
     var width: Int = 0,
     var height: Int = 0,
     var size: Int = 0,

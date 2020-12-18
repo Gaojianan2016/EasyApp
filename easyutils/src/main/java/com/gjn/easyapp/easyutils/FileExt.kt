@@ -93,10 +93,7 @@ fun File.scanFile(context: Context) = this.uri().scanFile(context)
  * 通知相册更新图片 android 10之后Deprecated
  * */
 fun Uri.scanFile(context: Context) {
-    context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
-        .apply {
-            data = this@scanFile
-        })
+    context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { it.data = this })
 }
 
 object FileUtils {
@@ -113,16 +110,17 @@ object FileUtils {
         val mimeType = file.suffixToType()
         val uri = getFileUri(context, file)
         mimeType?.run {
-            val intent = Intent(Intent.ACTION_VIEW)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                intent.flags = (Intent.FLAG_ACTIVITY_NEW_TASK
-                        or Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            } else {
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            Intent(Intent.ACTION_VIEW).let {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    it.flags = (Intent.FLAG_ACTIVITY_NEW_TASK
+                            or Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                } else {
+                    it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                it.setDataAndType(uri, this)
+                it.startActivity(context)
             }
-            intent.setDataAndType(uri, this)
-            context.startActivity(intent)
         }
     }
 

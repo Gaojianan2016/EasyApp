@@ -37,13 +37,13 @@ object QRCodeUtils {
         NotFoundException::class
     )
     fun decodeToResult(
-        binaryBitmap: BinaryBitmap,
+        binaryBitmap: BinaryBitmap?,
         hints: Map<DecodeHintType, Any?>? = defaultDecodeMap
     ): Result = QRCodeReader().decode(binaryBitmap, hints)
 
     @JvmOverloads
     fun decode(
-        binaryBitmap: BinaryBitmap,
+        binaryBitmap: BinaryBitmap?,
         hints: Map<DecodeHintType, Any?>? = defaultDecodeMap
     ): String? = decodeToResult(binaryBitmap, hints).text
 
@@ -69,10 +69,11 @@ object QRCodeUtils {
     }
 
     fun drawLogo(
-        qrCodeBitmap: Bitmap,
-        logoBitmap: Bitmap,
+        qrCodeBitmap: Bitmap?,
+        logoBitmap: Bitmap?,
         scale: Float = 0.2f
-    ): Bitmap {
+    ): Bitmap? {
+        if (qrCodeBitmap == null || logoBitmap == null) return qrCodeBitmap
         val width = qrCodeBitmap.width
         val height = qrCodeBitmap.height
         val newWidth = (logoBitmap.width * scale).toInt()
@@ -83,7 +84,8 @@ object QRCodeUtils {
         return qrCodeBitmap.drawBitmap(logoBmp, left, top)
     }
 
-    fun bitmapToBinaryBitmap(bitmap: Bitmap): BinaryBitmap {
+    fun bitmapToBinaryBitmap(bitmap: Bitmap?): BinaryBitmap? {
+        if (bitmap == null) return null
         val width = bitmap.width
         val height = bitmap.height
         val pixels = IntArray(width * height)
@@ -95,7 +97,7 @@ object QRCodeUtils {
 
     @JvmOverloads
     fun stringEncode(
-        code: String,
+        code: String?,
         w: Int = 300,
         h: Int = 300,
         hints: Map<EncodeHintType, Any?>? = defaultEncodeMap,
@@ -103,14 +105,11 @@ object QRCodeUtils {
         negativeColor: Int = -0x1,
         logoBitmap: Bitmap? = null,
         scale: Float = 0.2f
-    ): Bitmap {
+    ): Bitmap? {
+        if (code.isNullOrEmpty()) return null
         val bmp = bitMatrixToBitmap(encode(code, w, h, hints), positiveColor, negativeColor)
-        return if (logoBitmap == null) {
-            bmp
-        } else {
-            drawLogo(bmp, logoBitmap, scale)
-        }
+        return drawLogo(bmp, logoBitmap, scale)
     }
 
-    fun bitmapDecode(bitmap: Bitmap): String = decode(bitmapToBinaryBitmap(bitmap)) ?: ""
+    fun bitmapDecode(bitmap: Bitmap?): String = decode(bitmapToBinaryBitmap(bitmap)) ?: ""
 }

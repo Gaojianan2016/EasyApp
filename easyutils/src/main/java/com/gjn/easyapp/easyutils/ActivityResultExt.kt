@@ -32,7 +32,7 @@ internal class ActivityResultFragment : Fragment() {
     ) {
         val requestCode = randomRequestCode()
         mFragmentListeners.put(requestCode, listener)
-        startActivityForResult(intent, requestCode, bundle)
+        startActivityForResult(intent.apply { bundle?.let { putExtras(it) } }, requestCode)
     }
 
     /**
@@ -55,9 +55,7 @@ internal class ActivityResultFragment : Fragment() {
 
         val listener = mFragmentListeners[requestCode]
         mFragmentListeners.remove(requestCode)
-        if (listener == null) {
-            return
-        }
+        if (listener == null) return
         try {
             listener.onActivityResult(resultCode, data)
         } catch (tr: Throwable) {
