@@ -277,7 +277,7 @@ class A1Fragment : BaseLazyFragment() {
                 }
                 btn12 -> {
                     showNextActivity(GalleryActivity::class.java, Bundle().apply {
-                        putString("msg", "测试数据")
+                        putString("msg", "首页发送的数据")
                     })
                 }
                 btn13 -> {

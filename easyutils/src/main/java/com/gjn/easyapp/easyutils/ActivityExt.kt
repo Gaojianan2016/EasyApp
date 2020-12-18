@@ -6,7 +6,7 @@ import android.graphics.Rect
 import android.os.Bundle
 
 fun Class<out Activity>.startActivity(activity: Activity, bundle: Bundle? = null) {
-    activity.startActivity(Intent(activity, this), bundle)
+    activity.startActivity(Intent(activity, this).apply { bundle?.let { putExtras(it) } })
 }
 
 fun Class<out Activity>.startActivityForResult(
@@ -14,7 +14,10 @@ fun Class<out Activity>.startActivityForResult(
     requestCode: Int,
     bundle: Bundle? = null
 ) {
-    activity.startActivityForResult(Intent(activity, this), requestCode, bundle)
+    activity.startActivityForResult(
+        Intent(activity, this).apply { bundle?.let { putExtras(it) } },
+        requestCode
+    )
 }
 
 /**
