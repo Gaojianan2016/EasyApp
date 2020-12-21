@@ -10,7 +10,6 @@ import android.view.View
 import androidx.core.app.ActivityCompat
 import com.gjn.easyapp.easybase.BaseLazyFragment
 import com.gjn.easyapp.easyutils.*
-import com.gjn.easyapp.easyutils.media.MediaInfo
 import com.google.zxing.EncodeHintType
 import kotlinx.android.synthetic.main.fragment_a1.*
 

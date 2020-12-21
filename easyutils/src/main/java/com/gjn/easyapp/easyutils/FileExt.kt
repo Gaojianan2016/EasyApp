@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
 import java.io.*
@@ -82,6 +83,19 @@ fun File.toBytes(): ByteArray? {
         e.printStackTrace()
     }
     return bytes
+}
+
+fun File.updateMediaStore(context: Context) {
+    insertImage(context)
+    scanFile(context)
+}
+
+/**
+ * 通知相册插入缩略图 android 10之后Deprecated
+ * 和scanFile一起使用 可以直接使用updateMediaStore
+ * */
+fun File.insertImage(context: Context) {
+    MediaStore.Images.Media.insertImage(context.contentResolver, absolutePath, name, null)
 }
 
 /**

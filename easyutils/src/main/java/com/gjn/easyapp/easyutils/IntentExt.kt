@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.MediaStore
@@ -48,6 +49,13 @@ fun FragmentActivity.takePictures(folderPath: String, block: (Int, Intent?) -> U
         fileName.file().scanFile(this)
     }
     return fileName
+}
+
+fun Context.openBrowser(url: String?) {
+    if (url.isNullOrEmpty()) return
+    startActivity(Intent("android.intent.action.VIEW").also {
+        it.data = Uri.parse(url)
+    })
 }
 
 fun Context.clipData(str: String) {
