@@ -9,6 +9,7 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
+import android.view.Gravity
 import java.io.ByteArrayOutputStream
 import java.io.File
 import kotlin.math.roundToInt
@@ -44,7 +45,7 @@ fun File.toBitmap(
 ): Bitmap? {
     when {
         !exists() -> return null
-        maxWidth != null || maxHeight != null -> {
+        !maxWidth.isNullOrZero() || !maxWidth.isNullOrZero() -> {
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true
             var bitmap = BitmapFactory.decodeFile(path, options)
@@ -65,37 +66,36 @@ fun File.toBitmap(
             options.inSampleSize = sampleSize
             options.inJustDecodeBounds = false
             bitmap = BitmapFactory.decodeFile(path, options)
-            if (quality == 90) return bitmap
-            return bitmap.toByte(quality = quality)?.toBitmap()
+            return if (quality == 90) {
+                bitmap
+            } else {
+                bitmap.toByte(quality = quality)?.toBitmap()
+            }
         }
         else -> {
-            if (quality == 90) return BitmapFactory.decodeFile(path)
-            return toByte(quality = quality)?.toBitmap()
+            return if (quality == 90) {
+                BitmapFactory.decodeFile(path)
+            } else {
+                toByte(quality = quality)?.toBitmap()
+            }
         }
     }
 }
 
-@JvmOverloads
-fun Bitmap.scale(
-    ratio: Float = 1f,
-    newWidth: Int? = null,
-    newHeight: Int? = null
-): Bitmap {
-    when {
-        newWidth != null && newHeight != null -> {
-            val sx = newWidth / width.toFloat()
-            val sy = newHeight / height.toFloat()
-            val matrix = Matrix()
-            matrix.postScale(sx, sy)
-            return Bitmap.createBitmap(this, 0, 0, width, height, matrix, false)
-        }
-        else -> {
-            if (ratio == 1f) return this
-            val matrix = Matrix()
-            matrix.postScale(ratio, ratio)
-            return Bitmap.createBitmap(this, 0, 0, width, height, matrix, false)
-        }
-    }
+fun Bitmap.scale(ratio: Float): Bitmap {
+    if (ratio == 1f) return this
+    val matrix = Matrix()
+    matrix.postScale(ratio, ratio)
+    return Bitmap.createBitmap(this, 0, 0, width, height, matrix, false)
+}
+
+fun Bitmap.scale(newWidth: Int?, newHeight: Int?): Bitmap {
+    if (newWidth.isNullOrZero() || newHeight.isNullOrZero()) return this
+    val sx = newWidth!! / width.toFloat()
+    val sy = newHeight!! / height.toFloat()
+    val matrix = Matrix()
+    matrix.postScale(sx, sy)
+    return Bitmap.createBitmap(this, 0, 0, width, height, matrix, false)
 }
 
 @JvmOverloads
@@ -114,6 +114,59 @@ fun Bitmap.drawBitmap(
     canvas.restore()
     if (bitmap.isRecycled) bitmap.recycle()
     return bitmap
+}
+
+fun Bitmap?.drawMiniBitmap(
+    miniBmp: Bitmap?,
+    drawLeft: Float? = null,
+    drawTop: Float? = null
+): Bitmap? {
+    if (this == null || miniBmp == null) return this
+    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    canvas.drawBitmap(this, 0f, 0f, null)
+    val left = drawLeft ?: 0f
+    val top = drawTop ?: 0f
+    canvas.drawBitmap(miniBmp, left, top, null)
+    canvas.save()
+    canvas.restore()
+    if (bitmap.isRecycled) bitmap.recycle()
+    return bitmap
+}
+
+/**
+ * 缩放绘制迷你bitmap
+ * gravity 目前只支持以下几种情况
+ * Gravity.CENTER 中心
+ * Gravity.START 左上角
+ * Gravity.END 右下角
+ * */
+fun Bitmap?.drawMiniBitmap(
+    miniBmp: Bitmap?,
+    gravity: Int = Gravity.CENTER,
+    scale: Float = 0.2f
+): Bitmap?{
+    if (this == null || miniBmp == null) return this
+    val newWidth = (miniBmp.width * scale).toInt()
+    val newHeight = (miniBmp.height * scale).toInt()
+    val bitmap = miniBmp.scale(newWidth = newWidth, newHeight = newHeight)
+    val left: Float
+    val top: Float
+    when (gravity) {
+        Gravity.CENTER -> {
+            left = (width - newWidth) / 2f
+            top = (height - newHeight) / 2f
+        }
+        Gravity.END ->{
+            left = (width - newWidth).toFloat()
+            top = (height - newHeight).toFloat()
+        }
+        else -> {
+            left = 0f
+            top = 0f
+        }
+    }
+    return drawMiniBitmap(bitmap, left, top)
 }
 
 /**

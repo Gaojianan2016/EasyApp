@@ -46,7 +46,7 @@ fun FragmentActivity.takePictures(folderPath: String, block: (Int, Intent?) -> U
         it.putExtra(MediaStore.EXTRA_OUTPUT, FileUtils.getFileUri(this, fileName.file()))
     }) { code, data ->
         block.invoke(code, data)
-        fileName.file().scanFile(this)
+        fileName.file().updateMediaStore(this)
     }
     return fileName
 }

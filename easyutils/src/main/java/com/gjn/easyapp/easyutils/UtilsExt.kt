@@ -28,6 +28,14 @@ fun Long.intervalOpen(min: Long, max: Long): Long = min.coerceAtLeast(this.coerc
 
 fun String.parseColor(): Int = Color.parseColor(this)
 
+fun Int?.isNullOrZero(): Boolean = this == null || this == 0
+
+fun Float?.isNullOrZero(): Boolean = this == null || this == 0f
+
+fun Double?.isNullOrZero(): Boolean = this == null || this == 0.0
+
+fun Long?.isNullOrZero(): Boolean = this == null || this == 0L
+
 @JvmOverloads
 fun String.logV(tag: String = "LogExt", tr: Throwable? = null) {
     Log.v(tag, this, tr)

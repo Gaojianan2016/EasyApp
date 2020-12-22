@@ -100,6 +100,7 @@ fun File.insertImage(context: Context) {
 
 /**
  * 通知相册更新图片 android 10之后Deprecated
+ * 和insertImage一起使用 可以直接使用updateMediaStore
  * */
 fun File.scanFile(context: Context) = this.uri().scanFile(context)
 

@@ -10,7 +10,6 @@ import android.view.View
 import androidx.core.app.ActivityCompat
 import com.gjn.easyapp.easybase.BaseLazyFragment
 import com.gjn.easyapp.easyutils.*
-import com.google.zxing.EncodeHintType
 import kotlinx.android.synthetic.main.fragment_a1.*
 
 class A1Fragment : BaseLazyFragment() {
@@ -225,7 +224,7 @@ class A1Fragment : BaseLazyFragment() {
                 val file = fileName.file()
                 if (file.exists()) {
                     println("$fileName 文件存在")
-                }else{
+                } else {
                     println("$fileName 文件不存在")
                 }
             }
@@ -241,16 +240,14 @@ class A1Fragment : BaseLazyFragment() {
                     val bmp = QRCodeUtils.stringEncode("你好，我是正常二维码")
                     println("解码 = ${QRCodeUtils.bitmapDecode(bmp)}")
 
-                    val enMap = QRCodeUtils.defaultEncodeMap
-                    enMap[EncodeHintType.MARGIN] = 1
-                    val qrBmp = QRCodeUtils.stringEncode(
+                    iv_qrcode.setQrCodeBitmap(
                         "你好，我是有图标的二维码",
-                        positiveColor = Color.RED, negativeColor = Color.YELLOW, hints = enMap,
+                        margin = 1,
+                        positiveColor = Color.RED,
+                        negativeColor = Color.YELLOW,
                         logoBitmap = BitmapFactory.decodeResource(resources, R.mipmap.balance_bg),
                         scale = 0.1f
                     )
-                    iv_qrcode.setImageBitmap(qrBmp)
-                    println("解码2 = ${QRCodeUtils.bitmapDecode(qrBmp)}")
                 }
                 btn6 -> {
                     println("是否连接网络 ${mActivity.isNetworkConnected()}")

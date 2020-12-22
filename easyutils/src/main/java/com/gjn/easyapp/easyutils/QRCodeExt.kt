@@ -1,6 +1,7 @@
 package com.gjn.easyapp.easyutils
 
 import android.graphics.Bitmap
+import android.widget.ImageView
 import com.google.zxing.*
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.common.HybridBinarizer
@@ -68,20 +69,12 @@ object QRCodeUtils {
         return bitmap
     }
 
-    fun drawLogo(
+    private fun drawLogo(
         qrCodeBitmap: Bitmap?,
         logoBitmap: Bitmap?,
         scale: Float = 0.2f
     ): Bitmap? {
-        if (qrCodeBitmap == null || logoBitmap == null) return qrCodeBitmap
-        val width = qrCodeBitmap.width
-        val height = qrCodeBitmap.height
-        val newWidth = (logoBitmap.width * scale).toInt()
-        val newHeight = (logoBitmap.height * scale).toInt()
-        val left = (width - newWidth) / 2f
-        val top = (height - newHeight) / 2f
-        val logoBmp = logoBitmap.scale(newWidth = newWidth, newHeight = newHeight)
-        return qrCodeBitmap.drawBitmap(logoBmp, left, top)
+        return qrCodeBitmap.drawMiniBitmap(logoBitmap, scale = scale)
     }
 
     fun bitmapToBinaryBitmap(bitmap: Bitmap?): BinaryBitmap? {
@@ -112,4 +105,42 @@ object QRCodeUtils {
     }
 
     fun bitmapDecode(bitmap: Bitmap?): String = decode(bitmapToBinaryBitmap(bitmap)) ?: ""
+}
+
+fun ImageView.setQrCodeBitmap(
+    code: String?,
+    w: Int = 300,
+    h: Int = 300,
+    margin: Int = 1,
+    positiveColor: Int = -0x1000000,
+    negativeColor: Int = -0x1,
+    logoBitmap: Bitmap? = null,
+    scale: Float = 0.2f
+) {
+    setQrCodeBitmap(
+        code, w, h, mutableMapOf(
+            EncodeHintType.ERROR_CORRECTION to ErrorCorrectionLevel.H,
+            EncodeHintType.CHARACTER_SET to "utf-8",
+            EncodeHintType.MARGIN to margin
+        ), positiveColor, negativeColor, logoBitmap, scale
+    )
+}
+
+fun ImageView.setQrCodeBitmap(
+    code: String?,
+    w: Int = 300,
+    h: Int = 300,
+    hints: Map<EncodeHintType, Any?>? = QRCodeUtils.defaultEncodeMap,
+    positiveColor: Int = -0x1000000,
+    negativeColor: Int = -0x1,
+    logoBitmap: Bitmap? = null,
+    scale: Float = 0.2f
+) {
+    if (code.isNullOrEmpty()) return
+    setImageBitmap(
+        QRCodeUtils.stringEncode(
+            code, w, h, hints, positiveColor,
+            negativeColor, logoBitmap, scale
+        )
+    )
 }
