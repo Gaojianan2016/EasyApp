@@ -172,6 +172,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="拍照" />
+
+            <Button
+                android:id="@+id/btn18"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="黑色状态栏" />
+
+            <Button
+                android:id="@+id/btn19"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="白色状态栏" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

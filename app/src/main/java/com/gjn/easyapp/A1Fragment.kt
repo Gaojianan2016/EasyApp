@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
@@ -23,6 +24,7 @@ class A1Fragment : BaseLazyFragment() {
 
     override fun initView() {
         println("A1Fragment initView")
+        StatusBarUtil.setContentViewFitsSystemWindows(mActivity, true)
     }
 
     override fun lazyData() {
@@ -230,6 +232,32 @@ class A1Fragment : BaseLazyFragment() {
             }
         }
 
+        btn18.click {
+//            StatusBarUtil.statusBarMode(mActivity, true)
+            StatusBarUtil.statusBarMode(
+                mActivity, true,
+                BitmapDrawable(
+                    resources,
+                    BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
+                )
+            )
+        }
+
+        btn19.click {
+            var color = Color.RED
+            when {
+                size % 2 == 0 -> {
+                    color = Color.YELLOW
+                }
+                size % 3 == 0 -> {
+                    color = Color.BLUE
+                }
+                size % 5 == 0 -> {
+                    color = Color.BLACK
+                }
+            }
+            StatusBarUtil.statusBarMode(mActivity, colorOrDrawable = color)
+        }
     }
 
     inner class Click : View.OnClickListener {
@@ -259,7 +287,7 @@ class A1Fragment : BaseLazyFragment() {
 
                     val sp1 = StringUtils.matcherDrawableSpan(
                         "1 ", "我是一段测试文字(Has En)",
-                        imageSpan = CenterAlignImageSpan(drawable)
+                        imageSpan = CenterAlignImageSpan(drawable!!)
                     )
                     val sp2 = StringUtils.matcherColorSpan(sp1, Color.RED, "测试", "(H")
                     tv_wz.run {

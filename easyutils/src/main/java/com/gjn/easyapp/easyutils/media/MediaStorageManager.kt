@@ -314,7 +314,6 @@ class MediaStorageManager(private val context: Context) {
                         TYPE_VIDEO -> generateVideoInfo(cursor)
                         else -> null
                     }
-                    println("更新mediaInfo ${mediaInfo?.name}")
                     launchMain {
                         changeCallback?.onChangeMediaInfo(mediaInfo)
                     }

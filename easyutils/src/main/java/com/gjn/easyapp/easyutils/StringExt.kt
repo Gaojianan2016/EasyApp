@@ -1,5 +1,6 @@
 package com.gjn.easyapp.easyutils
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -47,7 +48,7 @@ fun String.toMd5(): String {
         }
         return stringBuilder.toString()
     } catch (e: NoSuchAlgorithmException) {
-        println("MD5 算法不存在")
+        e.printStackTrace()
     }
     return this
 }
@@ -86,6 +87,7 @@ fun Double.decimalFormat(prefix: String = "", suffix: String? = null, len: Int =
     return DecimalFormat(pattern.toString()).format(this)
 }
 
+@SuppressLint("SimpleDateFormat")
 @JvmOverloads
 fun Long.dataFormat(format: String = "yyyy-MM-dd HH:mm:ss"): String =
     SimpleDateFormat(format).format(this)
@@ -132,9 +134,10 @@ fun Char.isEmojiChar(): Boolean = !(this.toInt() == 0x0
         || this.toInt() in 0xE000..0xFFFD)
 
 /**
- * 字节转gb mb kb字符串 1.20G 60.00M 798.35K 666b
+ * 字节转gb mb kb字符串 0.5T 1.20G 60.00M 798.35K 666b
  * */
 fun Long.byteToStr(): String = when {
+    this >= TB -> (this / 1024 / 1024 / 1024 / 1024.toDouble()).decimalFormat(suffix = "T")
     this >= GB -> (this / 1024 / 1024 / 1024.toDouble()).decimalFormat(suffix = "G")
     this >= MB -> (this / 1024 / 1024.toDouble()).decimalFormat(suffix = "M")
     this >= KB -> (this / 1024.toDouble()).decimalFormat(suffix = "K")

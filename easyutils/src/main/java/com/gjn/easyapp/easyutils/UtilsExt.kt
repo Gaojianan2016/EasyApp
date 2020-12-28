@@ -108,3 +108,27 @@ fun coordinateDistance(
 
     return asin(sqrt(sa * sa + cos(lat1) * cos(lat2) * sb * sb)) * r * 2
 }
+
+/**
+ * 将map中数据为空的字段剔除掉
+ * */
+fun <K, V> Map<K, V>?.toHashMap(): HashMap<K, V> {
+    if (this == null) return HashMap()
+    val hashMap = HashMap<K, V>()
+    forEach { (k, v) ->
+        if (v != null) hashMap[k] = v
+    }
+    return hashMap
+}
+
+/**
+ * 将list中数据为空的字段剔除掉
+ * */
+fun <T> List<T?>?.toMutableListOrEmpty(): MutableList<T> {
+    if (this == null) return mutableListOf()
+    val list = mutableListOf<T>()
+    this.forEach {
+        if (it != null) list.add(it)
+    }
+    return list
+}

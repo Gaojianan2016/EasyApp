@@ -5,8 +5,11 @@ import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import androidx.annotation.StyleRes
+import androidx.core.widget.TextViewCompat
 
 fun View.viewWidth(): Int {
     var w = width
@@ -38,7 +41,37 @@ fun View.invisible() {
     visibility = View.INVISIBLE
 }
 
-fun TextView.trimString(): String = text.toString().trim()
+fun View.click(block: View.() -> Unit) {
+    this.setOnClickListener { it.block() }
+}
+
+fun View.clickLong(block: View.() -> Boolean) {
+    this.setOnLongClickListener {
+        return@setOnLongClickListener it.block()
+    }
+}
+
+fun ViewGroup.clearChildView(cls: Class<out View>) {
+    for (i in 0 until this.childCount) {
+        if (this.getChildAt(i)::class.java.name == cls.name) {
+            this.removeViewAt(i)
+        }
+    }
+}
+
+fun TextView.trimText(): String = text.toString().trim()
+
+fun TextView.trimHint(): String = hint.toString().trim()
+
+fun TextView.textAppearanceCompat(@StyleRes resId: Int) {
+    TextViewCompat.setTextAppearance(this, resId)
+}
+
+fun EditText.getTextOrHint(): String = if (text.isNullOrEmpty()) {
+    trimHint()
+} else {
+    trimText()
+}
 
 fun EditText.toLastSelection() {
     setSelection(text.length)
@@ -54,16 +87,6 @@ fun EditText.togglePassword(): Boolean {
     }
     toLastSelection()
     return isHide
-}
-
-fun View.click(block: View.() -> Unit) {
-    this.setOnClickListener { it.block() }
-}
-
-fun View.clickLong(block: View.() -> Boolean) {
-    this.setOnLongClickListener {
-        return@setOnLongClickListener it.block()
-    }
 }
 
 fun setOnClickListeners(vararg view: View?, block: View.() -> Unit) {

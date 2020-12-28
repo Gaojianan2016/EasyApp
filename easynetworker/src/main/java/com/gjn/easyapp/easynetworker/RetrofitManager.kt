@@ -17,6 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.EOFException
 import java.io.IOException
 import java.nio.charset.StandardCharsets
+import java.util.concurrent.TimeUnit
 
 object RetrofitManager {
 
@@ -26,9 +27,14 @@ object RetrofitManager {
 
     var baseUrl = ""
 
+    var timeOut = 30L
+
     var customInterceptorListener: OnCustomInterceptorListener? = null
 
     var okHttpClient = OkHttpClient.Builder()
+        .connectTimeout(timeOut, TimeUnit.SECONDS)
+        .readTimeout(timeOut, TimeUnit.SECONDS)
+        .writeTimeout(timeOut, TimeUnit.SECONDS)
         .addInterceptor(LoggingInterceptor())
         .build()
 
