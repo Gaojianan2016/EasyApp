@@ -9,7 +9,9 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.View
 import androidx.core.app.ActivityCompat
+import com.gjn.easyapp.databinding.DialogTestBinding
 import com.gjn.easyapp.easybase.BaseLazyFragment
+import com.gjn.easyapp.easydialoger.base.simpleDataBindingDialog
 import com.gjn.easyapp.easyutils.*
 import kotlinx.android.synthetic.main.fragment_a1.*
 
@@ -43,11 +45,18 @@ class A1Fragment : BaseLazyFragment() {
                         positiveClickListener = View.OnClickListener { showToast("关闭按钮1") }
                     )
                     mDialogManager.showSmallLoadingDialog()
+
+                    mDialogManager.showDialog(
+                        simpleDataBindingDialog<DialogTestBinding>(R.layout.dialog_test) { _, _ -> }
+                            .apply {
+                                isTransparent = true
+                                isMatchWidth = true
+                            }
+                    )
+
                 }
                 btn3 -> {
                     et_pwd.togglePassword()
-                }
-                else -> {
                 }
             }
         }

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
+import com.gjn.easyapp.easyutils.logE
 
 abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragment,
     ConvertDataBindingDialogFragment {
@@ -20,9 +21,11 @@ abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragmen
     var isTransparent: Boolean = false
     var windowAnimations: Int = View.NO_ID
     var dimAmount: Float = DIM_AMOUNT
-    var width: Int = ViewPager.LayoutParams.WRAP_CONTENT
-    var height: Int = ViewPager.LayoutParams.WRAP_CONTENT
+    var width: Int = WRAP_CONTENT
+    var height: Int = WRAP_CONTENT
     var gravity: Int = Gravity.CENTER
+    var isMatchWidth: Boolean = false
+    var isMatchHeight: Boolean = false
 
     private var onDialogCancelListeners: MutableList<OnDialogCancelListener>? = null
 
@@ -66,21 +69,30 @@ abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragmen
             dialog.setCanceledOnTouchOutside(isCloseOnTouchOutside)
             dialog.setCancelable(isCanClose)
         }
-        dialog?.window?.let { window ->
-            if (isTransparent) {
-                window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            }
-            window.attributes.let { params ->
+    }
+
+    override fun onStart() {
+        super.onStart()
+        try {
+            dialog?.window?.let { window ->
+                if (isTransparent) {
+                    window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                }
+                val params = window.attributes
                 if (dimAmount != DIM_AMOUNT) {
                     params.dimAmount = dimAmount
                 }
                 if (windowAnimations != View.NO_ID && isShowAnimations) {
                     params.windowAnimations = windowAnimations
                 }
-                params.width = width
-                params.height = height
+                params.width = if (isMatchWidth) MATCH_PARENT else width
+                params.height = if (isMatchHeight) MATCH_PARENT else height
                 params.gravity = gravity
+                window.attributes = params
             }
+        } catch (e: Exception) {
+            "${e.message}".logE(TAG)
+            e.printStackTrace()
         }
     }
 
@@ -107,7 +119,10 @@ abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragmen
     }
 
     companion object {
-        const val DIM_AMOUNT = 0.7f
+        private const val TAG = "BaseDialogFragment"
+        private const val WRAP_CONTENT = ViewPager.LayoutParams.WRAP_CONTENT
+        private const val MATCH_PARENT = ViewPager.LayoutParams.MATCH_PARENT
+        const val DIM_AMOUNT = 0.6f
     }
 }
 
