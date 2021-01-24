@@ -1,5 +1,6 @@
 package com.gjn.easyapp.easyutils
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
@@ -411,5 +412,26 @@ fun Fragment.simpleRequestPermissions(
             })
     } catch (e: Exception) {
         e.printStackTrace()
+    }
+}
+
+//常用的权限询问 读写权限
+fun FragmentActivity.requestWRPermission(block: () -> Unit) {
+    simpleRequestPermissions(
+        arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+    ) {
+        block.invoke()
+    }
+}
+
+//常用的权限询问 相机权限
+fun FragmentActivity.requestCameraPermission(block: () -> Unit) {
+    simpleRequestPermissions(
+        arrayOf(Manifest.permission.CAMERA)
+    ) {
+        block.invoke()
     }
 }

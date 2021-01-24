@@ -12,8 +12,12 @@ import androidx.core.app.ActivityCompat
 import com.gjn.easyapp.databinding.DialogTestBinding
 import com.gjn.easyapp.easybase.BaseLazyFragment
 import com.gjn.easyapp.easydialoger.base.simpleDataBindingDialog
+import com.gjn.easyapp.easynetworker.DownLoadManager
+import com.gjn.easyapp.easynetworker.SimpleDownLoadListener
 import com.gjn.easyapp.easyutils.*
 import kotlinx.android.synthetic.main.fragment_a1.*
+import okhttp3.Call
+import java.io.File
 
 class A1Fragment : BaseLazyFragment() {
 
@@ -266,6 +270,37 @@ class A1Fragment : BaseLazyFragment() {
                 }
             }
             StatusBarUtil.statusBarMode(mActivity, colorOrDrawable = color)
+        }
+        btn20.click {
+
+            val downLoadManager = DownLoadManager(mActivity)
+            downLoadManager.onDownLoadListener = object : SimpleDownLoadListener() {
+                override fun start(call: Call, file: File, name: String, length: Int) {
+                    showToast("准备下载 $file")
+                }
+
+                override fun downLoading(call: Call, readStream: Int, totalStream: Int) {
+                    println("进度 $readStream/$totalStream")
+                }
+
+                override fun success(call: Call, file: File) {
+                    showToast("下载成功")
+                    downLoadManager.openFile(file)
+                }
+
+                override fun fail(call: Call) {
+                    showToast("下载失败")
+                }
+
+                override fun error(call: Call, tr: Throwable) {
+                    tr.printStackTrace()
+                }
+            }
+            downLoadManager.downLoadFile(
+                "http://static.yunchou2020.com/pro/apk/yunchou.apk",
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+//                , "app111.apk"
+            )
         }
     }
 

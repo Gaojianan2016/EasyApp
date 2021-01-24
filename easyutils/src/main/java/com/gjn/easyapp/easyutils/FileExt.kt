@@ -23,7 +23,9 @@ fun String.suffix(): String = substring(lastIndexOf('.') + 1)
 
 fun File.suffix(): String = name.suffix()
 
-fun File.suffixToType(): String? = suffix().suffix().suffixToType()
+fun File.suffixToType(): String? = suffix().suffixToType()
+
+fun File.typeToSuffix(): String? = suffix().typeToSuffix()
 
 fun String.deleteFile(): Boolean = file().delete()
 
@@ -122,7 +124,7 @@ object FileUtils {
     }
 
     fun openFile(context: Context, file: File) {
-        val mimeType = file.suffixToType()
+        val mimeType = file.typeToSuffix()
         val uri = getFileUri(context, file)
         mimeType?.run {
             Intent(Intent.ACTION_VIEW).let {

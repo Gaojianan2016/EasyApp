@@ -184,6 +184,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="白色状态栏" />
+
+            <Button
+                android:id="@+id/btn20"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="安装应用" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

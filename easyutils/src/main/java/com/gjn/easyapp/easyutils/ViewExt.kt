@@ -1,6 +1,8 @@
 package com.gjn.easyapp.easyutils
 
 import android.app.Activity
+import android.text.Editable
+import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.MotionEvent
@@ -8,7 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import androidx.annotation.ColorRes
 import androidx.annotation.StyleRes
+import androidx.core.app.ActivityCompat
 import androidx.core.widget.TextViewCompat
 
 fun View.viewWidth(): Int {
@@ -63,8 +67,12 @@ fun TextView.trimText(): String = text.toString().trim()
 
 fun TextView.trimHint(): String = hint.toString().trim()
 
-fun TextView.textAppearanceCompat(@StyleRes resId: Int) {
+fun TextView.setTextAppearanceResource(@StyleRes resId: Int) {
     TextViewCompat.setTextAppearance(this, resId)
+}
+
+fun TextView.setTextColorResource(@ColorRes id: Int) {
+    setTextColor(ActivityCompat.getColor(context, id))
 }
 
 fun EditText.getTextOrHint(): String = if (text.isNullOrEmpty()) {
@@ -87,6 +95,26 @@ fun EditText.togglePassword(): Boolean {
     }
     toLastSelection()
     return isHide
+}
+
+fun EditText.monitorTextChange(
+    beforeBlock: ((CharSequence?, Int, Int, Int) -> Unit)? = null,
+    changedBlock: ((CharSequence?, Int, Int, Int) -> Unit)? = null,
+    afterBlock: ((Editable?) -> Unit)
+) {
+    addTextChangedListener(object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            beforeBlock?.invoke(s, start, count, after)
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            changedBlock?.invoke(s, start, before, count)
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            afterBlock.invoke(s)
+        }
+    })
 }
 
 fun setOnClickListeners(vararg view: View?, block: View.() -> Unit) {
