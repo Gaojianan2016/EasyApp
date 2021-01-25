@@ -29,9 +29,28 @@ class DownLoadManager(private val activity: FragmentActivity) {
         mCall?.cancel()
     }
 
+    fun openFile(file: File?) {
+        if (file == null) return
+        if (!file.exists()) return
+        //安卓8.0之后需要申请未知来源权限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!activity.packageManager.canRequestPackageInstalls()) {
+                activity.simpleActivityResult(
+                    Intent(
+                        Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+                        Uri.parse("package:${activity.packageName}")
+                    )
+                ) { _, _ ->
+                    openFile(file)
+                }
+                return
+            }
+        }
+        FileUtils.openFile(activity, file)
+    }
+
     fun downLoadFile(url: String, path: String, name: String? = url.urlObtainName()) {
-        if (url.isEmpty()) return
-        if (name.isNullOrEmpty()) return
+        if (url.isEmpty() || path.isEmpty() || name.isNullOrEmpty()) return
         if (downLoadStatus == DOWNLOAD_SUCCESS) {
             openFile(File(path, name))
             return
@@ -47,8 +66,8 @@ class DownLoadManager(private val activity: FragmentActivity) {
             mCall?.enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     downLoadStatus = DOWNLOAD_FAIL
-                    onDownLoadListener?.error(call, e)
                     launchMain {
+                        onDownLoadListener?.error(call, e)
                         onDownLoadListener?.fail(call)
                     }
                 }
@@ -116,6 +135,10 @@ class DownLoadManager(private val activity: FragmentActivity) {
                     println("file error delete $file")
                 }
             }
+            launchMain {
+                onDownLoadListener?.error(call, e)
+                onDownLoadListener?.fail(call)
+            }
         } finally {
             try {
                 iStream?.close()
@@ -139,24 +162,6 @@ class DownLoadManager(private val activity: FragmentActivity) {
             length > 1024 * 1024 -> 1024 * 512
             else -> 1024
         }
-
-    fun openFile(file: File?) {
-        if (file == null) return
-        if (!file.exists()) return
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (!activity.packageManager.canRequestPackageInstalls()) {
-                val intent = Intent(
-                    Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
-                    Uri.parse("package:${activity.packageName}")
-                )
-                activity.simpleActivityResult(intent) { _, _ ->
-                    openFile(file)
-                }
-                return
-            }
-        }
-        FileUtils.openFile(activity, file)
-    }
 
     companion object {
         const val DOWNLOAD_PRE = 0x111

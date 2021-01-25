@@ -28,4 +28,5 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
 
     compileOnly 'com.google.zxing:core:3.4.0'
+    compileOnly 'com.tencent:mmkv-static:1.2.5'
 }

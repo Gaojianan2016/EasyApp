@@ -14,6 +14,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.StyleRes
 import androidx.core.app.ActivityCompat
 import androidx.core.widget.TextViewCompat
+import androidx.core.widget.addTextChangedListener
 
 fun View.viewWidth(): Int {
     var w = width
@@ -98,21 +99,21 @@ fun EditText.togglePassword(): Boolean {
 }
 
 fun EditText.monitorTextChange(
-    beforeBlock: ((CharSequence?, Int, Int, Int) -> Unit)? = null,
-    changedBlock: ((CharSequence?, Int, Int, Int) -> Unit)? = null,
-    afterBlock: ((Editable?) -> Unit)
+    beforeTextChangedBlock: ((CharSequence?, Int, Int, Int) -> Unit)? = null,
+    onTextChangedBlock: ((CharSequence?, Int, Int, Int) -> Unit)? = null,
+    afterTextChangedBlock: ((Editable?) -> Unit)
 ) {
     addTextChangedListener(object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            beforeBlock?.invoke(s, start, count, after)
+            beforeTextChangedBlock?.invoke(s, start, count, after)
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            changedBlock?.invoke(s, start, before, count)
+            onTextChangedBlock?.invoke(s, start, before, count)
         }
 
         override fun afterTextChanged(s: Editable?) {
-            afterBlock.invoke(s)
+            afterTextChangedBlock.invoke(s)
         }
     })
 }

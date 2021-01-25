@@ -74,16 +74,14 @@ fun String.escapeSpecialWord(): String {
  * 强制取小数点后几位 0.110 0.25 0.10 1.00
  * */
 @JvmOverloads
-fun Double.decimalFormat(prefix: String = "", suffix: String? = null, len: Int = 2): String {
-    val pattern = if (len > 0) {
-        StringBuilder("${prefix}0.")
-    } else {
-        StringBuilder("${prefix}0")
-    }
+fun Double.decimalFormat(prefix: String? = null, suffix: String? = null, len: Int = 2): String {
+    val pattern = StringBuilder()
+    if (!prefix.isNullOrEmpty()) pattern.append(prefix)
+    pattern.append("0.")
     for (i in 0 until len) {
         pattern.append("0")
     }
-    if (suffix != null) pattern.append(suffix)
+    if (!suffix.isNullOrEmpty()) pattern.append(suffix)
     return DecimalFormat(pattern.toString()).format(this)
 }
 
@@ -91,16 +89,6 @@ fun Double.decimalFormat(prefix: String = "", suffix: String? = null, len: Int =
 @JvmOverloads
 fun Long.dataFormat(format: String = "yyyy-MM-dd HH:mm:ss"): String =
     SimpleDateFormat(format).format(this)
-
-fun Char.isChineseChar(): Boolean {
-    val ub = Character.UnicodeBlock.of(this)
-    return (ub === Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
-            || ub === Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
-            || ub === Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
-            || ub === Character.UnicodeBlock.GENERAL_PUNCTUATION
-            || ub === Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
-            || ub === Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS)
-}
 
 fun String.hasChinese(): Boolean {
     if (this.isEmpty()) return false
@@ -116,6 +104,16 @@ fun String.isChinese(): Boolean {
         if (!c.isChineseChar()) return false
     }
     return true
+}
+
+fun Char.isChineseChar(): Boolean {
+    val ub = Character.UnicodeBlock.of(this)
+    return (ub === Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
+            || ub === Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+            || ub === Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+            || ub === Character.UnicodeBlock.GENERAL_PUNCTUATION
+            || ub === Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
+            || ub === Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS)
 }
 
 fun String.hasEmoji(): Boolean {
