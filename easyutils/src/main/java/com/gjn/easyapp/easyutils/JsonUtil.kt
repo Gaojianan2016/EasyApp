@@ -6,16 +6,14 @@ object JsonUtil {
     fun formatJson(json: String?, tab: String = ""): String {
         val sb = StringBuilder(tab)
         json?.run {
-            val clearJson = replace("\\s*|\t|\r|\n".toRegex(), "")
-            var current: Char
+            val clearJson = replace("\t|\r|\n".toRegex(), "")
             val ln = '\n'
             var line = 0
-            for (i in 0 until clearJson.length) {
-                current = clearJson[i]
-                when (current) {
+            for (element in clearJson) {
+                when (element) {
                     //换行 并且加一级tab
                     '{', '[' -> {
-                        sb.append(current).append(ln).append(tab)
+                        sb.append(element).append(ln).append(tab)
                         line++
                         addTab(sb, line)
                     }
@@ -24,14 +22,14 @@ object JsonUtil {
                         sb.append(ln).append(tab)
                         line--
                         addTab(sb, line)
-                        sb.append(current)
+                        sb.append(element)
                     }
                     //换行 并且同级tab
                     ',' -> {
-                        sb.append(current).append(ln).append(tab)
+                        sb.append(element).append(ln).append(tab)
                         addTab(sb, line)
                     }
-                    else -> sb.append(current)
+                    else -> sb.append(element)
                 }
             }
         }

@@ -125,6 +125,8 @@ class A1Fragment : BaseLazyFragment() {
                 age = 18
             }
             println("new name = $name new age = $age")
+            val json = "{\"code\":0,\"message\":\"操 作 成 功 ！\"}"
+            println("json ${JsonUtil.formatJson(json)}")
         }
 
         btn7.click {
