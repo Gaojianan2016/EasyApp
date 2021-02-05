@@ -213,8 +213,22 @@ fun Long.elapsedTime(): String {
     }
 }
 
-fun String.urlObtainName(): String? =
+fun String.urlObtainName(): String =
     uri().lastPathSegment ?: substring(lastIndexOf('/') + 1)
+
+fun String?.maxLengthMore(len: Int, more: String = "..."): String? =
+    if (this.isNullOrEmpty() || this.length < len) {
+        this
+    } else {
+        this.substring(0, len) + "..."
+    }
+
+@SuppressLint("SimpleDateFormat")
+fun String.timestampToDate(dateFormat: String = "yyyy-MM-dd") =
+    SimpleDateFormat(dateFormat).parse(this)
+
+fun String.timestampToLong(dateFormat: String = "yyyy-MM-dd") =
+    timestampToDate(this)?.time
 
 object StringUtils {
 

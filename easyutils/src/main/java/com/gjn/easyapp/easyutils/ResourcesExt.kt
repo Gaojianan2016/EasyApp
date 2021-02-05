@@ -9,11 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 
 /**
  * 获取AndroidManifest.xml文件中，<application>标签下的meta-data值。
  * */
-fun Context.getApplicationMetaData(key: String): String? {
+fun Context.getApplicationMetaData(key: String): String {
     val applicationInfo: ApplicationInfo? = try {
         packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
     } catch (e: Exception) {
@@ -97,6 +99,14 @@ object ResourcesUtils {
         root: ViewGroup?,
         attachToRoot: Boolean = false
     ): View? = inflater.inflate(resource, root, attachToRoot)
+
+    fun <T : ViewDataBinding> inflateDataBinding(
+        context: Context?,
+        @LayoutRes resource: Int,
+        root: ViewGroup? = null,
+        attachToRoot: Boolean = false
+    ): T =
+        DataBindingUtil.inflate(LayoutInflater.from(context), resource, root, attachToRoot) as T
 
     fun getInternalId(name: String?): Int = getInternal(name, "id")
 

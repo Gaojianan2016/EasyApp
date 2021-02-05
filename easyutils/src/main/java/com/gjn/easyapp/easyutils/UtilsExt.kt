@@ -124,7 +124,7 @@ fun <K, V> Map<K, V>?.toHashMap(): HashMap<K, V> {
 /**
  * 将list中数据为空的字段剔除掉
  * */
-fun <T> List<T?>?.toMutableListOrEmpty(): MutableList<T> {
+fun <T> List<T?>?.toMutableListOrEmptyList(): MutableList<T> {
     if (this == null) return mutableListOf()
     val list = mutableListOf<T>()
     this.forEach {

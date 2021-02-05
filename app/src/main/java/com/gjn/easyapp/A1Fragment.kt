@@ -82,9 +82,11 @@ class A1Fragment : BaseLazyFragment() {
             println("屏幕宽度 ${mActivity.screenWidth()} 屏幕高度 ${mActivity.screenHeight()}")
             val d = 35.7
             println(
-                "${d.decimalFormat()} , ${d.decimalFormat(prefix = "￥")}, ${d.decimalFormat(
-                    suffix = "MB"
-                )}"
+                "${d.decimalFormat()} , ${d.decimalFormat(prefix = "￥")}, ${
+                    d.decimalFormat(
+                        suffix = "MB"
+                    )
+                }"
             )
             val s = "我是一段中文"
             val s2 = "我has中文"
@@ -106,15 +108,20 @@ class A1Fragment : BaseLazyFragment() {
             val list3: ArrayList<String>? = null
             val list4: MutableList<String>? = null
 
-            println("list isEmpty ${ListUtils.isEmpty(list)}")
-            println("list2 isEmpty ${ListUtils.isEmpty(list2)}")
-            println("list3 isEmpty ${ListUtils.isEmpty(list3)}")
-            println("list4 isEmpty ${ListUtils.isEmpty(list4)}")
+            println("list isEmpty ${list.isEmpty()}")
+            println("list2 isEmpty ${list2.isEmpty()}")
+            println("list3 isEmpty ${list3.isNullOrEmpty()}")
+            println("list4 isEmpty ${list4.isNullOrEmpty()}")
 
-            println("list isList ${ListUtils.isList(list)}")
-            println("list2 isList ${ListUtils.isList(list2)}")
-            println("list3 isList ${ListUtils.isList(list3)}")
-            println("list4 isList ${ListUtils.isList(list4)}")
+            println("list isList ${list.isList()}")
+            println("list2 isList ${list2.isList()}")
+            println("list3 isList ${list3.isList()}")
+            println("list4 isList ${list4.isList()}")
+
+            println("list insufficientSize 2 ${list.insufficientSize(2)}")
+            println("list2 insufficientSize 10 ${list2.insufficientSize()}")
+
+            println("12,7,8,sad,s4a, splitToList ${"12,7,8,sad,s4a".splitToList(",")}")
 
             println("name = $name age = $age")
             if (name == "张三") {
@@ -139,8 +146,10 @@ class A1Fragment : BaseLazyFragment() {
             val data7 = 2 * DAY * 1000
             val data8 = 377 * DAY * 1000
             println(
-                "${data1.toLong()
-                    .elapsedTime()} , ${data2.elapsedTime()}  , ${data3.elapsedTime()}  " +
+                "${
+                    data1.toLong()
+                        .elapsedTime()
+                } , ${data2.elapsedTime()}  , ${data3.elapsedTime()}  " +
                         ", ${data4.elapsedTime()}  , ${data5.elapsedTime()}  , ${data6.elapsedTime()} " +
                         ", ${data7.elapsedTime()} , ${data8.elapsedTime()} "
             )

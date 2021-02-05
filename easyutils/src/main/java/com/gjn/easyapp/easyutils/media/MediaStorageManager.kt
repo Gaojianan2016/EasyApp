@@ -98,7 +98,6 @@ class MediaStorageManager(private val context: Context) {
         val addData =
             cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED))
 
-        if (name == null) return null
         val parentPath = path.replace(name, "")
 
         if (filterListener != null) {
@@ -142,9 +141,7 @@ class MediaStorageManager(private val context: Context) {
             0
         }
 
-        if (name == null) return null
         val parentPath = path.replace(name, "")
-
 
         if (filterListener != null) {
             if (!filterListener!!.onFilterVideo(name)) return null
@@ -177,15 +174,13 @@ class MediaStorageManager(private val context: Context) {
     }
 
     private fun addMedia(info: MediaInfo) {
-        if (info.parent != null) {
-            mMediaList.add(info)
-            if (!mFileMap.containsKey(info.parent!!)) {
-                info.dirSize = 1
-                mFileMap[info.parent!!] = info
-            } else {
-                val size = mFileMap[info.parent!!]!!.dirSize
-                mFileMap[info.parent!!]!!.dirSize = size + 1
-            }
+        mMediaList.add(info)
+        if (!mFileMap.containsKey(info.parent)) {
+            info.dirSize = 1
+            mFileMap[info.parent] = info
+        } else {
+            val size = mFileMap[info.parent]!!.dirSize
+            mFileMap[info.parent]!!.dirSize = size + 1
         }
     }
 

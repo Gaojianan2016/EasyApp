@@ -1,6 +1,7 @@
 package com.gjn.easyapp.easyutils
 
 import android.app.Activity
+import android.graphics.Paint
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
@@ -62,6 +63,11 @@ fun ViewGroup.clearChildView(cls: Class<out View>) {
             this.removeViewAt(i)
         }
     }
+}
+
+//画中横线
+fun TextView?.strikeLine(){
+    this?.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
 }
 
 fun TextView.trimText(): String = text.toString().trim()
