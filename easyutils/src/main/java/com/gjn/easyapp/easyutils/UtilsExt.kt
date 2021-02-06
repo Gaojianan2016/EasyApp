@@ -3,7 +3,6 @@ package com.gjn.easyapp.easyutils
 import android.app.Application
 import android.graphics.Color
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
@@ -35,36 +34,6 @@ fun Float?.isNullOrZero(): Boolean = this == null || this == 0f
 fun Double?.isNullOrZero(): Boolean = this == null || this == 0.0
 
 fun Long?.isNullOrZero(): Boolean = this == null || this == 0L
-
-@JvmOverloads
-fun String.logV(tag: String = "LogExt", tr: Throwable? = null) {
-    Log.v(tag, this, tr)
-}
-
-@JvmOverloads
-fun String.logD(tag: String = "LogExt", tr: Throwable? = null) {
-    Log.d(tag, this, tr)
-}
-
-@JvmOverloads
-fun String.logI(tag: String = "LogExt", tr: Throwable? = null) {
-    Log.i(tag, this, tr)
-}
-
-@JvmOverloads
-fun String.logW(tag: String = "LogExt", tr: Throwable? = null) {
-    Log.w(tag, this, tr)
-}
-
-@JvmOverloads
-fun String.logE(tag: String = "LogExt", tr: Throwable? = null) {
-    Log.e(tag, this, tr)
-}
-
-@JvmOverloads
-fun String.logWTF(tag: String = "LogExt", tr: Throwable? = null) {
-    Log.wtf(tag, this, tr)
-}
 
 /**
  * 创建ViewModel对象
@@ -132,3 +101,9 @@ fun <T> List<T?>?.toMutableListOrEmptyList(): MutableList<T> {
     }
     return list
 }
+
+/**
+ * 单选position
+ * */
+fun singleChoicePosition(cur: Int, change: Int, default: Int = -1): Int =
+    if (cur == change) default else change
