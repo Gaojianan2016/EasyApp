@@ -6,6 +6,10 @@ import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 
+fun Class<out Activity>.startActivity(context: Context?) {
+    startActivity(context, null)
+}
+
 fun Class<out Activity>.startActivity(context: Context?, bundle: Bundle? = null) {
     Intent(context, this).apply { bundle?.let { putExtras(it) } }.startActivity(context)
 }
@@ -16,6 +20,13 @@ fun Class<out Activity>.startActivity(context: Context?, map: Map<String, Any?> 
 
 fun Intent.startActivity(context: Context?) {
     context?.startActivity(this)
+}
+
+fun Class<out Activity>.startActivityForResult(
+    activity: Activity?,
+    requestCode: Int
+) {
+    startActivityForResult(activity, requestCode, null)
 }
 
 fun Class<out Activity>.startActivityForResult(

@@ -21,10 +21,13 @@ class DownLoadManager(private val activity: FragmentActivity) {
     private val mOkHttpClient = OkHttpClient()
     private var mCall: Call? = null
 
-    fun resetDownLoad() {
+    //停止下载 会改变下载状态
+    fun stopDownLoad() {
         downLoadStatus = DOWNLOAD_PRE
+        cancelDownLoad()
     }
 
+    //取消下载 不会改变下载状态
     fun cancelDownLoad() {
         mCall?.cancel()
     }
@@ -32,8 +35,8 @@ class DownLoadManager(private val activity: FragmentActivity) {
     fun openFile(file: File?) {
         if (file == null) return
         if (!file.exists()) return
-        //安卓8.0之后需要申请未知来源权限
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        //如果是apk 安卓8.0之后需要申请未知来源权限
+        if (file.path.endsWith(".apk") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (!activity.packageManager.canRequestPackageInstalls()) {
                 activity.simpleActivityResult(
                     Intent(
@@ -50,13 +53,17 @@ class DownLoadManager(private val activity: FragmentActivity) {
     }
 
     fun downLoadFile(url: String, path: String, name: String? = url.urlObtainName()) {
-        if (url.isEmpty() || path.isEmpty() || name.isNullOrEmpty()) return
+        if (url.isEmpty() || path.isEmpty() || name.isNullOrEmpty()) {
+            onDownLoadListener?.downLoadStatus(downLoadStatus, "下载内容为空")
+            return
+        }
         if (downLoadStatus == DOWNLOAD_SUCCESS) {
+            onDownLoadListener?.downLoadStatus(downLoadStatus, "已下载成功")
             openFile(File(path, name))
             return
         }
         if (downLoadStatus == DOWNLOAD_ING) {
-            println("file id downloading")
+            onDownLoadListener?.downLoadStatus(downLoadStatus, "正在下载中")
             return
         }
         activity.requestWRPermission {
@@ -69,6 +76,7 @@ class DownLoadManager(private val activity: FragmentActivity) {
                     launchMain {
                         onDownLoadListener?.error(call, e)
                         onDownLoadListener?.fail(call)
+                        onDownLoadListener?.end(call)
                     }
                 }
 
@@ -109,7 +117,7 @@ class DownLoadManager(private val activity: FragmentActivity) {
         var iStream: InputStream? = null
         var fos: FileOutputStream? = null
         val buffer = ByteArray(streamByte(length))
-        var len = 0
+        var len: Int
         var readStream = 0
         launchMain {
             onDownLoadListener?.start(call, file, file.name, length)
@@ -175,6 +183,9 @@ class DownLoadManager(private val activity: FragmentActivity) {
 }
 
 abstract class SimpleDownLoadListener : OnDownLoadListener {
+    override fun downLoadStatus(status: Int, tip: String) {
+    }
+
     override fun start(call: Call, file: File, name: String, length: Int) {
     }
 
@@ -195,6 +206,9 @@ abstract class SimpleDownLoadListener : OnDownLoadListener {
 }
 
 interface OnDownLoadListener {
+
+    fun downLoadStatus(status: Int, tip: String)
+
     fun start(call: Call, file: File, name: String, length: Int)
 
     fun downLoading(call: Call, readStream: Int, totalStream: Int)
