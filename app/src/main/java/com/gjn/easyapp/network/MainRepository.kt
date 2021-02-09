@@ -17,6 +17,13 @@ object MainRepository {
         result
     }
 
+    suspend fun getGirls2(page: Int = 1, count: Int = 10) = withContext(Dispatchers.IO) {
+        val result = AppNetWorker.getInstant().gankApi.girls(page, count).result()
+        //可以做 缓存数据 等操作
+        //...
+        result
+    }
+
     suspend fun getGirlsFlow(page: Int = 1, count: Int = 10) = flow {
         val result = AppNetWorker.getInstant().gankApi.girls(page, count)
         throw RuntimeException("手动创建的错误")
@@ -39,13 +46,6 @@ object MainRepository {
     ) {
         A3Fragment.GirlPagaDataSource()
     }.flow
-
-    suspend fun getGirls2(page: Int = 1, count: Int = 10) = withContext(Dispatchers.IO) {
-        val result = AppNetWorker.getInstant().gankApi.girls(page, count).result()
-        //可以做 缓存数据 等操作
-        //...
-        result
-    }
 
     suspend fun getBanner() = withContext(Dispatchers.IO) {
         val result = AppNetWorker.getInstant().wanApi.getBanner().result()

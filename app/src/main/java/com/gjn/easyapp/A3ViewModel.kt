@@ -3,10 +3,7 @@ package com.gjn.easyapp
 import androidx.lifecycle.*
 import androidx.paging.cachedIn
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.*
 
 class A3ViewModel : ViewModel() {
 
@@ -43,21 +40,8 @@ class A3ViewModel : ViewModel() {
     val gankData3 = girlPage.switchMap {
         liveData {
             a3Repository.getGirlsFlow(it)
-                .onStart {
-                    //开始请求
-                    println("开始请求")
-                }
-                .catch { t: Throwable ->
-                    //报错
-                    println("请求出错 ${t.message}")
-                }
-                .onCompletion {
-                    //完成
-                    println("完成请求")
-                }
-                .collectLatest {
-                    emit(it)
-                }
+                .loading()
+                .collectLatest { emit(it) }
         }
     }
 
@@ -68,5 +52,17 @@ class A3ViewModel : ViewModel() {
     fun getGirlsFlow() {
         girlPage.value = 1
     }
+
+    fun <T> Flow<T>.loading() =
+        this.onStart {
+            //开始请求
+            println("开始请求")
+        }.catch { tr ->
+            //报错
+            println(tr.message)
+        }.onCompletion {
+            //完成
+            println("完成请求")
+        }
 
 }
