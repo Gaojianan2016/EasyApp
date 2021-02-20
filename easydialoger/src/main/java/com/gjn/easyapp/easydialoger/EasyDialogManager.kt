@@ -24,10 +24,11 @@ import com.gjn.easyapp.easyutils.gone
 import com.gjn.easyapp.easyutils.screenWidth
 import com.gjn.easyapp.easyutils.visible
 import java.util.*
+import java.util.concurrent.CopyOnWriteArrayList
 
 class EasyDialogManager {
 
-    private val fragmentStack: Stack<BaseDialogFragment> = Stack()
+    private val fragmentList: CopyOnWriteArrayList<BaseDialogFragment> = CopyOnWriteArrayList()
     private var mFragmentManager: FragmentManager? = null
     private var mActivity: Activity? = null
 
@@ -42,7 +43,7 @@ class EasyDialogManager {
     }
 
     fun addOnDialogCancelListener(listener: OnDialogCancelListener) {
-        for (fragment in fragmentStack) {
+        for (fragment in fragmentList) {
             fragment?.addOnDialogCancelListener(listener)
         }
     }
@@ -60,16 +61,16 @@ class EasyDialogManager {
         if (dialogFragment == null) {
             return
         }
-        if (fragmentStack.contains(dialogFragment)) {
+        if (fragmentList.contains(dialogFragment)) {
             dismiss(dialogFragment)
         }
     }
 
     fun clearDialogs() {
-        for (fragment in fragmentStack) {
+        for (fragment in fragmentList) {
             dismissDialog(fragment)
         }
-        fragmentStack.clear()
+        fragmentList.clear()
     }
 
     @JvmOverloads
@@ -283,10 +284,11 @@ class EasyDialogManager {
             return
         }
         log("show $dialogFragment")
-        fragmentStack.push(dialogFragment)
+        fragmentList.add(dialogFragment)
         dialogFragment.addOnDialogCancelListener(object : OnDialogCancelListener {
             override fun onCancel(dialog: DialogInterface, dialogFragment: DialogFragment) {
-                fragmentStack.remove(dialogFragment)
+                log("cancel dismiss $dialogFragment")
+                fragmentList.remove(dialogFragment)
             }
         })
         dialogFragment.show(mFragmentManager!!, dialogFragment.tag)
@@ -297,7 +299,7 @@ class EasyDialogManager {
             return
         }
         log("dismiss $dialogFragment")
-        fragmentStack.remove(dialogFragment)
+        fragmentList.remove(dialogFragment)
         dialogFragment.clearOnDialogCancelListeners()
         dialogFragment.dismissAllowingStateLoss()
     }

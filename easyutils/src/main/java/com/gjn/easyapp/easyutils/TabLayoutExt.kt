@@ -2,6 +2,7 @@ package com.gjn.easyapp.easyutils
 
 import android.graphics.drawable.Drawable
 import android.view.View
+import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -10,42 +11,53 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-class TabScrollBar(
-    any: Any,
-    private val tabLayout: TabLayout,
-    private val viewPager2: ViewPager2?,
-    val bars: MutableList<BarTab> = mutableListOf()
-) {
-    private var fragment: Fragment? = null
-    private var fragmentManager: FragmentManager? = null
+class TabScrollBar {
+
+    private val tabLayout: TabLayout
+    private val viewPager2: ViewPager2?
+    private val fragment: Fragment?
+    private val fragmentManager: FragmentManager
     private var customViewLayoutId: Int = View.NO_ID
     private var onCustomViewConvertCallback: OnCustomViewConvertCallback? = null
 
+    val bars: MutableList<BarTab>
     var activity: FragmentActivity? = null
         private set
     var curPosition: Int = 0
         private set
 
-    init {
-        when (any) {
-            is FragmentActivity -> {
-                activity = any
-                fragmentManager = any.supportFragmentManager
-            }
-            is Fragment -> {
-                activity = any.activity
-                fragment = any
-                fragmentManager = any.childFragmentManager
-            }
-        }
+    constructor(
+        activity: FragmentActivity,
+        tabLayout: TabLayout,
+        viewPager2: ViewPager2?,
+        bars: MutableList<BarTab> = mutableListOf()
+    ) {
+        this.activity = activity
+        this.fragment = null
+        fragmentManager = activity.supportFragmentManager
+
+        this.tabLayout = tabLayout
+        this.viewPager2 = viewPager2
+        this.bars = bars
+    }
+
+    constructor(
+        fragment: Fragment,
+        tabLayout: TabLayout,
+        viewPager2: ViewPager2?,
+        bars: MutableList<BarTab> = mutableListOf()
+    ) {
+        this.activity = fragment.activity
+        this.fragment = fragment
+        this.fragmentManager = fragment.childFragmentManager
+
+        this.tabLayout = tabLayout
+        this.viewPager2 = viewPager2
+        this.bars = bars
     }
 
 
     fun create() {
-        if (fragmentManager == null) {
-            "fragmentManager is null.".logE(TAG)
-            return
-        }
         if (bars.isEmpty()) {
             "bars is null.".logE(TAG)
             return
@@ -57,7 +69,7 @@ class TabScrollBar(
             }
         } else {
             if (fragment != null) {
-                viewPager2.adapter = ViewPager2Adapter(fragment!!)
+                viewPager2.adapter = ViewPager2Adapter(fragment)
             } else if (activity != null) {
                 viewPager2.adapter = ViewPager2Adapter(activity!!)
             }
@@ -156,7 +168,7 @@ data class BarTab(
     var any: Any? = null
 )
 
-abstract class SimpleCustomViewConvertCallback: OnCustomViewConvertCallback{
+abstract class SimpleCustomViewConvertCallback : OnCustomViewConvertCallback {
     override fun onTabSelected(view: View?) {
     }
 
@@ -170,4 +182,23 @@ interface OnCustomViewConvertCallback {
     fun onTabSelected(view: View?)
 
     fun onTabUnselected(view: View?)
+}
+
+/**
+ * 强制固定TabLayout宽度 兼容5.0 5.1
+ * 地址 https://juejin.cn/post/6925318518128771079
+ * */
+fun TabLayout.setSelectedTabIndicatorFixWidth(width: Float){
+    setSelectedTabIndicator(object : DrawableWrapper(tabSelectedIndicator){
+        override fun setBounds(left: Int, top: Int, right: Int, bottom: Int) {
+            var realLeft = left
+            var realRight = right
+            if((right - left).toFloat() != width){
+                val center = left + (right - left).toFloat() / 2
+                realLeft = (center - width / 2).toInt()
+                realRight = (center + width / 2).toInt()
+            }
+            super.setBounds(realLeft, top, realRight, bottom)
+        }
+    })
 }

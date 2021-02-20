@@ -3,20 +3,20 @@ package com.gjn.easyapp.easyutils
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
-import java.util.*
+import java.util.concurrent.CopyOnWriteArrayList
 
 class AppManager private constructor() {
 
-    private val activityStack: Stack<Activity> = Stack()
+    private val activityList: CopyOnWriteArrayList<Activity> = CopyOnWriteArrayList()
 
     fun addActivity(activity: Activity) {
-        activityStack.add(activity)
+        activityList.add(activity)
     }
 
     fun removeActivity(activity: Activity) {
-        if (activityStack.contains(activity)) {
+        if (activityList.contains(activity)) {
             finishActivity(activity)
-            activityStack.remove(activity)
+            activityList.remove(activity)
         }
     }
 
@@ -27,20 +27,18 @@ class AppManager private constructor() {
     }
 
     fun finishActivity(vararg clz: Class<out Activity>) {
-        activityStack.forEach { activity ->
+        activityList.forEach { activity ->
             if (clz.contains(activity::class.java)) {
                 finishActivity(activity)
             }
         }
     }
 
-    fun topActivity(): Activity = activityStack.lastElement()
-
     fun clearActivity() {
-        for (activity in activityStack) {
+        for (activity in activityList) {
             finishActivity(activity)
         }
-        activityStack.clear()
+        activityList.clear()
     }
 
     fun exitApp(context: Context) {

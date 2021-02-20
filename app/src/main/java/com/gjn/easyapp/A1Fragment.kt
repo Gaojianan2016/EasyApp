@@ -16,6 +16,8 @@ import com.gjn.easyapp.easynetworker.DownLoadManager
 import com.gjn.easyapp.easynetworker.SimpleDownLoadListener
 import com.gjn.easyapp.easyutils.*
 import kotlinx.android.synthetic.main.fragment_a1.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import okhttp3.Call
 import java.io.File
 
@@ -46,7 +48,7 @@ class A1Fragment : BaseLazyFragment() {
                     mDialogManager.showAndroidDialog("标题", "测试")
                     mDialogManager.showEasyNormalDialog("消息",
                         positive = "按钮1",
-                        positiveClickListener = View.OnClickListener { showToast("关闭按钮1") }
+                        positiveClickListener = { showToast("关闭按钮1") }
                     )
                     mDialogManager.showSmallLoadingDialog()
 
@@ -58,6 +60,14 @@ class A1Fragment : BaseLazyFragment() {
                             }
                     )
 
+                    launchMain {
+                        delay(5000)
+                        try {
+                            mDialogManager.clearDialogs()
+                        }catch (e: Exception){
+                            e.printStackTrace()
+                        }
+                    }
                 }
                 btn3 -> {
                     et_pwd.togglePassword()
