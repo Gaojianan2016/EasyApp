@@ -416,22 +416,22 @@ fun Fragment.simpleRequestPermissions(
 }
 
 //常用的权限询问 读写权限
-fun FragmentActivity.requestWRPermission(block: () -> Unit) {
+fun FragmentActivity.requestWRPermission(
+    customDialogBlock: ((List<Permission>) -> Unit)? = null,
+    block: () -> Unit
+) {
     simpleRequestPermissions(
         arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
-    ) {
-        block.invoke()
-    }
+        ), customDialogBlock, block
+    )
 }
 
 //常用的权限询问 相机权限
-fun FragmentActivity.requestCameraPermission(block: () -> Unit) {
-    simpleRequestPermissions(
-        arrayOf(Manifest.permission.CAMERA)
-    ) {
-        block.invoke()
-    }
+fun FragmentActivity.requestCameraPermission(
+    customDialogBlock: ((List<Permission>) -> Unit)? = null,
+    block: () -> Unit
+) {
+    simpleRequestPermissions(arrayOf(Manifest.permission.CAMERA), customDialogBlock, block)
 }
