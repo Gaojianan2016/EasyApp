@@ -6,6 +6,8 @@ import org.json.JSONObject
 
 object LogUtil {
 
+    private const val LOG_TAG = "easyLog"
+
     private const val LEVEL_V = 2
     private const val LEVEL_D = 3
     private const val LEVEL_I = 4
@@ -13,7 +15,7 @@ object LogUtil {
     private const val LEVEL_E = 6
     private const val LEVEL_WTF = 7
 
-    private fun println(level: Int, tag: String = "easyLog", msg: String?, tr: Throwable? = null) {
+    private fun println(level: Int, tag: String = LOG_TAG, msg: String?, tr: Throwable? = null) {
         when (level) {
             LEVEL_D -> msg?.logD(tag, tr)
             LEVEL_I -> msg?.logI(tag, tr)
@@ -24,38 +26,31 @@ object LogUtil {
         }
     }
 
-    @JvmOverloads
-    fun d(tag: String = "easyLog", msg: String?, tr: Throwable? = null) {
+    fun d(tag: String = LOG_TAG, msg: String?, tr: Throwable? = null) {
         println(LEVEL_D, tag, msg, tr)
     }
 
-    @JvmOverloads
-    fun v(tag: String = "easyLog", msg: String?, tr: Throwable? = null) {
+    fun v(tag: String = LOG_TAG, msg: String?, tr: Throwable? = null) {
         println(LEVEL_V, tag, msg, tr)
     }
 
-    @JvmOverloads
-    fun i(tag: String = "easyLog", msg: String?, tr: Throwable? = null) {
+    fun i(tag: String = LOG_TAG, msg: String?, tr: Throwable? = null) {
         println(LEVEL_I, tag, msg, tr)
     }
 
-    @JvmOverloads
-    fun w(tag: String = "easyLog", msg: String?, tr: Throwable? = null) {
+    fun w(tag: String = LOG_TAG, msg: String?, tr: Throwable? = null) {
         println(LEVEL_W, tag, msg, tr)
     }
 
-    @JvmOverloads
-    fun e(tag: String = "easyLog", msg: String?, tr: Throwable? = null) {
+    fun e(tag: String = LOG_TAG, msg: String?, tr: Throwable? = null) {
         println(LEVEL_E, tag, msg, tr)
     }
 
-    @JvmOverloads
-    fun wtf(tag: String = "easyLog", msg: String?, tr: Throwable? = null) {
+    fun wtf(tag: String = LOG_TAG, msg: String?, tr: Throwable? = null) {
         println(LEVEL_WTF, tag, msg, tr)
     }
 
-    @JvmOverloads
-    fun json(tag: String = "easyLog", any: Any?) {
+    fun json(tag: String = LOG_TAG, any: Any?) {
         if (any == null) {
             e(tag, "json is null")
             return

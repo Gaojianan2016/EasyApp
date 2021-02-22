@@ -23,7 +23,6 @@ import com.gjn.easyapp.easyutils.dp
 import com.gjn.easyapp.easyutils.gone
 import com.gjn.easyapp.easyutils.screenWidth
 import com.gjn.easyapp.easyutils.visible
-import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 
 class EasyDialogManager {
@@ -49,18 +48,14 @@ class EasyDialogManager {
     }
 
     fun showDialog(dialogFragment: BaseDialogFragment?): BaseDialogFragment? {
-        if (dialogFragment == null) {
-            return null
-        }
+        if (dialogFragment == null) return null
         dismissDialog(dialogFragment)
         show(dialogFragment)
         return dialogFragment
     }
 
     fun dismissDialog(dialogFragment: BaseDialogFragment?) {
-        if (dialogFragment == null) {
-            return
-        }
+        if (dialogFragment == null) return
         if (fragmentList.contains(dialogFragment)) {
             dismiss(dialogFragment)
         }
@@ -73,7 +68,6 @@ class EasyDialogManager {
         fragmentList.clear()
     }
 
-    @JvmOverloads
     fun showAndroidDialog(
         title: CharSequence,
         msg: CharSequence,
@@ -84,28 +78,25 @@ class EasyDialogManager {
         neutral: CharSequence? = null,
         neutralClickListener: DialogInterface.OnClickListener? = null
     ): BaseDialogFragment? {
-        if (mActivity == null) {
-            return null
-        }
+        if (mActivity == null) return null
         val builder = AlertDialog.Builder(mActivity!!)
         builder.run {
             setTitle(title)
             setMessage(msg)
-            if (negative != null) {
+            if (positive != null) {
                 setPositiveButton(positive, positiveClickListener)
             }
             if (negative != null) {
-                setNegativeButton(positive, positiveClickListener)
+                setNegativeButton(negative, negativeClickListener)
             }
             if (neutral != null) {
-                setNeutralButton(neutral, positiveClickListener)
+                setNeutralButton(neutral, neutralClickListener)
             }
         }
         val dialogFragment = EasyDialogFragment.newInstance(builder)
         return showDialog(dialogFragment)
     }
 
-    @JvmOverloads
     fun showEasyNormalDialog(
         msg: CharSequence,
         dimAmount: Float = BaseDialogFragment.DIM_AMOUNT,
@@ -114,9 +105,7 @@ class EasyDialogManager {
         negative: CharSequence? = null,
         negativeClickListener: View.OnClickListener? = null
     ): BaseDialogFragment? {
-        if (mActivity == null) {
-            return null
-        }
+        if (mActivity == null) return null
         val dialogFragment = EasyDialogFragment.newInstance(R.layout.edf_dialog_normal,
             object : ConvertLayoutDialogFragment {
                 override fun convertView(holder: ViewHolder, dialogFragment: DialogFragment) {
@@ -152,7 +141,6 @@ class EasyDialogManager {
         return showDialog(dialogFragment)
     }
 
-    @JvmOverloads
     fun showEasyDialog(
         msg: CharSequence,
         dimAmount: Float = BaseDialogFragment.DIM_AMOUNT,
@@ -162,9 +150,7 @@ class EasyDialogManager {
         negative: CharSequence? = null,
         negativeClickListener: View.OnClickListener? = null
     ): BaseDialogFragment? {
-        if (mActivity == null) {
-            return null
-        }
+        if (mActivity == null) return null
         val dialogFragment = EasyDialogFragment.newInstance(R.layout.edf_dialog_input,
             object : ConvertLayoutDialogFragment {
                 override fun convertView(holder: ViewHolder, dialogFragment: DialogFragment) {
@@ -243,14 +229,11 @@ class EasyDialogManager {
 
     fun showBigLoadingDialog(): BaseDialogFragment? = showEasyLoadingDialog(LOADING_B)
 
-    @JvmOverloads
     fun showEasyLoadingDialog(
         size: Int,
         dimAmount: Float = BaseDialogFragment.DIM_AMOUNT
     ): BaseDialogFragment? {
-        if (mActivity == null) {
-            return null
-        }
+        if (mActivity == null) return null
         val edge = when (size) {
             LOADING_B -> mActivity!!.screenWidth() / LOADING_B
             LOADING_N -> mActivity!!.screenWidth() / LOADING_N
@@ -280,9 +263,7 @@ class EasyDialogManager {
     }
 
     private fun show(dialogFragment: BaseDialogFragment) {
-        if (mFragmentManager == null) {
-            return
-        }
+        if (mFragmentManager == null) return
         log("show $dialogFragment")
         fragmentList.add(dialogFragment)
         dialogFragment.addOnDialogCancelListener(object : OnDialogCancelListener {
@@ -295,9 +276,6 @@ class EasyDialogManager {
     }
 
     private fun dismiss(dialogFragment: BaseDialogFragment) {
-        if (mFragmentManager == null) {
-            return
-        }
         log("dismiss $dialogFragment")
         fragmentList.remove(dialogFragment)
         dialogFragment.clearOnDialogCancelListeners()

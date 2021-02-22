@@ -71,7 +71,7 @@ abstract class ABaseFragment : Fragment(), UIEvent {
     abstract fun initData()
 
     override fun showToast(msg: String?) {
-        ToastUtil.instance(mActivity).showToast(msg)
+        ToastUtil.showToast(msg)
     }
 
     override fun showNextActivity(cls: Class<out Activity>, bundle: Bundle?) {

@@ -165,7 +165,8 @@ object RetrofitManager {
     }
 
     /**
-     * 处理gson解析时类型不匹配或者空值问题。https://www.jianshu.com/p/d8dcc656a06e
+     * 处理gson解析时类型不匹配或者空值问题。
+     * https://www.jianshu.com/p/d8dcc656a06e
      */
     class GsonTypeAdapterFactory : TypeAdapterFactory {
 

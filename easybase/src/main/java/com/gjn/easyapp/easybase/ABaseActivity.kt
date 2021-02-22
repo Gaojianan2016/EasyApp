@@ -58,7 +58,7 @@ abstract class ABaseActivity : AppCompatActivity(), UIEvent {
     abstract fun initData()
 
     override fun showToast(msg: String?) {
-        ToastUtil.instance(mContext).showToast(msg)
+        ToastUtil.showToast(msg)
     }
 
     override fun showNextActivity(cls: Class<out Activity>, bundle: Bundle?) {
