@@ -1,8 +1,16 @@
 package com.gjn.easyapp
 
+import android.os.Bundle
 import com.gjn.easyapp.easybase.ABaseActivity
+import com.gjn.easyapp.easyutils.AutoScreenUtil
+import com.gjn.easyapp.easyutils.IAutoChange
 
-class GalleryActivity : ABaseActivity() {
+class GalleryActivity : ABaseActivity(), IAutoChange {
+
+    override fun preCreate(savedInstanceState: Bundle?) {
+        super.preCreate(savedInstanceState)
+        AutoScreenUtil.setCustomDensity(this)
+    }
 
     override fun layoutId(): Int = R.layout.activity_gallery
 
@@ -21,5 +29,7 @@ class GalleryActivity : ABaseActivity() {
     override fun initData() {
 
     }
+
+    override fun newWidth(): Float = 410f
 
 }

@@ -11,9 +11,7 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Environment
 import android.provider.MediaStore
-import com.gjn.easyapp.easyutils.launchMain
-import com.gjn.easyapp.easyutils.scanFile
-import com.gjn.easyapp.easyutils.urlObtainName
+import com.gjn.easyapp.easyutils.*
 
 class MediaStorageManager(private val context: Context) {
 
@@ -52,12 +50,10 @@ class MediaStorageManager(private val context: Context) {
 
     private fun registerMediaObserver() {
         context.contentResolver.registerContentObserver(
-            videoUri,
-            true, videoObserver
+            videoUri, true, videoObserver
         )
         context.contentResolver.registerContentObserver(
-            photoUri,
-            true, photoObserver
+            photoUri, true, photoObserver
         )
     }
 
@@ -130,6 +126,7 @@ class MediaStorageManager(private val context: Context) {
         val duration = try {
             cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION))
         } catch (e: Exception) {
+            "获取视频duration失败".logW(TAG)
             0
         }
 
@@ -138,6 +135,7 @@ class MediaStorageManager(private val context: Context) {
             mmr.setDataSource(path)
             mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION).toInt()
         } catch (e: Exception) {
+            "获取视频rotation失败".logW(TAG)
             0
         }
 
@@ -208,16 +206,20 @@ class MediaStorageManager(private val context: Context) {
         }
 
         override fun doInBackground(vararg params: Void?): Void? {
-            if (isFindPhoto) {
-                //获取照片
-                generatePhoto()
+            try {
+                if (isFindPhoto) {
+                    //获取照片
+                    generatePhoto()
+                }
+                if (isFindVideo) {
+                    //获取视频
+                    generateVideo()
+                }
+                //混合排序列表
+                sortList()
+            } catch (e: Exception) {
+                "获取数据失败，请检查是否打开给予权限".logE(TAG)
             }
-            if (isFindVideo) {
-                //获取视频
-                generateVideo()
-            }
-            //混合排序列表
-            sortList()
             return null
         }
 
@@ -252,9 +254,9 @@ class MediaStorageManager(private val context: Context) {
         }
 
         private fun sortList() {
-            mMediaList.sortWith(kotlin.Comparator { o1, o2 ->
+            mMediaList.sortWith { o1, o2 ->
                 o2.addTime.compareTo(o1.addTime)
-            })
+            }
         }
     }
 
@@ -299,8 +301,7 @@ class MediaStorageManager(private val context: Context) {
                 )
             }
             val cursor = context.contentResolver.query(
-                this.uri, null, null,
-                null, "_id DESC LIMIT 1"
+                this.uri, null, null, null, ID_DESC_LIMIT
             )
             cursor?.run {
                 if (cursor.moveToNext()) {
@@ -341,6 +342,10 @@ class MediaStorageManager(private val context: Context) {
     }
 
     companion object {
+        private const val TAG = "MediaStorageManager"
+
+        const val ID_DESC_LIMIT = "_id DESC LIMIT 1"
+
         const val TYPE_PHOTO = 0
         const val TYPE_VIDEO = 1
     }
