@@ -8,6 +8,7 @@ import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.QRCodeReader
 import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
+import kotlin.jvm.Throws
 
 object QRCodeUtils {
 
