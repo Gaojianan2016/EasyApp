@@ -53,7 +53,7 @@ fun FragmentActivity.takePictures(folderPath: String, block: (Int, Intent?) -> U
 
 fun Context.openBrowser(url: String?) {
     if (url.isNullOrEmpty()) return
-    startActivity(Intent("android.intent.action.VIEW").also {
+    startActivity(Intent(Intent.ACTION_VIEW).also {
         it.data = Uri.parse(url)
     })
 }

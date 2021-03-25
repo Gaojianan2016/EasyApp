@@ -5,7 +5,6 @@ import android.content.DialogInterface
 import android.graphics.Color
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -19,10 +18,7 @@ import com.gjn.easyapp.easydialoger.base.BaseDialogFragment
 import com.gjn.easyapp.easydialoger.base.ConvertLayoutDialogFragment
 import com.gjn.easyapp.easydialoger.base.OnDialogCancelListener
 import com.gjn.easyapp.easydialoger.base.ViewHolder
-import com.gjn.easyapp.easyutils.dp
-import com.gjn.easyapp.easyutils.gone
-import com.gjn.easyapp.easyutils.screenWidth
-import com.gjn.easyapp.easyutils.visible
+import com.gjn.easyapp.easyutils.*
 import java.util.concurrent.CopyOnWriteArrayList
 
 class EasyDialogManager {
@@ -48,7 +44,7 @@ class EasyDialogManager {
     }
 
     fun showDialog(dialogFragment: BaseDialogFragment?): BaseDialogFragment? {
-        if (dialogFragment == null) return null
+        if (dialogFragment == null) return dialogFragment
         dismissDialog(dialogFragment)
         show(dialogFragment)
         return dialogFragment
@@ -283,7 +279,7 @@ class EasyDialogManager {
     }
 
     private fun log(msg: String) {
-        Log.i(TAG, msg)
+        msg.logI(TAG)
     }
 
     companion object {

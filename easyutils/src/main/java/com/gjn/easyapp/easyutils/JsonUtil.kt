@@ -2,11 +2,14 @@ package com.gjn.easyapp.easyutils
 
 object JsonUtil {
 
-    @JvmOverloads
-    fun formatJson(json: String?, tab: String = ""): String {
+    fun formatJson(
+        json: String?,
+        tab: String = "",
+        cleanRegex: Regex = "\t|\r|\n".toRegex()
+    ): String {
         val sb = StringBuilder(tab)
         json?.run {
-            val clearJson = replace("\t|\r|\n".toRegex(), "")
+            val clearJson = replace(cleanRegex, "")
             val ln = '\n'
             var line = 0
             for (element in clearJson) {

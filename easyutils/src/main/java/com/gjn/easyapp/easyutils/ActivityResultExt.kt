@@ -27,12 +27,12 @@ internal class ActivityResultFragment : Fragment() {
 
     fun startActivityForResult(
         intent: Intent,
-        bundle: Bundle?,
+        extras: Bundle?,
         listener: IActivityResultListener?
     ) {
         val requestCode = randomRequestCode()
         mFragmentListeners.put(requestCode, listener)
-        startActivityForResult(intent.apply { bundle?.let { putExtras(it) } }, requestCode)
+        startActivityForResult(intent.apply { extras?.let { putExtras(it) } }, requestCode)
     }
 
     /**
@@ -84,10 +84,10 @@ class ActivityResultHelper {
 
     fun startActivityForResult(
         intent: Intent,
-        bundle: Bundle?,
+        extras: Bundle?,
         listener: IActivityResultListener?
     ) {
-        getActivityResultFragment().startActivityForResult(intent, bundle, listener)
+        getActivityResultFragment().startActivityForResult(intent, extras, listener)
     }
 
     private fun getActivityResultFragment(): ActivityResultFragment {
@@ -122,13 +122,13 @@ class ActivityResultHelper {
 
 fun FragmentActivity.simpleActivityResult(
     intent: Intent,
-    bundle: Bundle? = null,
+    extras: Bundle? = null,
     block: (Int, Intent?) -> Unit
 ) {
     try {
         ActivityResultHelper.newInstance(this)
             .startActivityForResult(
-                intent, bundle,
+                intent, extras,
                 object : ActivityResultHelper.SimpleActivityResultListener() {
                     override fun onActivityResult(resultCode: Int, data: Intent?) {
                         block.invoke(resultCode, data)
@@ -141,13 +141,13 @@ fun FragmentActivity.simpleActivityResult(
 
 fun Fragment.simpleActivityResult(
     intent: Intent,
-    bundle: Bundle? = null,
+    extras: Bundle? = null,
     block: (Int, Intent?) -> Unit
 ) {
     try {
         ActivityResultHelper.newInstance(this)
             .startActivityForResult(
-                intent, bundle,
+                intent, extras,
                 object : ActivityResultHelper.SimpleActivityResultListener() {
                     override fun onActivityResult(resultCode: Int, data: Intent?) {
                         block.invoke(resultCode, data)

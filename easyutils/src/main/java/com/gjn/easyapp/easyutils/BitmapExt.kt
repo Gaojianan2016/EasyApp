@@ -1,10 +1,7 @@
 package com.gjn.easyapp.easyutils
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Matrix
+import android.graphics.*
 import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
@@ -12,9 +9,16 @@ import android.renderscript.ScriptIntrinsicBlur
 import android.view.Gravity
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.InputStream
 import kotlin.math.roundToInt
 
-@JvmOverloads
+//compress
+fun Bitmap.compress(quality: Int = 90): Bitmap? {
+    if (quality == 90) return this
+    return toByte(quality = quality)?.toBitmap()
+}
+
+//toByte
 fun Bitmap.toByte(
     format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG,
     quality: Int = 90
@@ -24,21 +28,41 @@ fun Bitmap.toByte(
     return outputStream.toByteArray()
 }
 
-@JvmOverloads
-fun Bitmap.compress(quality: Int = 90): Bitmap? {
-    if (quality == 90) return this
-    return toByte(quality = quality)?.toBitmap()
-}
+fun File.toByte(quality: Int = 90, opts: BitmapFactory.Options? = null) =
+    this.toBitmap(opts = opts)?.toByte(quality = quality)
 
-fun ByteArray.toBitmap(): Bitmap? = BitmapFactory.decodeByteArray(this, 0, size)
+fun Int.toByte(context: Context, quality: Int = 90, opts: BitmapFactory.Options? = null) =
+    this.toBitmap(context, opts = opts)?.toByte(quality = quality)
 
-@JvmOverloads
-fun File.toByte(quality: Int = 90): ByteArray? {
-    return BitmapFactory.decodeFile(path).toByte(quality = quality)
-}
+fun InputStream.toByte(
+    quality: Int = 90,
+    outPadding: Rect? = null,
+    opts: BitmapFactory.Options? = null
+) =
+    this.toBitmap(outPadding = outPadding, opts = opts)?.toByte(quality = quality)
 
-@JvmOverloads
-fun File.toBitmap(
+//toBitmap
+fun ByteArray.toBitmap(quality: Int = 90, opts: BitmapFactory.Options? = null): Bitmap? =
+    BitmapFactory.decodeByteArray(this, 0, size, opts).compress(quality = quality)
+
+fun Int.toBitmap(
+    context: Context,
+    quality: Int = 90,
+    opts: BitmapFactory.Options? = null
+): Bitmap? =
+    BitmapFactory.decodeResource(context.resources, this, opts).compress(quality = quality)
+
+fun InputStream.toBitmap(
+    quality: Int = 90,
+    outPadding: Rect? = null,
+    opts: BitmapFactory.Options? = null
+): Bitmap? =
+    BitmapFactory.decodeStream(this, outPadding, opts)?.compress(quality = quality)
+
+fun File.toBitmap(quality: Int = 90, opts: BitmapFactory.Options? = null): Bitmap? =
+    BitmapFactory.decodeFile(path, opts).compress(quality = quality)
+
+fun File.toRectBitmap(
     quality: Int = 90,
     maxWidth: Int? = null,
     maxHeight: Int? = null
@@ -65,27 +89,19 @@ fun File.toBitmap(
             }
             options.inSampleSize = sampleSize
             options.inJustDecodeBounds = false
-            bitmap = BitmapFactory.decodeFile(path, options)
-            return if (quality == 90) {
-                bitmap
-            } else {
-                bitmap.toByte(quality = quality)?.toBitmap()
-            }
+            return this.toBitmap(quality, options)
         }
         else -> {
-            return if (quality == 90) {
-                BitmapFactory.decodeFile(path)
-            } else {
-                toByte(quality = quality)?.toBitmap()
-            }
+            return this.toBitmap(quality)
         }
     }
 }
 
 fun Bitmap.scale(ratio: Float): Bitmap {
     if (ratio == 1f) return this
-    val matrix = Matrix()
-    matrix.postScale(ratio, ratio)
+    val matrix = Matrix().apply {
+        postScale(ratio, ratio)
+    }
     return Bitmap.createBitmap(this, 0, 0, width, height, matrix, false)
 }
 
@@ -93,12 +109,12 @@ fun Bitmap.scale(newWidth: Int?, newHeight: Int?): Bitmap {
     if (newWidth.isNullOrZero() || newHeight.isNullOrZero()) return this
     val sx = newWidth!! / width.toFloat()
     val sy = newHeight!! / height.toFloat()
-    val matrix = Matrix()
-    matrix.postScale(sx, sy)
+    val matrix = Matrix().apply {
+        postScale(sx, sy)
+    }
     return Bitmap.createBitmap(this, 0, 0, width, height, matrix, false)
 }
 
-@JvmOverloads
 fun Bitmap.drawBitmap(
     bmp: Bitmap,
     bmpLeft: Float? = null,
@@ -145,7 +161,7 @@ fun Bitmap?.drawMiniBitmap(
     miniBmp: Bitmap?,
     gravity: Int = Gravity.CENTER,
     scale: Float = 0.2f
-): Bitmap?{
+): Bitmap? {
     if (this == null || miniBmp == null) return this
     val newWidth = (miniBmp.width * scale).toInt()
     val newHeight = (miniBmp.height * scale).toInt()
@@ -157,7 +173,7 @@ fun Bitmap?.drawMiniBitmap(
             left = (width - newWidth) / 2f
             top = (height - newHeight) / 2f
         }
-        Gravity.END ->{
+        Gravity.END -> {
             left = (width - newWidth).toFloat()
             top = (height - newHeight).toFloat()
         }
@@ -174,7 +190,6 @@ fun Bitmap?.drawMiniBitmap(
  * @param blurRadius 模糊半径 1-25f
  * @param scaleSize  缩放比例 0.1-1f
  * */
-@JvmOverloads
 fun Bitmap.blurBitmap(
     context: Context,
     blurRadius: Float = 13f,

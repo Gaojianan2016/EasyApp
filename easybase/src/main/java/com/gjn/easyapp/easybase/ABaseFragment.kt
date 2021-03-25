@@ -12,9 +12,9 @@ import androidx.lifecycle.ViewModel
 import com.gjn.easyapp.easydialoger.EasyDialogManager
 import com.gjn.easyapp.easydialoger.base.BaseDialogFragment
 import com.gjn.easyapp.easytoaster.ToastUtil
-import com.gjn.easyapp.easyutils.ActivityUtils
 import com.gjn.easyapp.easyutils.createAndroidViewModel
 import com.gjn.easyapp.easyutils.createViewModel
+import com.gjn.easyapp.easyutils.startActivity
 
 abstract class ABaseFragment : Fragment(), UIEvent {
 
@@ -75,11 +75,12 @@ abstract class ABaseFragment : Fragment(), UIEvent {
     }
 
     override fun showNextActivity(cls: Class<out Activity>, bundle: Bundle?) {
-        ActivityUtils.showNextActivity(mActivity, cls, bundle)
+        cls.startActivity(mActivity, bundle)
     }
 
     override fun toNextActivity(cls: Class<out Activity>, bundle: Bundle?) {
-        ActivityUtils.toNextActivity(mActivity, cls, bundle)
+        showNextActivity(cls, bundle)
+        mActivity.finish()
     }
 
     override fun showEasyDialog(dialog: BaseDialogFragment) {

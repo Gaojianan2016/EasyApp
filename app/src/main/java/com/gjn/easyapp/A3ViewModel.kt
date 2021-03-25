@@ -36,7 +36,6 @@ class A3ViewModel : ViewModel() {
     //加入flow
     private val girlPage = MutableLiveData<Int>()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val gankData3 = girlPage.switchMap {
         liveData {
             a3Repository.getGirlsFlow(it)
@@ -45,13 +44,13 @@ class A3ViewModel : ViewModel() {
         }
     }
 
-    //paging 3
-    fun getGirlsPagingData() =
-        a3Repository.getGirlsPagingData().cachedIn(viewModelScope).asLiveData()
-
     fun getGirlsFlow() {
         girlPage.value = 1
     }
+
+    //paging 3
+    fun getGirlsPagingData() =
+        a3Repository.getGirlsPagingData().cachedIn(viewModelScope).asLiveData()
 
     fun <T> Flow<T>.loading() =
         this.onStart {
