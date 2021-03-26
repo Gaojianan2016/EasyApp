@@ -10,6 +10,7 @@ import android.os.Environment
 import android.view.View
 import androidx.core.app.ActivityCompat
 import com.gjn.easyapp.databinding.DialogTestBinding
+import com.gjn.easyapp.demo.DemoActivity
 import com.gjn.easyapp.easybase.BaseLazyFragment
 import com.gjn.easyapp.easydialoger.base.simpleDataBindingDialog
 import com.gjn.easyapp.easynetworker.DownLoadManager
@@ -38,8 +39,11 @@ class A1Fragment : BaseLazyFragment() {
     override fun lazyData() {
         println("A1Fragment lazyData")
 
-        setOnClickListeners(btn1, btn2, btn3) {
+        setOnClickListeners(btn0, btn1, btn2, btn3) {
             when (this) {
+                btn0 -> {
+                    DemoActivity::class.java.startActivity(mActivity)
+                }
                 btn1 -> {
                     size++
                     showToast("测试 $size")

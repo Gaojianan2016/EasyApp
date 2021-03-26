@@ -29,6 +29,8 @@
 
         <activity android:name=".GalleryActivity" />
         <activity android:name=".ActivityResultActivity" />
+        <activity android:name=".demo.DemoActivity" />
+        <activity android:name=".demo.ImageActivity" />
 
 
         <!-- 7.0文件路径 -->

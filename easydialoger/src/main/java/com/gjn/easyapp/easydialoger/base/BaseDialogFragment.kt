@@ -9,7 +9,6 @@ import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import androidx.viewpager.widget.ViewPager
 import com.gjn.easyapp.easyutils.logE
 
 abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragment,
@@ -119,8 +118,8 @@ abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragmen
 
     companion object {
         private const val TAG = "BaseDialogFragment"
-        private const val WRAP_CONTENT = ViewPager.LayoutParams.WRAP_CONTENT
-        private const val MATCH_PARENT = ViewPager.LayoutParams.MATCH_PARENT
+        private const val WRAP_CONTENT = ViewGroup.LayoutParams.WRAP_CONTENT
+        private const val MATCH_PARENT = ViewGroup.LayoutParams.MATCH_PARENT
         const val DIM_AMOUNT = 0.6f
     }
 }
