@@ -19,3 +19,37 @@ class ActivityResultHelper 实现功能的帮助类
 FragmentActivity.simpleActivityResult 打开意图并且直接执行结果
 Fragment.simpleActivityResult 打开意图并且直接执行结果
 ```
+## AnnotationsExt
+```
+Any.containAnnotation 判断类是否被注解
+Field.containAnnotation 判断Field是否被注解
+Any.getAnnotation 获取注解的对象
+Any.getField 获取注解的成员变量
+```
+## AppManager App管理工具
+```
+addActivity 添加Activity
+removeActivity 移除Activity
+finishActivity 关闭Activity
+isActivityExists 是否存在Activity
+clearActivity 清空Activity
+killApp 杀死app进程
+```
+## AutoScreenExt 今日头条适配方案
+```
+AutoScreenUtil 主类
+    init 初始化
+    setCustomDensity 设置视频
+IAutoCancel 取消适配
+IAutoChange 修改适配
+```
+## BitmapExt
+```
+Bitmap.compress 压缩bitmap
+*.toByte Bitmap、File、Int（Resource）、InputStream转字节
+*.toBitmap 字节、File、Int（Resource）、InputStream转Bitmap
+Bitmap.scale 缩放bitmap
+Bitmap?.drawBitmap 在bitmap上面绘制一个bitmap
+Bitmap?.drawMiniBitmap 在bitmap上面指定的9个位置绘制一个miniBitmap
+Bitmap.blurBitmap 高斯模糊bitmap
+```

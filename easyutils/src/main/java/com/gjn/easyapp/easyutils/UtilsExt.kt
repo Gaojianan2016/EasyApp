@@ -27,6 +27,14 @@ fun Long.intervalOpen(min: Long, max: Long): Long = min.coerceAtLeast(this.coerc
 
 fun String.parseColor(): Int = Color.parseColor(this)
 
+fun Int?.isNotNullOrZero(): Boolean = !isNullOrZero()
+
+fun Float?.isNotNullOrZero(): Boolean = !isNullOrZero()
+
+fun Double?.isNotNullOrZero(): Boolean = !isNullOrZero()
+
+fun Long?.isNotNullOrZero(): Boolean = !isNullOrZero()
+
 fun Int?.isNullOrZero(): Boolean = this == null || this == 0
 
 fun Float?.isNullOrZero(): Boolean = this == null || this == 0f

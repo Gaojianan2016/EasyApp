@@ -6,7 +6,6 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
-import android.view.Gravity
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
@@ -69,7 +68,7 @@ fun File.toRectBitmap(
 ): Bitmap? {
     when {
         !exists() -> return null
-        !maxWidth.isNullOrZero() || !maxWidth.isNullOrZero() -> {
+        maxWidth.isNotNullOrZero() || maxWidth.isNotNullOrZero() -> {
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true
             var bitmap = BitmapFactory.decodeFile(path, options)
@@ -105,45 +104,28 @@ fun Bitmap.scale(ratio: Float): Bitmap {
     return Bitmap.createBitmap(this, 0, 0, width, height, matrix, false)
 }
 
-fun Bitmap.scale(newWidth: Int?, newHeight: Int?): Bitmap {
+fun Bitmap.scale(newWidth: Int, newHeight: Int): Bitmap {
     if (newWidth.isNullOrZero() || newHeight.isNullOrZero()) return this
-    val sx = newWidth!! / width.toFloat()
-    val sy = newHeight!! / height.toFloat()
+    val sx = newWidth / width.toFloat()
+    val sy = newHeight / height.toFloat()
     val matrix = Matrix().apply {
         postScale(sx, sy)
     }
     return Bitmap.createBitmap(this, 0, 0, width, height, matrix, false)
 }
 
-fun Bitmap.drawBitmap(
-    bmp: Bitmap,
-    bmpLeft: Float? = null,
-    bmpTop: Float? = null
-): Bitmap {
-    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    canvas.drawBitmap(this, 0f, 0f, null)
-    val left = bmpLeft ?: 0f
-    val top = bmpTop ?: 0f
-    canvas.drawBitmap(bmp, left, top, null)
-    canvas.save()
-    canvas.restore()
-    if (bitmap.isRecycled) bitmap.recycle()
-    return bitmap
-}
-
-fun Bitmap?.drawMiniBitmap(
-    miniBmp: Bitmap?,
+fun Bitmap?.drawBitmap(
+    bmp: Bitmap?,
     drawLeft: Float? = null,
     drawTop: Float? = null
 ): Bitmap? {
-    if (this == null || miniBmp == null) return this
+    if (this == null || bmp == null) return this
     val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
     canvas.drawBitmap(this, 0f, 0f, null)
     val left = drawLeft ?: 0f
     val top = drawTop ?: 0f
-    canvas.drawBitmap(miniBmp, left, top, null)
+    canvas.drawBitmap(bitmap, left, top, null)
     canvas.save()
     canvas.restore()
     if (bitmap.isRecycled) bitmap.recycle()
@@ -152,14 +134,14 @@ fun Bitmap?.drawMiniBitmap(
 
 /**
  * 缩放绘制迷你bitmap
- * gravity 目前只支持以下几种情况
- * Gravity.CENTER 中心
- * Gravity.START 左上角
- * Gravity.END 右下角
+ * gravity 目前只支持9种情况 不传或者超过都为5
+ * 1 2 3
+ * 4 5 6
+ * 7 8 9
  * */
 fun Bitmap?.drawMiniBitmap(
     miniBmp: Bitmap?,
-    gravity: Int = Gravity.CENTER,
+    gravity: Int = 5,
     scale: Float = 0.2f
 ): Bitmap? {
     if (this == null || miniBmp == null) return this
@@ -169,20 +151,44 @@ fun Bitmap?.drawMiniBitmap(
     val left: Float
     val top: Float
     when (gravity) {
-        Gravity.CENTER -> {
+        1 -> {
+            left = 0f
+            top = 0f
+        }
+        2 -> {
             left = (width - newWidth) / 2f
+            top = 0f
+        }
+        3 -> {
+            left = (width - newWidth).toFloat()
+            top = 0f
+        }
+        4 -> {
+            left = 0f
             top = (height - newHeight) / 2f
         }
-        Gravity.END -> {
+        6 -> {
+            left = (width - newWidth).toFloat()
+            top = (height - newHeight) / 2f
+        }
+        7 -> {
+            left = 0f
+            top = (height - newHeight).toFloat()
+        }
+        8 -> {
+            left = (width - newWidth) / 2f
+            top = (height - newHeight).toFloat()
+        }
+        9 -> {
             left = (width - newWidth).toFloat()
             top = (height - newHeight).toFloat()
         }
         else -> {
-            left = 0f
-            top = 0f
+            left = (width - newWidth) / 2f
+            top = (height - newHeight) / 2f
         }
     }
-    return drawMiniBitmap(bitmap, left, top)
+    return drawBitmap(bitmap, left, top)
 }
 
 /**

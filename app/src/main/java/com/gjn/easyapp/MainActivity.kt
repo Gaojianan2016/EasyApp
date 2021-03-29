@@ -55,25 +55,9 @@ class MainActivity : BaseDatabindingActivity<ActivityMainBinding>() {
             }
         })
 
-        val mediator = TabLayoutMediator(tl_am, vp_am,
-            TabLayoutMediator.TabConfigurationStrategy { tab, position ->
-//                //自定义 TabView
-//                val tabView = TextView(mActivity)
-//
-//                val states = arrayOfNulls<IntArray>(2)
-//                states[0] = intArrayOf(android.R.attr.state_selected)
-//                states[1] = intArrayOf()
-//                val colors = intArrayOf(Color.RED, Color.BLACK)
-//                val colorList = ColorStateList(states, colors)
-//
-//                tabView.run {
-//                    text = tabTitles[position]
-//                    setTextColor(colorList)
-//                }
-//
-//                tab.customView = tabView
-                tab.text = "TAB $position"
-            })
+        val mediator = TabLayoutMediator(tl_am, vp_am) { tab, position ->
+            tab.text = "TAB $position"
+        }
 
         //绑定TabLayout ViewPager2
         mediator.attach()

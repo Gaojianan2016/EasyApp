@@ -7,26 +7,18 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 
-fun Context.screenWidth(): Int = resources.displayMetrics.widthPixels
+fun Context.screenWidth() = resources.displayMetrics.widthPixels
 
-fun Context.screenHeight(): Int = resources.displayMetrics.heightPixels
+fun Context.screenHeight() = resources.displayMetrics.heightPixels
 
 fun Context.statusBarHeight(): Int {
     val resId = ResourcesUtils.getInternalDimen("status_bar_height")
-    return if (resId > 0) {
-        resources.getDimensionPixelSize(resId)
-    } else {
-        0
-    }
+    return if (resId > 0) resources.getDimensionPixelSize(resId) else 0
 }
 
 fun Context.navigationBarHeight(): Int {
     val resId = ResourcesUtils.getInternalDimen("navigation_bar_height")
-    return if (hasNavigationBar() && resId > 0) {
-        resources.getDimensionPixelSize(resId)
-    } else {
-        0
-    }
+    return if (hasNavigationBar() && resId > 0) resources.getDimensionPixelSize(resId) else 0
 }
 
 fun Context.hasNavigationBar(): Boolean {
@@ -61,9 +53,6 @@ fun Context.toggleKeyboard() {
     imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS)
 }
 
-fun Context.checkPermission(permission: String): Boolean =
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-        true
-    } else {
-        ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
-    }
+fun Context.checkPermission(permission: String) =
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) true
+    else ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED

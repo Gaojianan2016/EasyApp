@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.gjn.easyapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -18,8 +19,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        android:theme="@style/AppTheme"
+        tools:ignore="UnusedAttribute">
+<!--        <activity android:name=".MainActivity"-->
+        <activity android:name=".demo.DemoActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,9 +33,9 @@
 
         <activity android:name=".GalleryActivity" />
         <activity android:name=".ActivityResultActivity" />
-        <activity android:name=".demo.DemoActivity" />
+<!--        <activity android:name=".demo.DemoActivity" />-->
+        <activity android:name=".MainActivity" />
         <activity android:name=".demo.ImageActivity" />
-
 
         <!-- 7.0文件路径 -->
         <provider

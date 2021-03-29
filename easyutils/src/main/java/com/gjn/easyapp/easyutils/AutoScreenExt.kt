@@ -5,6 +5,9 @@ import android.app.Application
 import android.content.ComponentCallbacks2
 import android.content.res.Configuration
 
+/**
+ * 今日头条适配方式
+ * */
 object AutoScreenUtil {
     private const val TAG = "AutoScreenUtil"
     private const val LINE = "---------------------------------"
@@ -26,7 +29,7 @@ object AutoScreenUtil {
         this.width = width
         this.isDebug = isDebug
         log(LINE)
-        log("isDebug为false 当前强制width为$width")
+        log("当前强制width为$width")
         initApplication()
         log(LINE)
     }

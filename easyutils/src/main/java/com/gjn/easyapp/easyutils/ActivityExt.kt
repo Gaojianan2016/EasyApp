@@ -7,6 +7,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.AnimRes
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 
@@ -14,9 +15,9 @@ fun Class<out Activity>.startActivity(
     context: Context?,
     extras: Bundle? = null,
     extrasMap: Map<String, Any?> = mapOf(),
-    enterAnim: Int? = null, exitAnim: Int? = null,
-    vararg sharedElements: View
-) = context?.startActivity(this, extras, extrasMap, enterAnim, exitAnim, *sharedElements)
+    @AnimRes enterAnim: Int? = null, @AnimRes exitAnim: Int? = null,
+    sharedElements: Array<View>? = null
+) = context?.startActivity(this, extras, extrasMap, enterAnim, exitAnim, sharedElements)
 
 fun Class<out Activity>.startActivity(
     context: Context?,
@@ -29,11 +30,11 @@ fun Context?.startActivity(
     clz: Class<out Activity>,
     extras: Bundle? = null,
     extrasMap: Map<String, Any?> = mapOf(),
-    enterAnim: Int? = null, exitAnim: Int? = null,
-    vararg sharedElements: View
+    @AnimRes enterAnim: Int? = null, @AnimRes exitAnim: Int? = null,
+    sharedElements: Array<View>? = null
 ) {
     if (enterAnim == null || exitAnim == null) {
-        startActivity(clz, extras, extrasMap, createOptionsBundle(this, *sharedElements))
+        startActivity(clz, extras, extrasMap, sharedElements?.let { createOptionsBundle(this, *it) })
         return
     }
     startActivity(clz, extras, extrasMap, createOptionsBundle(this, enterAnim, exitAnim))
@@ -69,13 +70,13 @@ fun Class<out Activity>.startActivityForResult(
     context: Context?, requestCode: Int,
     extras: Bundle? = null,
     extrasMap: Map<String, Any?> = mapOf(),
-    enterAnim: Int? = null, exitAnim: Int? = null,
-    vararg sharedElements: View
+    @AnimRes enterAnim: Int? = null, @AnimRes exitAnim: Int? = null,
+    sharedElements: Array<View>? = null
 ) = context?.startActivityForResult(
     this, requestCode,
     extras, extrasMap,
     enterAnim, exitAnim,
-    *sharedElements
+    sharedElements
 )
 
 fun Class<out Activity>.startActivityForResult(
@@ -89,14 +90,14 @@ fun Context?.startActivityForResult(
     clz: Class<out Activity>, requestCode: Int,
     extras: Bundle? = null,
     extrasMap: Map<String, Any?> = mapOf(),
-    enterAnim: Int? = null, exitAnim: Int? = null,
-    vararg sharedElements: View
+    @AnimRes enterAnim: Int? = null, @AnimRes exitAnim: Int? = null,
+    sharedElements: Array<View>? = null
 ) {
     if (enterAnim == null || exitAnim == null) {
         startActivityForResult(
             clz, requestCode,
             extras, extrasMap,
-            createOptionsBundle(this, *sharedElements)
+            sharedElements?.let { createOptionsBundle(this, *it) }
         )
         return
     }
@@ -150,7 +151,11 @@ fun Activity.isKeyboardShowing(): Boolean {
 /**
  * 5.0之后启动页面 跳转动画Bundle创建
  * */
-private fun createOptionsBundle(context: Context?, enterAnim: Int?, exitAnim: Int?): Bundle? {
+fun createOptionsBundle(
+    context: Context?,
+    @AnimRes enterAnim: Int?,
+    @AnimRes exitAnim: Int?
+): Bundle? {
     if (context == null) return null
     return ActivityOptionsCompat.makeCustomAnimation(context, enterAnim ?: -1, exitAnim ?: -1)
         .toBundle()
@@ -159,14 +164,14 @@ private fun createOptionsBundle(context: Context?, enterAnim: Int?, exitAnim: In
 /**
  * 5.0之后启动页面 转场动画Bundle创建
  * */
-private fun createOptionsBundle(context: Context?, vararg sharedElements: View): Bundle? {
-    if (sharedElements.isEmpty() || Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return null
+fun createOptionsBundle(context: Context?, vararg sharedElements: View): Bundle? {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return null
     val activity = when (context) {
         is Activity -> context
         is Fragment -> context.activity
         else -> null
     } ?: return null
-    val pairs = arrayOf<androidx.core.util.Pair<View, String>>()
+    val pairs = arrayOfNulls<androidx.core.util.Pair<View, String>>(sharedElements.size)
     sharedElements.forEachIndexed { index, view ->
         pairs[index] = androidx.core.util.Pair.create(view, view.transitionName)
     }

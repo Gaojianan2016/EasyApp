@@ -34,6 +34,15 @@ class AppManager private constructor() {
         }
     }
 
+    fun isActivityExists(vararg clz: Class<out Activity>): Boolean{
+        activityList.forEach { activity ->
+            if (clz.contains(activity::class.java)) {
+                return true
+            }
+        }
+        return false
+    }
+
     fun clearActivity() {
         for (activity in activityList) {
             finishActivity(activity)
@@ -41,7 +50,7 @@ class AppManager private constructor() {
         activityList.clear()
     }
 
-    fun exitApp(context: Context) {
+    fun killApp(context: Context) {
         clearActivity()
         val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         activityManager.killBackgroundProcesses(context.packageName)

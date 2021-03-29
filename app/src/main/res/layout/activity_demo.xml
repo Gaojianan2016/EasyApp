@@ -25,12 +25,45 @@
             android:id="@+id/btn1_ad"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:transitionName="share_1"
             android:text="跳转动画打开新页面" />
 
         <Button
             android:id="@+id/btn2_ad"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:transitionName="share_2"
             android:text="转场动画打开新页面" />
+
+        <Button
+            android:id="@+id/btn3_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:transitionName="share_3"
+            android:text="转场动画打开新页面2" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/btn4_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="判断是否开启软键盘" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ActivityResultExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn5_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="打开新页面直接监听回调" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
