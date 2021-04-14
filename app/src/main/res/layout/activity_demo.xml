@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<androidx.core.widget.NestedScrollView xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -64,6 +64,98 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="打开新页面直接监听回调" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="AppExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn11_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="安装app" />
+
+        <Button
+            android:id="@+id/btn12_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="卸载app" />
+
+        <Button
+            android:id="@+id/btn13_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="打开app" />
+
+        <Button
+            android:id="@+id/btn14_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="打开app设置详情" />
+
+        <ImageView
+            android:id="@+id/iv2_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btn15_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="获取app详情" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="BitmapExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <ImageView
+            android:id="@+id/iv1_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/test_img" />
+
+        <Button
+            android:id="@+id/btn6_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="缩放Bitmap"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btn7_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="绘制MiniBitmap"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btn8_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="高斯模糊Bitmap"
+            android:textAllCaps="false" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CancelExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn9_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="查看缓存数据" />
+
+        <Button
+            android:id="@+id/btn10_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="清空缓存数据" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

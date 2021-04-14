@@ -2,6 +2,7 @@ package com.gjn.easyapp.easyutils
 
 import android.content.Context
 import android.graphics.*
+import android.os.Build
 import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
@@ -50,6 +51,27 @@ fun Int.toBitmap(
     opts: BitmapFactory.Options? = null
 ): Bitmap? =
     BitmapFactory.decodeResource(context.resources, this, opts).compress(quality = quality)
+
+fun Int.vectorToBitmap(context: Context): Bitmap? {
+    val bitmap: Bitmap?
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+        val drawable = context.getDrawable(this)
+        if (drawable == null) {
+            bitmap = null
+        } else {
+            bitmap = Bitmap.createBitmap(
+                drawable.intrinsicWidth, drawable.intrinsicHeight,
+                Bitmap.Config.ARGB_8888
+            )
+            val canvas = Canvas(bitmap)
+            drawable.setBounds(0, 0, canvas.width, canvas.height)
+            drawable.draw(canvas)
+        }
+    } else {
+        bitmap = this.toBitmap(context)
+    }
+    return bitmap
+}
 
 fun InputStream.toBitmap(
     quality: Int = 90,
@@ -125,7 +147,7 @@ fun Bitmap?.drawBitmap(
     canvas.drawBitmap(this, 0f, 0f, null)
     val left = drawLeft ?: 0f
     val top = drawTop ?: 0f
-    canvas.drawBitmap(bitmap, left, top, null)
+    canvas.drawBitmap(bmp, left, top, null)
     canvas.save()
     canvas.restore()
     if (bitmap.isRecycled) bitmap.recycle()

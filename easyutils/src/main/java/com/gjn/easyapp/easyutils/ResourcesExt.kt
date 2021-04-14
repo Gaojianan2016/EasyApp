@@ -39,33 +39,6 @@ fun Context.hasPermission(permission: String): Boolean {
 }
 
 /**
- * 判断某个应用是否安装。
- * */
-fun Context.isInstalled(packageName: String): Boolean =
-    try {
-        packageManager.getPackageInfo(packageName, 0)
-    } catch (e: Exception) {
-        null
-    } != null
-
-/**
- * 获取应用程序的图标
- * */
-@JvmOverloads
-fun Context.getAppIcon(packageName: String = this.packageName): Drawable? {
-    val applicationInfo: ApplicationInfo? = try {
-        packageManager.getApplicationInfo(packageName, 0)
-    } catch (e: Exception) {
-        null
-    }
-    return if (applicationInfo == null) {
-        null
-    } else {
-        packageManager.getApplicationIcon(applicationInfo)
-    }
-}
-
-/**
  * 获取assets String内容
  * */
 fun Context.assetsStr(fileName: String): String {

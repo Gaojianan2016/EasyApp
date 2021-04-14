@@ -14,7 +14,7 @@ import kotlin.jvm.Throws
 
 fun String.file(): File = File(this)
 
-fun Uri.file(): File? = File(path)
+fun Uri.file(): File = File(path)
 
 fun String.suffixToType(): String? = MimeTypeMap.getSingleton().getExtensionFromMimeType(this)
 
@@ -43,7 +43,7 @@ fun File.deleteFile(): Boolean {
     return true
 }
 
-fun String.fileSize(): Long = file().fileSize()
+fun String.fileSize() = file().fileSize()
 
 fun File.fileSize(): Long {
     var size: Long = 0

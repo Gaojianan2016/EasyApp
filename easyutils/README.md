@@ -53,3 +53,18 @@ Bitmap?.drawBitmap 在bitmap上面绘制一个bitmap
 Bitmap?.drawMiniBitmap 在bitmap上面指定的9个位置绘制一个miniBitmap
 Bitmap.blurBitmap 高斯模糊bitmap
 ```
+## CancelExt
+```
+clearAppExternalCache 清除外部缓存 /mnt/sdcard/android/data/packageName/cache
+clearAppInternalCache 清除内部缓存 /data/data/packageName/cache
+clearAppFile 清除File文件 /data/data/packageName/files
+clearAppSharedPrefs 清除SharedPreference /data/data/packageName/shared_prefs
+clearAppDatabases 清除数据库 /data/data/packageName/databases
+appExternalCacheSize 获取外部缓存文件大小
+appInternalCacheSize 获取内部缓存文件大小
+appFileSize 获取File文件文件大小
+CancelUtils 缓存工具类
+    clearAppAllData 清除全部缓存数据
+    clearAppCancel 清除app内部和外部缓存数据
+    getAppCancelSize 获取app内部和外部缓存文件大小
+```

@@ -4,8 +4,8 @@
     package="com.gjn.easyapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <!--8.0安装权限-->
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+<!--    &lt;!&ndash;8.0安装权限&ndash;&gt;-->
+<!--    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -40,7 +40,7 @@
         <!-- 7.0文件路径 -->
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.gjn.easyapp.fileprovider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
