@@ -122,20 +122,6 @@ class BarView constructor(context: Context, attrs: AttributeSet? = null) : View(
     }
 }
 
-fun Activity.transparentStatusBar() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { //大于21
-        //透明顶部状态栏
-        window.statusBarColor = Color.TRANSPARENT
-        //透明底部导航栏
-        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
-    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { //大于19
-        //透明顶部状态栏
-        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        //透明底部导航栏
-        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
-    }
-}
-
 fun Activity.setBarBackgroundColor(color: Int) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { //大于21
         window.statusBarColor = color

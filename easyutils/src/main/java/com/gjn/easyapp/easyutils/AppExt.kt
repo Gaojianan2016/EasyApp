@@ -11,12 +11,12 @@ import android.os.Build
 import android.provider.Settings
 import java.io.File
 
+fun String.toPackageNameUri(): Uri = Uri.parse("package:$this")
+
 /**
  * 获取packageName的Uri
  * */
-fun Context.packageNameUri(): Uri = Uri.parse("package:$packageName")
-
-fun String.toPackageNameUri(): Uri = Uri.parse("package:$this")
+fun Context.packageNameUri(): Uri = packageName.toPackageNameUri()
 
 fun Context.installApp(path: String?) {
     installApp(path?.file())
@@ -35,7 +35,7 @@ fun Context.installApp(file: File?) {
     if (file == null) return
     if (!file.exists()) return
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        if (!this.packageManager.canRequestPackageInstalls()) {
+        if (!packageManager.canRequestPackageInstalls()) {
             openUnknownAppSettings()
         } else {
             FileUtils.openFile(this, file)
@@ -101,7 +101,7 @@ fun Context.openApp(pkgName: String) {
 /**
  * 打开app设置页
  * */
-fun Context.openAppDetailsSettings(pkgName: String = this.packageName) {
+fun Context.openAppDetailsSettings(pkgName: String = packageName) {
     if (isInstalled(pkgName)) {
         val intent = Intent(
             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
@@ -125,13 +125,13 @@ fun Context.openUnknownAppSettings(){
 /**
  * 获取App PackageInfo
  * */
-fun Context.getAppPackageInfo(pkgName: String = this.packageName, flag: Int = 0): PackageInfo? =
+fun Context.getAppPackageInfo(pkgName: String = packageName, flag: Int = 0): PackageInfo? =
     packageManager.getPackageInfo(pkgName, flag)
 
 /**
  * 获取App图标
  * */
-fun Context.getAppIcon(pkgName: String = this.packageName): Drawable? {
+fun Context.getAppIcon(pkgName: String = packageName): Drawable? {
     return try {
         getAppPackageInfo(pkgName)?.applicationInfo?.loadIcon(packageManager)
     }catch (e: Exception){
@@ -143,7 +143,7 @@ fun Context.getAppIcon(pkgName: String = this.packageName): Drawable? {
 /**
  * 获取App图标Id
  * */
-fun Context.getAppIconId(pkgName: String = this.packageName): Int{
+fun Context.getAppIconId(pkgName: String = packageName): Int{
     return try {
         getAppPackageInfo(pkgName)?.applicationInfo?.icon ?: -1
     }catch (e: Exception){
@@ -155,7 +155,7 @@ fun Context.getAppIconId(pkgName: String = this.packageName): Int{
 /**
  * 获取App ApplicationName
  * */
-fun Context.getApplicationName(pkgName: String = this.packageName):String {
+fun Context.getApplicationName(pkgName: String = packageName):String {
     return try {
         getAppPackageInfo(pkgName)?.applicationInfo?.loadLabel(packageManager).toString()
     }catch (e: Exception){
@@ -167,7 +167,7 @@ fun Context.getApplicationName(pkgName: String = this.packageName):String {
 /**
  * 获取App 安装路径
  * */
-fun Context.getAppPath(pkgName: String = this.packageName):String {
+fun Context.getAppPath(pkgName: String = packageName):String {
     return try {
         getAppPackageInfo(pkgName)?.applicationInfo?.sourceDir ?: ""
     }catch (e: Exception){
@@ -176,11 +176,10 @@ fun Context.getAppPath(pkgName: String = this.packageName):String {
     }
 }
 
-
 /**
  * 获取App VersionName
  * */
-fun Context.getAppVersionName(pkgName: String = this.packageName):String {
+fun Context.getAppVersionName(pkgName: String = packageName):String {
     return try {
         getAppPackageInfo(pkgName)?.versionName ?: ""
     }catch (e: Exception){
@@ -192,7 +191,7 @@ fun Context.getAppVersionName(pkgName: String = this.packageName):String {
 /**
  * 获取App VersionCode
  * */
-fun Context.getAppVersionCode(pkgName: String = this.packageName):Long {
+fun Context.getAppVersionCode(pkgName: String = packageName):Long {
     return try {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             getAppPackageInfo(pkgName)?.longVersionCode ?: -1L
@@ -208,26 +207,26 @@ fun Context.getAppVersionCode(pkgName: String = this.packageName):Long {
 /**
  * 获取App 签名SHA1
  * */
-fun Context.getAppSignaturesSHA1(pkgName: String = this.packageName)
+fun Context.getAppSignaturesSHA1(pkgName: String = packageName)
         = getAppSignaturesHash(pkgName)
 
 /**
  * 获取App 签名MD5
  * */
-fun Context.getAppSignaturesMD5(pkgName: String = this.packageName)
+fun Context.getAppSignaturesMD5(pkgName: String = packageName)
     = getAppSignaturesHash(pkgName, "MD5")
 
 /**
  * 获取App 签名SHA256
  * */
-fun Context.getAppSignaturesSHA256(pkgName: String = this.packageName)
+fun Context.getAppSignaturesSHA256(pkgName: String = packageName)
     = getAppSignaturesHash(pkgName, "SHA256")
 
 /**
  * 获取App 签名Hash 算法默认SHA1
  * algorithm = [SHA1, SHA256, MD5]
  * */
-fun Context.getAppSignaturesHash(pkgName: String = this.packageName, algorithm: String = "SHA1"):List<String> {
+fun Context.getAppSignaturesHash(pkgName: String = packageName, algorithm: String = "SHA1"):List<String> {
     val result = mutableListOf<String>()
     val signatures = getAppSignatures(pkgName)
     signatures?.forEach {
@@ -241,7 +240,7 @@ fun Context.getAppSignaturesHash(pkgName: String = this.packageName, algorithm: 
 /**
  * 获取App 签名
  * */
-fun Context.getAppSignatures(pkgName: String = this.packageName): Array<Signature>?{
+fun Context.getAppSignatures(pkgName: String = packageName): Array<Signature>?{
     return try {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             getAppPackageInfo(pkgName, PackageManager.GET_SIGNING_CERTIFICATES)?.signingInfo?.let {

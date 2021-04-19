@@ -10,11 +10,14 @@ private val HEX_DIGITS_LOWER = "0123456789abcdef".toCharArray()
 fun ByteArray?.toHexString(isUpperCase: Boolean = true): String {
     if (this == null || size <= 0) return ""
     val hexDigits: CharArray = if (isUpperCase) HEX_DIGITS_UPPER else HEX_DIGITS_LOWER
+    //size << 1
     val ret = CharArray(size shl 1)
     var i = 0
     var j = 0
     while (i < size) {
+        //bytes[i] >> 4 & 0x0f
         ret[j++] = hexDigits[this[i].toInt() shr 4 and 0x0f]
+        //bytes[i] & 0x0f
         ret[j++] = hexDigits[this[i].toInt() and 0x0f]
         i++
     }
@@ -30,13 +33,15 @@ fun String?.hexStringToBytes(): ByteArray {
     var hexString = this
     var len = length
     if (length % 2 != 0) {
-        hexString = "0${hexString}"
+        hexString = "0$hexString"
         len++
     }
     val hexBytes = hexString.toUpperCase().toCharArray()
+    //len >> 1
     val ret = ByteArray(len shr 1)
     var i = 0
     while (i < len) {
+        // i >> 1 = hex[i] << 4 | hex[i+1]
         ret[i shr 1] = (hexBytes[i].hexToDec() shl 4 or hexBytes[i + 1].hexToDec()).toByte()
         i += 2
     }
@@ -45,15 +50,9 @@ fun String?.hexStringToBytes(): ByteArray {
 
 private fun Char.hexToDec(): Int {
     return when (this) {
-        in '0'..'9' -> {
-            this - '0'
-        }
-        in 'A'..'F' -> {
-            this - 'A' + 10
-        }
-        else -> {
-            throw IllegalArgumentException()
-        }
+        in '0'..'9' -> this - '0'
+        in 'A'..'F' -> this - 'A' + 10
+        else -> throw IllegalArgumentException()
     }
 }
 
