@@ -55,11 +55,15 @@ fun Any.getDeclaredFields(): Array<Field> = javaClass.declaredFields
  * */
 fun Class<*>.invokeMethod(
     methodName: String,
-    parameterTypes: Array<Class<*>?>,
-    args: Array<Any?>
+    parameterTypes: Array<Class<*>?>?,
+    vararg args: Any?
 ): Any? =
     try {
-        val method = getMethod(methodName, *parameterTypes)
+        val method = if (parameterTypes == null) {
+            getMethod(methodName)
+        }else{
+            getMethod(methodName, *parameterTypes)
+        }
         if (method.modifiers.isPublic()) {
             method.isAccessible = true
         }
@@ -74,11 +78,15 @@ fun Class<*>.invokeMethod(
  * */
 fun Class<*>.invokeDeclaredMethod(
     methodName: String,
-    parameterTypes: Array<Class<*>?>,
-    args: Array<Any?>
+    parameterTypes: Array<Class<*>?>?,
+    vararg args: Any?
 ): Any? =
     try {
-        val method = getDeclaredMethod(methodName, *parameterTypes)
+        val method = if (parameterTypes == null) {
+            getDeclaredMethod(methodName)
+        }else{
+            getDeclaredMethod(methodName, *parameterTypes)
+        }
         if (method.modifiers.isPublic()) {
             method.isAccessible = true
         }

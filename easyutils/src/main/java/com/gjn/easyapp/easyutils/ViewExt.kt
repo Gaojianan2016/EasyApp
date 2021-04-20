@@ -15,7 +15,6 @@ import androidx.annotation.ColorRes
 import androidx.annotation.StyleRes
 import androidx.core.app.ActivityCompat
 import androidx.core.widget.TextViewCompat
-import androidx.core.widget.addTextChangedListener
 
 fun View.viewWidth(): Int {
     var w = width
@@ -34,6 +33,8 @@ fun View.viewHeight(): Int {
     }
     return h
 }
+
+fun View.isVisible() = visibility == View.VISIBLE
 
 fun View.visible() {
     visibility = View.VISIBLE
@@ -55,6 +56,18 @@ fun View.clickLong(block: View.() -> Boolean) {
     this.setOnLongClickListener {
         return@setOnLongClickListener it.block()
     }
+}
+
+fun ViewGroup.getChildViewByResourceName(resourceEntryName: String): View?{
+    for (i in 0 until childCount) {
+        val child = getChildAt(i)
+        if (child.id != View.NO_ID) {
+            if (resources.getResourceEntryName(child.id) == resourceEntryName) {
+                return child
+            }
+        }
+    }
+    return null
 }
 
 fun ViewGroup.clearChildView(cls: Class<out View>) {

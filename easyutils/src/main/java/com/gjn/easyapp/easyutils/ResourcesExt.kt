@@ -12,6 +12,21 @@ import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 
+fun Context.getAndroidIdentifier(name: String, defType: String) =
+    resources.getIdentifier(name, defType, "android")
+
+fun Context.getAndroidIdentifierId(name: String) = getAndroidIdentifier(name, "id")
+
+fun Context.getAndroidIdentifierLayout(name: String) = getAndroidIdentifier(name, "layout")
+
+fun Context.getAndroidIdentifierDrawable(name: String) = getAndroidIdentifier(name, "drawable")
+
+fun Context.getAndroidIdentifierColors(name: String) = getAndroidIdentifier(name, "colors")
+
+fun Context.getAndroidIdentifierDimen(name: String) = getAndroidIdentifier(name, "dimen")
+
+fun Context.getAndroidIdentifierBool(name: String) = getAndroidIdentifier(name, "bool")
+
 /**
  * 获取AndroidManifest.xml文件中，<application>标签下的meta-data值。
  * */

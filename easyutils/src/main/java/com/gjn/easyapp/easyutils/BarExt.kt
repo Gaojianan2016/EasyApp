@@ -1,29 +1,18 @@
 package com.gjn.easyapp.easyutils
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.annotation.ColorInt
-
-
-fun Context.getAndroidIdentifier(name: String, defType: String) =
-    resources.getIdentifier(name, defType, "android")
-
-fun Context.getAndroidIdentifierId(name: String) = getAndroidIdentifier(name, "id")
-
-fun Context.getAndroidIdentifierLayout(name: String) = getAndroidIdentifier(name, "layout")
-
-fun Context.getAndroidIdentifierDrawable(name: String) = getAndroidIdentifier(name, "drawable")
-
-fun Context.getAndroidIdentifierColors(name: String) = getAndroidIdentifier(name, "colors")
-
-fun Context.getAndroidIdentifierDimen(name: String) = getAndroidIdentifier(name, "dimen")
-
-fun Context.getAndroidIdentifierBool(name: String) = getAndroidIdentifier(name, "bool")
+import androidx.core.view.isVisible
+import androidx.drawerlayout.widget.DrawerLayout
 
 private const val TAG_STATUS_BAR = "TAG_STATUS_BAR"
 private const val TAG_OFFSET = "TAG_OFFSET"
@@ -43,13 +32,12 @@ fun Context.statusBarHeight(): Int {
 fun Activity.setStatusBarVisibility(isVisible: Boolean) {
     if (isVisible) {
         window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        window.decorView.findViewWithTag<View>(TAG_STATUS_BAR)?.visible()
-        window.decorView.findViewWithTag<View>(TAG_OFFSET)?.addMarginTopEqualStatusBarHeight()
+        showFakeStatusBarView()
+        addTopOffsetStatusBarHeight()
     } else {
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        window.decorView.findViewWithTag<View>(TAG_STATUS_BAR)?.gone()
-        window.decorView.findViewWithTag<View>(TAG_OFFSET)?.subtractMarginTopEqualStatusBarHeight()
-
+        hideFakeStatusBarView()
+        subtractTopOffsetStatusBarHeight()
     }
 }
 
@@ -60,7 +48,7 @@ fun Activity.isStatusBarVisible() =
     window.attributes.flags and WindowManager.LayoutParams.FLAG_FULLSCREEN == 0
 
 /**
- * 设置状态栏模式
+ * 设置状态栏 Light模式
  * */
 fun Activity.setStatusBarLightMode(isLightMode: Boolean) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -75,7 +63,7 @@ fun Activity.setStatusBarLightMode(isLightMode: Boolean) {
 }
 
 /**
- * 状态栏模式是否是亮
+ * 状态栏 Light模式是否开启
  * */
 fun Activity.isStatusBarLightMode(): Boolean {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -86,6 +74,7 @@ fun Activity.isStatusBarLightMode(): Boolean {
 
 /**
  * 设置状态栏颜色
+ * isDecor true - 添加到 DecorView, false - 添加到 ContentView
  * */
 fun Activity.setStatusBarColor(@ColorInt color: Int, isDecor: Boolean = false): View {
     transparentStatusBar()
@@ -93,29 +82,40 @@ fun Activity.setStatusBarColor(@ColorInt color: Int, isDecor: Boolean = false): 
 }
 
 /**
- *
+ * 设置(fakeStatusBar)状态栏颜色
  * */
-private fun Activity.applyStatusBarColor(color: Int, isDecor: Boolean): View {
-    val parent: ViewGroup =
-        if (isDecor) window.decorView as ViewGroup else window.findViewById(android.R.id.content)
-    var fakeStatusBarView = parent.findViewWithTag<View>(TAG_STATUS_BAR)
-    if (fakeStatusBarView != null) {
-        if (fakeStatusBarView.visibility == View.GONE) {
-            fakeStatusBarView.visible()
-        }
-        fakeStatusBarView.setBackgroundColor(color)
-    } else {
-        fakeStatusBarView = View(this).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                statusBarHeight()
-            )
-            setBackgroundColor(color)
-            tag = TAG_STATUS_BAR
-        }
-        parent.addView(fakeStatusBarView)
+fun View.setStatusBarColor(@ColorInt color: Int) {
+    val activity = this.context as Activity
+    activity.transparentStatusBar()
+    visible()
+    layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+    layoutParams.height = activity.statusBarHeight()
+    setBackgroundColor(color)
+}
+
+/**
+ * DrawerLayout 设置状态栏颜色
+ * DrawerLayout 布局需要设置 android:fitsSystemWindows="true"
+ * isTop true - 设置DrawerLayout置顶, false - 反之不设
+ * */
+fun Activity.setStatusBarColor4Drawer(
+    drawer: DrawerLayout,
+    fakeStatusBar: View,
+    @ColorInt color: Int,
+    isTop: Boolean = false
+) {
+    transparentStatusBar()
+    drawer.fitsSystemWindows = false
+    fakeStatusBar.setStatusBarColor(color)
+
+    for (i in 0 until drawer.childCount) {
+        drawer.getChildAt(i).fitsSystemWindows = false
     }
-    return fakeStatusBarView
+    if (isTop) {
+        hideFakeStatusBarView()
+    } else {
+        setStatusBarColor(color)
+    }
 }
 
 /**
@@ -166,7 +166,114 @@ fun View.subtractMarginTopEqualStatusBarHeight() {
     setTag(KEY_OFFSET, false)
 }
 
-//fun Context.navigationBarHeight(): Int {
-//    val resId = getAndroidIdentifierDimen("navigation_bar_height")
-//    return if (hasNavigationBar() && resId > 0) resources.getDimensionPixelSize(resId) else 0
-//}
+/**
+ * 获取actionBar高度(px)
+ * */
+fun Application.actionBarHeight(): Int {
+    val tValue = TypedValue()
+    return if (theme.resolveAttribute(android.R.attr.actionBarSize, tValue, true)) {
+        TypedValue.complexToDimensionPixelSize(tValue.data, resources.displayMetrics)
+    } else {
+        0
+    }
+}
+
+/**
+ * 设置通知栏是否可见
+ * 需要权限 <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+ * */
+
+fun Application.setNotificationBarVisibility(isVisible: Boolean) {
+    val methodName = if (isVisible) "expandNotificationsPanel" else "collapsePanels"
+
+    @SuppressLint("WrongConstant")
+    val service = getSystemService("statusbar")
+    val statusBarManager = "android.app.StatusBarManager".toClass()
+    statusBarManager.invokeMethod(methodName, null, service)
+}
+
+/**
+ * 获取导航栏高度(px)
+ * */
+fun Context.navigationBarHeight(): Int {
+    val resId = getAndroidIdentifierDimen("navigation_bar_height")
+    return if (hasNavigationBar() && resId > 0) resources.getDimensionPixelSize(resId) else 0
+}
+
+/**
+ * 设置导航栏是否显示
+ * */
+fun Activity.setNavBarVisibility(isVisible: Boolean) {
+    val decorView = window.decorView as ViewGroup
+    val child = decorView.getChildViewByResourceName("navigationBarBackground")
+    if (isVisible) {
+        child?.visible()
+    } else {
+        child?.invisible()
+    }
+    val uiOptions = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+    if (isVisible) {
+        decorView.systemUiVisibility = decorView.systemUiVisibility and uiOptions.inv()
+    }else{
+        decorView.systemUiVisibility = decorView.systemUiVisibility or uiOptions
+    }
+}
+
+fun Activity.isNavBarVisible(): Boolean{
+    var isVisible = false
+
+    val decorView = window.decorView as ViewGroup
+    val child = decorView.getChildViewByResourceName("navigationBarBackground")
+    if(child?.isVisible() == true){
+        isVisible = true
+    }
+
+    if (isVisible) {
+        //三星手机和android 10以下存在导航栏bug
+
+    }
+
+    return isVisible
+}
+
+
+private fun Activity.showFakeStatusBarView() {
+    window.decorView.findViewWithTag<View>(TAG_STATUS_BAR)?.visible()
+}
+
+private fun Activity.hideFakeStatusBarView() {
+    window.decorView.findViewWithTag<View>(TAG_STATUS_BAR)?.gone()
+}
+
+private fun Activity.addTopOffsetStatusBarHeight() {
+    window.decorView.findViewWithTag<View>(TAG_OFFSET)?.addMarginTopEqualStatusBarHeight()
+}
+
+private fun Activity.subtractTopOffsetStatusBarHeight() {
+    window.decorView.findViewWithTag<View>(TAG_OFFSET)?.subtractMarginTopEqualStatusBarHeight()
+}
+
+private fun Activity.applyStatusBarColor(color: Int, isDecor: Boolean): View {
+    val parent: ViewGroup =
+        if (isDecor) window.decorView as ViewGroup else window.findViewById(android.R.id.content)
+    var fakeStatusBarView = parent.findViewWithTag<View>(TAG_STATUS_BAR)
+    if (fakeStatusBarView != null) {
+        if (fakeStatusBarView.visibility == View.GONE) {
+            fakeStatusBarView.visible()
+        }
+        fakeStatusBarView.setBackgroundColor(color)
+    } else {
+        //创建fakeStatusBarView
+        fakeStatusBarView = View(this).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                statusBarHeight()
+            )
+            setBackgroundColor(color)
+            tag = TAG_STATUS_BAR
+        }
+        parent.addView(fakeStatusBarView)
+    }
+    return fakeStatusBarView
+}
