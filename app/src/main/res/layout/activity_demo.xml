@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nsv_ad"
     android:fillViewport="true"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -105,6 +106,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="获取app详情" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="BarExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn16_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="通知栏属性" />
+
+        <Button
+            android:id="@+id/btn17_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="通知栏设置" />
 
         <TextView
             android:layout_width="match_parent"

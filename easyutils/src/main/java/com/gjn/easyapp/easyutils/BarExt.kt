@@ -5,13 +5,15 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Point
 import android.os.Build
+import android.provider.Settings
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.annotation.ColorInt
-import androidx.core.view.isVisible
+import androidx.annotation.RequiresApi
 import androidx.drawerlayout.widget.DrawerLayout
 
 private const val TAG_STATUS_BAR = "TAG_STATUS_BAR"
@@ -74,7 +76,7 @@ fun Activity.isStatusBarLightMode(): Boolean {
 
 /**
  * 设置状态栏颜色
- * isDecor true - 添加到 DecorView, false - 添加到 ContentView
+ * isDecor true - 添加到 DecorView(有状态栏高度), false - 添加到 ContentView(无状态栏高度)
  * */
 fun Activity.setStatusBarColor(@ColorInt color: Int, isDecor: Boolean = false): View {
     transparentStatusBar()
@@ -182,7 +184,6 @@ fun Application.actionBarHeight(): Int {
  * 设置通知栏是否可见
  * 需要权限 <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
  * */
-
 fun Application.setNotificationBarVisibility(isVisible: Boolean) {
     val methodName = if (isVisible) "expandNotificationsPanel" else "collapsePanels"
 
@@ -197,7 +198,7 @@ fun Application.setNotificationBarVisibility(isVisible: Boolean) {
  * */
 fun Context.navigationBarHeight(): Int {
     val resId = getAndroidIdentifierDimen("navigation_bar_height")
-    return if (hasNavigationBar() && resId > 0) resources.getDimensionPixelSize(resId) else 0
+    return if (resId > 0) resources.getDimensionPixelSize(resId) else 0
 }
 
 /**
@@ -211,32 +212,94 @@ fun Activity.setNavBarVisibility(isVisible: Boolean) {
     } else {
         child?.invisible()
     }
-    val uiOptions = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+    val uiOptions =
+        (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
     if (isVisible) {
         decorView.systemUiVisibility = decorView.systemUiVisibility and uiOptions.inv()
-    }else{
+    } else {
         decorView.systemUiVisibility = decorView.systemUiVisibility or uiOptions
     }
 }
 
-fun Activity.isNavBarVisible(): Boolean{
+/**
+ * 导航栏是否显示
+ * onWindowFocusChanged 可调用获取结果
+ * */
+fun Activity.isNavBarVisible(): Boolean {
     var isVisible = false
-
     val decorView = window.decorView as ViewGroup
     val child = decorView.getChildViewByResourceName("navigationBarBackground")
-    if(child?.isVisible() == true){
+    if (child?.isVisible() == true) {
         isVisible = true
     }
-
     if (isVisible) {
-        //三星手机和android 10以下存在导航栏bug
-
+        //三星android 10以下存在导航栏bug
+        if (isPhoneRom(ROM_SAMSUNG) && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            try {
+                return Settings.Global.getInt(
+                    contentResolver,
+                    "navigationbar_hide_bar_enabled"
+                ) == 0
+            } catch (e: Exception) {
+            }
+        }
+        isVisible = (decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0
     }
-
     return isVisible
 }
 
+/**
+ * 是否支持导航栏
+ * */
+fun Application.isSupportNavBar(): Boolean {
+    val wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    val size = Point()
+    val realSize = Point()
+    wm.defaultDisplay.getSize(size)
+    wm.defaultDisplay.getRealSize(realSize)
+    return realSize.y != size.y || realSize.x != size.x
+}
+
+/**
+ * 设置导航栏颜色 api21以上
+ * */
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+fun Activity.setNavBarColor(@ColorInt color: Int) {
+    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+    window.navigationBarColor = color
+}
+
+/**
+ * 获取导航栏颜色 api21以上
+ * */
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+fun Activity.navigationBarColor() = window.navigationBarColor
+
+/**
+ * 设置导航栏 开启关闭LightMode
+ * */
+fun Activity.setNavBarLightMode(isLightMode: Boolean) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        var vis = window.decorView.systemUiVisibility
+        vis = if (isLightMode) {
+            vis or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+        } else {
+            vis and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
+        }
+        window.decorView.systemUiVisibility = vis
+    }
+}
+
+/**
+ * 导航栏是否开启LightMode
+ * */
+fun Activity.isNavBarLightMode(): Boolean {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        return (window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR) != 0
+    }
+    return false
+}
 
 private fun Activity.showFakeStatusBarView() {
     window.decorView.findViewWithTag<View>(TAG_STATUS_BAR)?.visible()

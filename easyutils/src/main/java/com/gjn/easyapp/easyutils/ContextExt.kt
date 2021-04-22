@@ -11,8 +11,6 @@ fun Context.screenWidth() = resources.displayMetrics.widthPixels
 
 fun Context.screenHeight() = resources.displayMetrics.heightPixels
 
-
-
 fun Context.hasNavigationBar(): Boolean {
     var result = false
     val resId = ResourcesUtils.getInternalBoolean("config_showNavigationBar")

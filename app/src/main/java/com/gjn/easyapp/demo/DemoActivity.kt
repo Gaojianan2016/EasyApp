@@ -1,11 +1,14 @@
 package com.gjn.easyapp.demo
 
 import android.content.Intent
+import android.graphics.Color
 import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easyutils.*
 import kotlinx.android.synthetic.main.activity_demo.*
 import kotlinx.android.synthetic.main.fragment_a1.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 
 class DemoActivity : ABaseActivity() {
 
@@ -125,6 +128,46 @@ class DemoActivity : ABaseActivity() {
             println("signaturesSHA1 ${this@DemoActivity.getAppSignaturesSHA1()}")
             println("signaturesSHA256 ${this@DemoActivity.getAppSignaturesSHA256()}")
             println("signaturesMD5 ${this@DemoActivity.getAppSignaturesMD5()}")
+        }
+
+        btn16_ad.click {
+            println("statusBarHeight ${mActivity.statusBarHeight()}")
+            println("isStatusBarVisible ${mActivity.isStatusBarVisible()}")
+            println("isStatusBarLightMode ${mActivity.isStatusBarLightMode()}")
+
+            println("actionBarHeight ${mActivity.application.actionBarHeight()}")
+
+            println("navigationBarHeight ${mActivity.navigationBarHeight()}")
+            println("isNavBarVisible ${mActivity.isNavBarVisible()}")
+            println("isNavBarLightMode ${mActivity.isNavBarLightMode()}")
+        }
+
+        btn17_ad.click {
+            //设置状态栏1
+//            mActivity.setStatusBarColor(Color.TRANSPARENT, true)
+//            mActivity.setStatusBarLightMode(true)
+//            //设置状态栏2
+//            mActivity.setStatusBarColor(Color.TRANSPARENT)
+//            mActivity.setStatusBarLightMode(true)
+//            nsv_ad.addMarginTopEqualStatusBarHeight()
+
+            //沉浸式状态栏
+            mActivity.setStatusBarColor(Color.TRANSPARENT)
+            mActivity.setStatusBarLightMode(true)
+
+
+//            mActivity.setStatusBarLightMode(true)
+//
+//            launchMain {
+//                delay(2000)
+//                mActivity.setStatusBarLightMode(false)
+//            }
+
+//            mActivity.setStatusBarVisibility(false)
+//            launchMain {
+//                delay(2000)
+//                mActivity.setStatusBarVisibility(true)
+//            }
         }
 
     }
