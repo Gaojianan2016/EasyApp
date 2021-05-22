@@ -29,7 +29,7 @@ fun Context.statusBarHeight(): Int {
 }
 
 /**
- * 设置是否显示状态栏
+ * 设置是否显示状态栏 全屏相关有FLAG_FULLSCREEN
  * */
 fun Activity.setStatusBarVisibility(isVisible: Boolean) {
     if (isVisible) {
@@ -66,6 +66,7 @@ fun Activity.setStatusBarLightMode(isLightMode: Boolean) {
 
 /**
  * 状态栏 Light模式是否开启
+ * true-黑色, false-白色
  * */
 fun Activity.isStatusBarLightMode(): Boolean {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -87,11 +88,10 @@ fun Activity.setStatusBarColor(@ColorInt color: Int, isDecor: Boolean = false): 
  * 设置(fakeStatusBar)状态栏颜色
  * */
 fun View.setStatusBarColor(@ColorInt color: Int) {
-    val activity = this.context as Activity
-    activity.transparentStatusBar()
+    (context as Activity).transparentStatusBar()
     visible()
     layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-    layoutParams.height = activity.statusBarHeight()
+    layoutParams.height = context.statusBarHeight()
     setBackgroundColor(color)
 }
 
@@ -106,10 +106,8 @@ fun Activity.setStatusBarColor4Drawer(
     @ColorInt color: Int,
     isTop: Boolean = false
 ) {
-    transparentStatusBar()
     drawer.fitsSystemWindows = false
     fakeStatusBar.setStatusBarColor(color)
-
     for (i in 0 until drawer.childCount) {
         drawer.getChildAt(i).fitsSystemWindows = false
     }
@@ -277,7 +275,8 @@ fun Activity.setNavBarColor(@ColorInt color: Int) {
 fun Activity.navigationBarColor() = window.navigationBarColor
 
 /**
- * 设置导航栏 开启关闭LightMode
+ * 设置导航栏 开启关闭LightMode api26以上
+ * true-黑色, false-白色
  * */
 fun Activity.setNavBarLightMode(isLightMode: Boolean) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -292,7 +291,7 @@ fun Activity.setNavBarLightMode(isLightMode: Boolean) {
 }
 
 /**
- * 导航栏是否开启LightMode
+ * 导航栏是否开启LightMode api26以上
  * */
 fun Activity.isNavBarLightMode(): Boolean {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -25,6 +25,8 @@ fun Context.getAndroidIdentifierColors(name: String) = getAndroidIdentifier(name
 
 fun Context.getAndroidIdentifierDimen(name: String) = getAndroidIdentifier(name, "dimen")
 
+fun Context.getAndroidIdentifierInteger(name: String) = getAndroidIdentifier(name, "integer")
+
 fun Context.getAndroidIdentifierBool(name: String) = getAndroidIdentifier(name, "bool")
 
 /**

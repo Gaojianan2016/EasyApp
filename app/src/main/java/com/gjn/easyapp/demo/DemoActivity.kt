@@ -1,14 +1,11 @@
 package com.gjn.easyapp.demo
 
 import android.content.Intent
-import android.graphics.Color
 import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easyutils.*
 import kotlinx.android.synthetic.main.activity_demo.*
 import kotlinx.android.synthetic.main.fragment_a1.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 
 class DemoActivity : ABaseActivity() {
 
@@ -72,7 +69,7 @@ class DemoActivity : ABaseActivity() {
 
         btn7_ad.click {
             val logo = R.drawable.ic_launcher_foreground.vectorToBitmap(mActivity)
-            val bmp2 = bmp.drawMiniBitmap(logo,9, 0.5f)
+            val bmp2 = bmp.drawMiniBitmap(logo, 9, 0.5f)
             iv1_ad.setImageBitmap(bmp2)
         }
 
@@ -88,11 +85,13 @@ class DemoActivity : ABaseActivity() {
             val sharedPrefsSize = mActivity.appSharedPrefsSize()
             val databasesSize = mActivity.appDatabasesSize()
 
-            println("internalSize = $internalSize\n" +
-                    "externalSize = $externalSize\n" +
-                    "fileSize = $fileSize\n" +
-                    "sharedPrefsSize = $sharedPrefsSize\n" +
-                    "databasesSize = $databasesSize\n")
+            println(
+                "internalSize = $internalSize\n" +
+                        "externalSize = $externalSize\n" +
+                        "fileSize = $fileSize\n" +
+                        "sharedPrefsSize = $sharedPrefsSize\n" +
+                        "databasesSize = $databasesSize\n"
+            )
         }
 
         btn10_ad.click {
@@ -143,31 +142,26 @@ class DemoActivity : ABaseActivity() {
         }
 
         btn17_ad.click {
-            //设置状态栏1
+//            //设置状态栏
 //            mActivity.setStatusBarColor(Color.TRANSPARENT, true)
-//            mActivity.setStatusBarLightMode(true)
-//            //设置状态栏2
+//            //沉浸式状态栏
 //            mActivity.setStatusBarColor(Color.TRANSPARENT)
-//            mActivity.setStatusBarLightMode(true)
+//            //添加状态栏高度margin
 //            nsv_ad.addMarginTopEqualStatusBarHeight()
-
-            //沉浸式状态栏
-            mActivity.setStatusBarColor(Color.TRANSPARENT)
-            mActivity.setStatusBarLightMode(true)
-
-
+//            //设置Light模式
 //            mActivity.setStatusBarLightMode(true)
-//
-//            launchMain {
-//                delay(2000)
-//                mActivity.setStatusBarLightMode(false)
-//            }
+            showNextActivity(DrawerActivity::class.java)
+        }
 
-//            mActivity.setStatusBarVisibility(false)
-//            launchMain {
-//                delay(2000)
-//                mActivity.setStatusBarVisibility(true)
-//            }
+        btn18_ad.click {
+            println("isAutoBrightnessEnabled ${mActivity.isAutoBrightnessEnabled()}")
+            println("getMaxBrightness ${mActivity.getMaxBrightness()}")
+            println("getBrightness ${mActivity.getBrightness()}")
+            println("getWindowBrightness ${window.getWindowBrightness()}")
+        }
+
+        btn19_ad.click {
+            window.setWindowBrightness(sb_ad.progress)
         }
 
     }

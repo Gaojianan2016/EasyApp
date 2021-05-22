@@ -7,6 +7,7 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
+import androidx.core.app.ActivityCompat
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
@@ -38,24 +39,22 @@ fun InputStream.toByte(
     quality: Int = 90,
     outPadding: Rect? = null,
     opts: BitmapFactory.Options? = null
-) =
-    this.toBitmap(outPadding = outPadding, opts = opts)?.toByte(quality = quality)
+) = this.toBitmap(outPadding = outPadding, opts = opts)?.toByte(quality = quality)
 
 //toBitmap
-fun ByteArray.toBitmap(quality: Int = 90, opts: BitmapFactory.Options? = null): Bitmap? =
+fun ByteArray.toBitmap(quality: Int = 90, opts: BitmapFactory.Options? = null) =
     BitmapFactory.decodeByteArray(this, 0, size, opts).compress(quality = quality)
 
 fun Int.toBitmap(
     context: Context,
     quality: Int = 90,
     opts: BitmapFactory.Options? = null
-): Bitmap? =
-    BitmapFactory.decodeResource(context.resources, this, opts).compress(quality = quality)
+) = BitmapFactory.decodeResource(context.resources, this, opts).compress(quality = quality)
 
 fun Int.vectorToBitmap(context: Context): Bitmap? {
     val bitmap: Bitmap?
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-        val drawable = context.getDrawable(this)
+        val drawable = ActivityCompat.getDrawable(context, this)
         if (drawable == null) {
             bitmap = null
         } else {
@@ -77,10 +76,9 @@ fun InputStream.toBitmap(
     quality: Int = 90,
     outPadding: Rect? = null,
     opts: BitmapFactory.Options? = null
-): Bitmap? =
-    BitmapFactory.decodeStream(this, outPadding, opts)?.compress(quality = quality)
+) = BitmapFactory.decodeStream(this, outPadding, opts)?.compress(quality = quality)
 
-fun File.toBitmap(quality: Int = 90, opts: BitmapFactory.Options? = null): Bitmap? =
+fun File.toBitmap(quality: Int = 90, opts: BitmapFactory.Options? = null) =
     BitmapFactory.decodeFile(path, opts).compress(quality = quality)
 
 fun File.toRectBitmap(
@@ -157,6 +155,7 @@ fun Bitmap?.drawBitmap(
 /**
  * 缩放绘制迷你bitmap
  * gravity 目前只支持9种情况 不传或者超过都为5
+ * 位置如下
  * 1 2 3
  * 4 5 6
  * 7 8 9

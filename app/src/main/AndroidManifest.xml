@@ -36,6 +36,7 @@
 <!--        <activity android:name=".demo.DemoActivity" />-->
         <activity android:name=".MainActivity" />
         <activity android:name=".demo.ImageActivity" />
+        <activity android:name=".demo.DrawerActivity" />
 
         <!-- 7.0文件路径 -->
         <provider

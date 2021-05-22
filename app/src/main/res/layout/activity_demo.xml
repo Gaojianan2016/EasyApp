@@ -161,6 +161,33 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="BrightnessExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn18_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="获取屏幕亮度信息"
+            android:textAllCaps="false" />
+
+        <SeekBar
+            android:id="@+id/sb_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="255"
+            android:progress="100" />
+
+        <Button
+            android:id="@+id/btn19_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="设置屏幕亮度信息"
+            android:textAllCaps="false" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="CancelExt"
             android:textAppearance="@style/Text_Title" />
 
