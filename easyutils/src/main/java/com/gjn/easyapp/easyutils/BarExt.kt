@@ -184,7 +184,6 @@ fun Application.actionBarHeight(): Int {
  * */
 fun Application.setNotificationBarVisibility(isVisible: Boolean) {
     val methodName = if (isVisible) "expandNotificationsPanel" else "collapsePanels"
-
     @SuppressLint("WrongConstant")
     val service = getSystemService("statusbar")
     val statusBarManager = "android.app.StatusBarManager".toClass()
@@ -236,8 +235,7 @@ fun Activity.isNavBarVisible(): Boolean {
         if (isPhoneRom(ROM_SAMSUNG) && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             try {
                 return Settings.Global.getInt(
-                    contentResolver,
-                    "navigationbar_hide_bar_enabled"
+                    contentResolver, "navigationbar_hide_bar_enabled"
                 ) == 0
             } catch (e: Exception) {
             }

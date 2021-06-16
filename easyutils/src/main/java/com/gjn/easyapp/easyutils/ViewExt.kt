@@ -48,16 +48,6 @@ fun View.invisible() {
     visibility = View.INVISIBLE
 }
 
-fun View.click(block: View.() -> Unit) {
-    this.setOnClickListener { it.block() }
-}
-
-fun View.clickLong(block: View.() -> Boolean) {
-    this.setOnLongClickListener {
-        return@setOnLongClickListener it.block()
-    }
-}
-
 fun ViewGroup.getChildViewByResourceName(resourceEntryName: String): View?{
     for (i in 0 until childCount) {
         val child = getChildAt(i)
@@ -135,24 +125,6 @@ fun EditText.monitorTextChange(
             afterTextChangedBlock.invoke(s)
         }
     })
-}
-
-fun setOnClickListeners(vararg view: View?, block: View.() -> Unit) {
-    val listener = View.OnClickListener { it.block() }
-    view.forEach { it?.setOnClickListener(listener) }
-}
-
-fun setOnClickListeners(vararg view: View?, listener: View.OnClickListener) {
-    view.forEach { it?.setOnClickListener(listener) }
-}
-
-fun setOnLongClickListeners(vararg view: View?, block: View.() -> Boolean) {
-    val listener = View.OnLongClickListener { return@OnLongClickListener it.block() }
-    view.forEach { it?.setOnLongClickListener(listener) }
-}
-
-fun setOnLongClickListeners(vararg view: View?, listener: View.OnLongClickListener) {
-    view.forEach { it?.setOnLongClickListener(listener) }
 }
 
 object ViewUtils {

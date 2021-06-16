@@ -51,6 +51,9 @@ fun Int.toBitmap(
     opts: BitmapFactory.Options? = null
 ) = BitmapFactory.decodeResource(context.resources, this, opts).compress(quality = quality)
 
+/**
+ * 向量图转bitmap
+ * */
 fun Int.vectorToBitmap(context: Context): Bitmap? {
     val bitmap: Bitmap?
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {

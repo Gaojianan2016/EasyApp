@@ -1,5 +1,6 @@
 package com.gjn.easyapp.demo
 
+import android.content.ClipboardManager
 import android.content.Intent
 import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
@@ -162,6 +163,22 @@ class DemoActivity : ABaseActivity() {
 
         btn19_ad.click {
             window.setWindowBrightness(sb_ad.progress)
+        }
+
+        btn20_ad.debouncingClick {
+            mActivity.copyClipboardText(text = "我是复制文字")
+        }
+
+        btn21_ad.debouncingClick {
+            println("getClipboardLabel ${mActivity.getClipboardLabel()}")
+            println("getClipboardText ${mActivity.getClipboardText()}")
+        }
+
+        btn22_ad.debouncingClick {
+            mActivity.clearClipboard()
+
+            println(" 100 >> 0 -> ${100 shr 0}")
+            println(" 100 >> 2 -> ${100 shr 2}")
         }
 
     }

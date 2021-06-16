@@ -39,57 +39,11 @@ class A1Fragment : BaseLazyFragment() {
     override fun lazyData() {
         println("A1Fragment lazyData")
 
-        setOnClickListeners(btn0, btn1, btn2, btn3) {
-            when (this) {
-                btn0 -> {
-                    DemoActivity::class.java.startActivity(mActivity)
-                }
-                btn1 -> {
-                    size++
-                    showToast("测试 $size")
-                }
-                btn2 -> {
-                    mDialogManager.showAndroidDialog("标题", "测试")
-                    mDialogManager.showEasyNormalDialog("消息",
-                        positive = "按钮1",
-                        positiveClickListener = { showToast("关闭按钮1") }
-                    )
-                    mDialogManager.showSmallLoadingDialog()
-
-                    mDialogManager.showDialog(
-                        simpleDataBindingDialog<DialogTestBinding>(R.layout.dialog_test) { _, _ -> }
-                            .apply {
-                                isTransparent = true
-                                isMatchWidth = true
-                            }
-                    )
-
-                    launchMain {
-                        delay(5000)
-                        try {
-                            mDialogManager.clearDialogs()
-                        }catch (e: Exception){
-                            e.printStackTrace()
-                        }
-                    }
-                }
-                btn3 -> {
-                    et_pwd.togglePassword()
-                }
-            }
-        }
-
         setOnClickListeners(
-            btn4,
-            btn6,
-            btn8,
-            btn9,
-            btn10,
-            btn11,
-            btn12,
-            btn13,
-            btn14,
-            listener = Click()
+            btn0, btn1, btn2, btn3,
+            btn4, btn6, btn8, btn9,
+            btn10, btn11, btn12, btn13,
+            btn14, listener = Click()
         )
 
         btn5.click {
@@ -333,6 +287,41 @@ class A1Fragment : BaseLazyFragment() {
 
         override fun onClick(v: View?) {
             when (v) {
+                btn0 -> {
+                    DemoActivity::class.java.startActivity(mActivity)
+                }
+                btn1 -> {
+                    size++
+                    showToast("测试 $size")
+                }
+                btn2 -> {
+                    mDialogManager.showAndroidDialog("标题", "测试")
+                    mDialogManager.showEasyNormalDialog("消息",
+                        positive = "按钮1",
+                        positiveClickListener = { showToast("关闭按钮1") }
+                    )
+                    mDialogManager.showSmallLoadingDialog()
+
+                    mDialogManager.showDialog(
+                        simpleDataBindingDialog<DialogTestBinding>(R.layout.dialog_test) { _, _ -> }
+                            .apply {
+                                isTransparent = true
+                                isMatchWidth = true
+                            }
+                    )
+
+                    launchMain {
+                        delay(5000)
+                        try {
+                            mDialogManager.clearDialogs()
+                        }catch (e: Exception){
+                            e.printStackTrace()
+                        }
+                    }
+                }
+                btn3 -> {
+                    et_pwd.togglePassword()
+                }
                 btn4 -> {
                     val bmp = QRCodeUtils.stringEncode("你好，我是正常二维码")
                     println("解码 = ${QRCodeUtils.bitmapDecode(bmp)}")

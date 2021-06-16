@@ -6,7 +6,9 @@ import android.view.Window
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
 
-
+/**
+ * 是否开启自动亮度
+ * */
 fun Context.isAutoBrightnessEnabled() =
     Settings.System.getInt(
         contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE
