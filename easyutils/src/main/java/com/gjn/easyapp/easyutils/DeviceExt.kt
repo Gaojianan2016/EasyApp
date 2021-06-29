@@ -12,6 +12,9 @@ import java.io.File
 import java.net.InetAddress
 import java.net.NetworkInterface
 
+/**
+ * 谷歌设置默认mac地址
+ * */
 private const val DEFAULT_MAC_ADDRESS = "02:00:00:00:00:00"
 
 /**
@@ -55,18 +58,27 @@ fun sdkVersionCode(): Int = Build.VERSION.SDK_INT
 @SuppressLint("HardwareIds")
 fun Context.androidID(): String {
     val id = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-    if (id == null || id == "9774d56d682e549c") {
-        return ""
-    }
+    //9774d56d682e549c 模拟器生成的固定id
+    if (id == null || id == "9774d56d682e549c") return ""
     return id
 }
 
+/**
+ * 获取设备Mac地址
+ * */
 @RequiresPermission(allOf = [Manifest.permission.INTERNET, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_WIFI_STATE])
-fun Context.getMacAddress() {
-    val address = getMacAddress(*emptyArray())
-
+fun Context.getMacAddress(): String {
+    val macAddress = getMacAddress(*emptyArray())
+    if (macAddress.isNotEmpty() || getWifiEnabled()) return macAddress
+    setWifiEnabled(true)
+    setWifiEnabled(false)
+    return getMacAddress(*emptyArray())
 }
 
+/**
+ * 获取设备Mac地址
+ * excepts 例外地址
+ * */
 @RequiresPermission(allOf = [Manifest.permission.INTERNET, Manifest.permission.ACCESS_WIFI_STATE])
 fun Context.getMacAddress(vararg excepts: String): String {
     var address = getMacAddressByNetworkInterface()
@@ -77,7 +89,7 @@ fun Context.getMacAddress(vararg excepts: String): String {
     if (isAddressNotInExcepts(address, *excepts)) {
         return address
     }
-    address = getMacAddressByWifiInfo()
+    address = getMacAddressByWifiInfo(this)
     if (isAddressNotInExcepts(address, *excepts)) {
         return address
     }
@@ -86,15 +98,6 @@ fun Context.getMacAddress(vararg excepts: String): String {
         return address
     }
     return ""
-}
-
-/**
- * 获取wifi开启状态
- * */
-fun Context.getWifiEnabled(): Boolean {
-    @SuppressLint("WifiManagerLeak")
-    val manager = getSystemService(Context.WIFI_SERVICE) as WifiManager
-    return manager.isWifiEnabled
 }
 
 /**
@@ -110,29 +113,32 @@ fun Context.setWifiEnabled(enabled: Boolean) {
     manager.isWifiEnabled = enabled
 }
 
+/**
+ * 获取wifi开启状态
+ * */
+fun Context.getWifiEnabled(): Boolean {
+    @SuppressLint("WifiManagerLeak")
+    val manager = getSystemService(Context.WIFI_SERVICE) as WifiManager
+    return manager.isWifiEnabled
+}
 
 private fun isAddressNotInExcepts(address: String, vararg excepts: String): Boolean {
     if (address.isEmpty()) {
         return false
     }
-
     if (DEFAULT_MAC_ADDRESS == address) {
         return false
     }
-
     if (excepts.isEmpty()) {
         return true
     }
-
     for (except in excepts) {
         if (except == address) {
             return false
         }
     }
-
     return true
 }
-
 
 private fun ByteArray?.macBytes2Address(): String {
     if (this == null || isEmpty()) return DEFAULT_MAC_ADDRESS
@@ -148,7 +154,7 @@ private fun getMacAddressByNetworkInterface(): String {
         val nis = NetworkInterface.getNetworkInterfaces()
         while (nis.hasMoreElements()) {
             val e = nis.nextElement()
-            if (e == null || e.name.equals("wlan0", true)) {
+            if (e == null || !e.name.equals("wlan0", true)) {
                 continue
             }
             return e.hardwareAddress.macBytes2Address()
@@ -163,7 +169,7 @@ private fun getMacAddressByInetAddress(): String {
     try {
         getInetAddress()?.let {
             val ni = NetworkInterface.getByInetAddress(it)
-            return@let ni?.hardwareAddress.macBytes2Address()
+            return ni?.hardwareAddress.macBytes2Address()
         }
     } catch (e: Exception) {
         e.printStackTrace()
@@ -192,9 +198,16 @@ private fun getInetAddress(): InetAddress? {
     return null
 }
 
-private fun getMacAddressByWifiInfo(): String {
+@SuppressLint("HardwareIds")
+private fun getMacAddressByWifiInfo(context: Context): String {
     try {
-
+        val wifi = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        if (wifi.connectionInfo != null) {
+            val address = wifi.connectionInfo.macAddress
+            if (address.isNotEmpty()) {
+                return address
+            }
+        }
     } catch (e: Exception) {
         e.printStackTrace()
     }
@@ -203,7 +216,17 @@ private fun getMacAddressByWifiInfo(): String {
 
 private fun getMacAddressByFile(): String {
     try {
-
+        var result = execCmd("getprop wifi.interface", false)
+        if (result.result == 0) {
+            val name = result.successMsg
+            result = execCmd("cat /sys/class/net/$name/address", false)
+            if (result.result == 0) {
+                val address = result.successMsg
+                if (address.isNotEmpty()) {
+                    return address
+                }
+            }
+        }
     } catch (e: Exception) {
         e.printStackTrace()
     }

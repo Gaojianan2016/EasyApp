@@ -1,12 +1,13 @@
 package com.gjn.easyapp.demo
 
-import android.content.ClipboardManager
 import android.content.Intent
+import android.graphics.Color
 import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easyutils.*
 import kotlinx.android.synthetic.main.activity_demo.*
 import kotlinx.android.synthetic.main.fragment_a1.*
+import kotlinx.coroutines.delay
 
 class DemoActivity : ABaseActivity() {
 
@@ -176,11 +177,61 @@ class DemoActivity : ABaseActivity() {
 
         btn22_ad.debouncingClick {
             mActivity.clearClipboard()
-
-            println(" 100 >> 0 -> ${100 shr 0}")
-            println(" 100 >> 2 -> ${100 shr 2}")
         }
 
+        btn23_ad.click {
+            tv_color_ad.setBackgroundColor(randomColor())
+        }
+
+        btn24_ad.click {
+            val color = randomColor()
+            tv_color_ad.setBackgroundColor(color)
+            println("${color.parseArgbColor()} isLightColor? ${color.isLightColor()}")
+        }
+
+        btn25_ad.click {
+            var color = Color.BLACK
+            tv_color_ad.setBackgroundColor(color)
+            launch {
+                delay(1000)
+                color = color.changeColorAlpha(0.2f)
+                tv_color_ad.setBackgroundColor(color)
+                delay(1000)
+                color = color.changeRedColorAlpha(0.3f)
+                tv_color_ad.setBackgroundColor(color)
+                delay(1000)
+                color = color.changeBlueColorAlpha(0.4f)
+                tv_color_ad.setBackgroundColor(color)
+                delay(1000)
+                color = color.changeGreenColorAlpha(0.5f)
+                tv_color_ad.setBackgroundColor(color)
+            }
+        }
+
+        btn26_ad.click {
+            println("isDeviceRooted ${isDeviceRooted()}")
+            println("isAdbEnabled ${mActivity.isAdbEnabled()}")
+            println("sdkVersionName ${sdkVersionName()}")
+            println("sdkVersionCode ${sdkVersionCode()}")
+            println("androidID ${mActivity.androidID()}")
+            println("getMacAddress ${mActivity.getMacAddress()}")
+        }
+
+        btn27_ad.click {
+            val str = "我是一段测试数据"
+
+            var encodeStr = str.urlEncode()
+            println("urlEncode $encodeStr")
+            println("urlDecode ${encodeStr.urlDecode()}")
+
+            encodeStr = str.base64Encode2String()
+            println("base64Encode $encodeStr")
+            println("base64Decode ${String(encodeStr.base64Decode())}")
+
+            encodeStr = str.binaryEncode()
+            println("binaryEncode $encodeStr")
+            println("binaryDecode ${encodeStr.binaryDecode()}")
+        }
     }
 
     override fun initData() {

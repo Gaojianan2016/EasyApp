@@ -171,12 +171,11 @@ Context.removeClipboardChangedListener 移除剪切板改变监听
 ## ColorExt
 ```
 Context.getColorRes 通过resource获取color
-Int.setColorAlpha 设置color的透明度
-Int.setRedColorAlpha 设置color的红色透明度
-Int.setGreenColorAlpha 设置color的绿色透明度
-Int.setBlueColorAlpha 设置color的蓝色透明度
+Int.changeColorAlpha 改变color的透明度
+Int.changeRedColorAlpha 改变color的红色透明度
+Int.changeGreenColorAlpha 改变color的绿色透明度
+Int.changeBlueColorAlpha 改变color的蓝色透明度
 
-String.parseColor 字符串转color
 Int.parseRgbColor color转字符串（无透明度）
 Int.parseArgbColor color转字符串（有透明度）
 
@@ -195,3 +194,15 @@ asyncMain 主线程协程async
 asyncIO io线程协程async
 ```
 
+## DeviceExt
+```
+isDeviceRooted 设备是否root
+Context.isAdbEnabled 是否开启adb
+sdkVersionName 获取设备版本名称(Build.VERSION.RELEASE)
+sdkVersionCode 获取设备版本code(Build.VERSION.SDK_INT)
+Context.androidID 获取设备AndroidID
+
+Context.getMacAddress 获取设备Mac地址
+Context.setWifiEnabled 修改wifi状态
+Context.getWifiEnabled 获取wifi状态
+```

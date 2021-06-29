@@ -227,5 +227,60 @@
             android:layout_height="wrap_content"
             android:text="剪切板清空" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ColorExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <TextView
+            android:id="@+id/tv_color_ad"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:background="#fb0235" />
+
+        <Button
+            android:id="@+id/btn23_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="随即颜色" />
+
+        <Button
+            android:id="@+id/btn24_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="是否浅色" />
+
+        <Button
+            android:id="@+id/btn25_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="调颜色透明度" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="DeviceExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn26_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="设备信息" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="EncodeDecodeExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn27_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="加解密操作" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
