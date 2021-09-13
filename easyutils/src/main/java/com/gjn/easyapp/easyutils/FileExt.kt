@@ -10,37 +10,217 @@ import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
 import java.io.*
 import java.util.zip.ZipInputStream
-import kotlin.jvm.Throws
 
 fun String.file(): File = File(this)
 
 fun Uri.file(): File = File(path)
 
-fun String.suffixToType(): String? = MimeTypeMap.getSingleton().getExtensionFromMimeType(this)
-
-fun String.typeToSuffix(): String? = MimeTypeMap.getSingleton().getMimeTypeFromExtension(this)
-
 fun String.suffix(): String = substring(lastIndexOf('.') + 1)
 
 fun File.suffix(): String = name.suffix()
 
-fun File.suffixToType(): String? = suffix().suffixToType()
+fun String.suffixFindType(): String? = MimeTypeMap.getSingleton().getExtensionFromMimeType(this)
 
-fun File.typeToSuffix(): String? = suffix().typeToSuffix()
+fun String.typeFindSuffix(): String? = MimeTypeMap.getSingleton().getMimeTypeFromExtension(this)
 
-fun String.deleteFile(): Boolean = file().delete()
+fun File.suffixFindType(): String? = suffix().suffixFindType()
 
-fun File.deleteFile(): Boolean {
-    if (exists()) {
-        if (isDirectory) {
-            val children = list()
-            for (child in children) {
-                File(this, child).deleteFile()
-            }
+fun File.typeFindSuffix(): String? = suffix().typeFindSuffix()
+
+/**
+ * 文件重命名
+ * @param newName 新名字
+ * */
+fun File?.rename(newName: String): Boolean {
+    if (this == null || newName.isEmpty()) return false
+    if (!exists()) return false
+    if (name.isEmpty()) return false
+    if (newName == name) return true
+    val newFile = "$parent${File.separator}$newName".file()
+    return !newFile.exists() && this.renameTo(newFile)
+}
+
+/**
+ * 判断是否是文件夹
+ * */
+fun File?.isExistsDir() = this != null && exists() && isDirectory
+
+/**
+ * 判断是否是文件
+ * */
+fun File?.isExistsFile() = this != null && exists() && isFile
+
+/**
+ * 创建文件夹(存在不处理)
+ * */
+fun String.createOrExistsDir() = file().createOrExistsDir()
+
+/**
+ * 创建文件夹(存在不处理)
+ * */
+fun File?.createOrExistsDir(): Boolean {
+    if (this == null) return false
+    return if (exists()) isDirectory else mkdirs()
+}
+
+/**
+ * 创建父目录
+ * */
+fun File?.createParentDir(): Boolean {
+    if (this == null) return false
+    return this.parentFile.createOrExistsDir()
+}
+
+/**
+ * 创建文件(存在不处理)
+ * */
+fun String.createOrExistsFile() = file().createOrExistsFile()
+
+/**
+ * 创建文件(存在不处理)
+ * */
+fun File?.createOrExistsFile(): Boolean {
+    if (this == null) return false
+    if (exists()) return isFile
+    if (!createParentDir()) return false
+    try {
+        return createNewFile()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return false
+}
+
+/**
+ * 创建新文件(存在删除)
+ * */
+fun String.createFile() = file().createFile()
+
+/**
+ * 创建新文件(存在删除)
+ * */
+fun File?.createFile(): Boolean {
+    if (this == null) return false
+    //存在 删除失败 返回失败
+    if (exists() && !delete()) return false
+    if (!createOrExistsFile()) return false
+    try {
+        return createNewFile()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return false
+}
+
+/**
+ * 复制文件
+ * @param targetPath 目标路径
+ * */
+fun File?.copyToPath(targetPath: String): Boolean {
+    if (this == null || targetPath.isEmpty()) return false
+    return if (isDirectory) copyOrMoveDir(targetPath) else copyOrMoveFile(targetPath.file())
+}
+
+/**
+ * 移动文件
+ * @param targetPath 目标路径
+ * */
+fun File?.moveToPath(targetPath: String): Boolean {
+    if (this == null || targetPath.isEmpty()) return false
+    return if (isDirectory) copyOrMoveDir(targetPath, true)
+    else copyOrMoveFile(targetPath.file(), true)
+}
+
+/**
+ * 复制或者移动文件夹
+ * @param targetDirPath 目标路径
+ * @param isMove     true 移动 false 复制
+ * */
+fun File?.copyOrMoveDir(targetDirPath: String, isMove: Boolean = false): Boolean {
+    if (this == null || targetDirPath.isEmpty()) return false
+    val srcPath = path + File.separator
+    val destPath =
+        if (targetDirPath.endsWith(File.separator)) targetDirPath else targetDirPath + File.separator
+    //目标文件夹判断
+    if (destPath.contains(srcPath)) return false
+    if (!exists() || !isDirectory) return false
+    if (!destPath.createOrExistsDir()) return false
+
+    listFiles()?.forEach {
+        val tempFile = "$destPath${it.name}".file()
+        if (it.isFile) {
+            if (!it.copyOrMoveFile(tempFile, isMove)) return false
+        } else if (it.isDirectory) {
+            if (!it.copyOrMoveDir(tempFile.path, isMove)) return false
         }
+    }
+    return !isMove || delete()
+}
+
+/**
+ * 复制或者移动文件
+ * @param targetFile 目标文件
+ * @param isMove     true 移动 false 复制
+ * */
+fun File?.copyOrMoveFile(targetFile: File?, isMove: Boolean = false): Boolean {
+    if (this == null || targetFile == null) return false
+    //目标文件判断
+    if (this == targetFile) return false
+    if (!exists() || !isFile) return false
+    if (targetFile.exists()) {
+        if (!targetFile.delete()) {
+            return false
+        }
+    }
+    if (!targetFile.createParentDir()) return false
+    try {
+        //todo 复制or移动文件
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return false
+}
+
+
+/**
+ * 删除文件夹
+ * */
+fun String.deleteDir() = file().deleteDir()
+
+/**
+ * 删除文件夹
+ * */
+fun File?.deleteDir(): Boolean {
+    if (this == null) return false
+    if (!exists()) return true
+    if (!isDirectory) return false
+    listFiles()?.forEach {
+        if (it.isFile) {
+            if (!it.delete()) return false
+        } else if (it.isDirectory) {
+            if (!it.deleteDir()) return false
+        }
+    }
+    return delete()
+}
+
+/**
+ * 删除文件
+ * */
+fun String.deleteFile() = file().delete()
+
+/**
+ * 删除文件
+ * */
+fun File?.deleteFile(): Boolean {
+    if (this == null) return false
+    if (!exists()) return true
+    if (isDirectory) {
+        return deleteDir()
+    } else if (isFile) {
         return delete()
     }
-    return true
+    return false
 }
 
 fun String.fileSize() = file().fileSize()
@@ -125,7 +305,7 @@ object FileUtils {
     }
 
     fun openFile(context: Context, file: File) {
-        val mimeType = file.typeToSuffix()
+        val mimeType = file.typeFindSuffix()
         val uri = getFileUri(context, file)
         mimeType?.run {
             Intent(Intent.ACTION_VIEW).let {

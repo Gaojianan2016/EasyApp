@@ -231,6 +231,12 @@ class DemoActivity : ABaseActivity() {
             encodeStr = str.binaryEncode()
             println("binaryEncode $encodeStr")
             println("binaryDecode ${encodeStr.binaryDecode()}")
+
+            var encryptStr: String? = str.encryptMD5ToString()
+            println("encryptMD5ToString $encryptStr")
+
+            encryptStr = str.encryptHmacMD5ToString("123456".toByteArray())
+            println("encryptHmacMD5ToString $encryptStr")
         }
     }
 

@@ -206,3 +206,45 @@ Context.getMacAddress 获取设备Mac地址
 Context.setWifiEnabled 修改wifi状态
 Context.getWifiEnabled 获取wifi状态
 ```
+
+## EncodeExt
+```
+String.urlEncode
+String.urlDecode
+
+base64Encode
+base64Encode2String
+base64Decode
+
+String.binaryEncode
+String.binaryDecode
+```
+
+## EncryptExt
+```
+encryptMD5ToString  MD5哈希加密
+encryptHash2String 哈希加密
+
+encryptHmacMD5ToString HmacMD5加密
+encryptHmac2String Hmac加密
+
+encryptDES DES加密
+decryptDES DES解密
+
+encrypt3DES 3DES加密
+decrypt3DES 3DES解密
+
+encryptAES AES加密
+decryptAES AES解密
+
+encryptRSA RSA加密
+decryptRSA RSA解密
+
+hashTemplate 哈希模板
+hmacTemplate Hmac模板
+symmetricTemplate 对称模板
+rsaTemplate 非对称模板
+rc4 rc4加密
+
+ByteArray.splice 拼接Bytes
+```

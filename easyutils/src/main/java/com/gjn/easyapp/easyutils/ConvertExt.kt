@@ -95,3 +95,13 @@ fun Parcelable?.toBytes(): ByteArray?{
     return result
 }
 
+/**
+ * 拼接ByteArray
+ * */
+fun ByteArray.splice(bytes: ByteArray): ByteArray{
+    val ret = ByteArray(size + bytes.size)
+    System.arraycopy(this, 0, ret, 0, size)
+    System.arraycopy(bytes, 0, ret, size, bytes.size)
+    return ret
+}
+
