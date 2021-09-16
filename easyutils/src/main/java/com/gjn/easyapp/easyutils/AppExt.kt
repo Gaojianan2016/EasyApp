@@ -38,7 +38,7 @@ fun Context.installApp(file: File?) {
         if (!packageManager.canRequestPackageInstalls()) {
             openUnknownAppSettings()
         } else {
-            FileUtils.openFile(this, file)
+            openFile(file)
         }
     }
 }

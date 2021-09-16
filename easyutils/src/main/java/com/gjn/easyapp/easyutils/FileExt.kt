@@ -5,249 +5,62 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.StatFs
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
+import net.lingala.zip4j.ZipFile
 import java.io.*
+import java.util.*
 import java.util.zip.ZipInputStream
 
+private const val FILEPROVIDER = ".fileprovider"
+private const val APP = "/app"
+private const val DATA = "_data"
+
+/**
+ * 路径转文件
+ * */
 fun String.file(): File = File(this)
 
+/**
+ * uri地址转文件
+ * */
 fun Uri.file(): File = File(path)
 
-fun String.suffix(): String = substring(lastIndexOf('.') + 1)
-
-fun File.suffix(): String = name.suffix()
-
-fun String.suffixFindType(): String? = MimeTypeMap.getSingleton().getExtensionFromMimeType(this)
-
-fun String.typeFindSuffix(): String? = MimeTypeMap.getSingleton().getMimeTypeFromExtension(this)
-
-fun File.suffixFindType(): String? = suffix().suffixFindType()
-
-fun File.typeFindSuffix(): String? = suffix().typeFindSuffix()
-
 /**
- * 文件重命名
- * @param newName 新名字
+ * 文件后缀
  * */
-fun File?.rename(newName: String): Boolean {
-    if (this == null || newName.isEmpty()) return false
-    if (!exists()) return false
-    if (name.isEmpty()) return false
-    if (newName == name) return true
-    val newFile = "$parent${File.separator}$newName".file()
-    return !newFile.exists() && this.renameTo(newFile)
-}
-
-/**
- * 判断是否是文件夹
- * */
-fun File?.isExistsDir() = this != null && exists() && isDirectory
-
-/**
- * 判断是否是文件
- * */
-fun File?.isExistsFile() = this != null && exists() && isFile
-
-/**
- * 创建文件夹(存在不处理)
- * */
-fun String.createOrExistsDir() = file().createOrExistsDir()
-
-/**
- * 创建文件夹(存在不处理)
- * */
-fun File?.createOrExistsDir(): Boolean {
-    if (this == null) return false
-    return if (exists()) isDirectory else mkdirs()
-}
-
-/**
- * 创建父目录
- * */
-fun File?.createParentDir(): Boolean {
-    if (this == null) return false
-    return this.parentFile.createOrExistsDir()
-}
-
-/**
- * 创建文件(存在不处理)
- * */
-fun String.createOrExistsFile() = file().createOrExistsFile()
-
-/**
- * 创建文件(存在不处理)
- * */
-fun File?.createOrExistsFile(): Boolean {
-    if (this == null) return false
-    if (exists()) return isFile
-    if (!createParentDir()) return false
-    try {
-        return createNewFile()
-    } catch (e: Exception) {
-        e.printStackTrace()
+fun File.suffix(): String {
+    if (!exists()) return ""
+    name.run {
+        return substring(lastIndexOf('.') + 1)
     }
-    return false
 }
 
 /**
- * 创建新文件(存在删除)
+ * mimeType 获取 文件后缀
+ * A MIME type (i.e. text/plain)
+ * A Suffix (i.e. txt)
  * */
-fun String.createFile() = file().createFile()
-
-/**
- * 创建新文件(存在删除)
- * */
-fun File?.createFile(): Boolean {
-    if (this == null) return false
-    //存在 删除失败 返回失败
-    if (exists() && !delete()) return false
-    if (!createOrExistsFile()) return false
-    try {
-        return createNewFile()
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-    return false
+fun File.getExtensionFromMimeType(): String? {
+    if (!exists()) return ""
+    return MimeTypeMap.getSingleton().getExtensionFromMimeType(suffix())
 }
 
 /**
- * 复制文件
- * @param targetPath 目标路径
+ * 文件后缀 获取 mimeType
+ * A MIME type (i.e. text/plain)
+ * A Suffix (i.e. txt)
  * */
-fun File?.copyToPath(targetPath: String): Boolean {
-    if (this == null || targetPath.isEmpty()) return false
-    return if (isDirectory) copyOrMoveDir(targetPath) else copyOrMoveFile(targetPath.file())
+fun File.getMimeTypeFromExtension(): String? {
+    if (!exists()) return ""
+    return MimeTypeMap.getSingleton().getMimeTypeFromExtension(suffix())
 }
 
 /**
- * 移动文件
- * @param targetPath 目标路径
+ * file转换为byte[]
  * */
-fun File?.moveToPath(targetPath: String): Boolean {
-    if (this == null || targetPath.isEmpty()) return false
-    return if (isDirectory) copyOrMoveDir(targetPath, true)
-    else copyOrMoveFile(targetPath.file(), true)
-}
-
-/**
- * 复制或者移动文件夹
- * @param targetDirPath 目标路径
- * @param isMove     true 移动 false 复制
- * */
-fun File?.copyOrMoveDir(targetDirPath: String, isMove: Boolean = false): Boolean {
-    if (this == null || targetDirPath.isEmpty()) return false
-    val srcPath = path + File.separator
-    val destPath =
-        if (targetDirPath.endsWith(File.separator)) targetDirPath else targetDirPath + File.separator
-    //目标文件夹判断
-    if (destPath.contains(srcPath)) return false
-    if (!exists() || !isDirectory) return false
-    if (!destPath.createOrExistsDir()) return false
-
-    listFiles()?.forEach {
-        val tempFile = "$destPath${it.name}".file()
-        if (it.isFile) {
-            if (!it.copyOrMoveFile(tempFile, isMove)) return false
-        } else if (it.isDirectory) {
-            if (!it.copyOrMoveDir(tempFile.path, isMove)) return false
-        }
-    }
-    return !isMove || delete()
-}
-
-/**
- * 复制或者移动文件
- * @param targetFile 目标文件
- * @param isMove     true 移动 false 复制
- * */
-fun File?.copyOrMoveFile(targetFile: File?, isMove: Boolean = false): Boolean {
-    if (this == null || targetFile == null) return false
-    //目标文件判断
-    if (this == targetFile) return false
-    if (!exists() || !isFile) return false
-    if (targetFile.exists()) {
-        if (!targetFile.delete()) {
-            return false
-        }
-    }
-    if (!targetFile.createParentDir()) return false
-    try {
-        //todo 复制or移动文件
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-    return false
-}
-
-
-/**
- * 删除文件夹
- * */
-fun String.deleteDir() = file().deleteDir()
-
-/**
- * 删除文件夹
- * */
-fun File?.deleteDir(): Boolean {
-    if (this == null) return false
-    if (!exists()) return true
-    if (!isDirectory) return false
-    listFiles()?.forEach {
-        if (it.isFile) {
-            if (!it.delete()) return false
-        } else if (it.isDirectory) {
-            if (!it.deleteDir()) return false
-        }
-    }
-    return delete()
-}
-
-/**
- * 删除文件
- * */
-fun String.deleteFile() = file().delete()
-
-/**
- * 删除文件
- * */
-fun File?.deleteFile(): Boolean {
-    if (this == null) return false
-    if (!exists()) return true
-    if (isDirectory) {
-        return deleteDir()
-    } else if (isFile) {
-        return delete()
-    }
-    return false
-}
-
-fun String.fileSize() = file().fileSize()
-
-fun File.fileSize(): Long {
-    var size: Long = 0
-    try {
-        if (exists()) {
-            for (file in listFiles()) {
-                size += if (file.isDirectory) {
-                    file.fileSize()
-                } else {
-                    file.length()
-                }
-            }
-        }
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-    return size
-}
-
-fun File.create(): Boolean {
-    if (!exists()) return mkdirs()
-    return true
-}
-
 fun File.toBytes(): ByteArray? {
     var bytes: ByteArray? = null
     val fis: FileInputStream
@@ -268,145 +81,414 @@ fun File.toBytes(): ByteArray? {
     return bytes
 }
 
-fun File.updateMediaStore(context: Context) {
-    insertImage(context)
-    scanFile(context)
+/**
+ * 文件重命名
+ * @param newName 新名字
+ * */
+fun File.rename(newName: String): Boolean {
+    if (!exists()) return false
+    if (newName.isEmpty() || name.isEmpty()) return false
+    if (newName == name) return true
+    val newFile = (parent + File.separator + newName).file()
+    return !newFile.exists() && this.renameTo(newFile)
 }
 
 /**
- * 通知相册插入缩略图 android 10之后Deprecated
- * 和scanFile一起使用 可以直接使用updateMediaStore
+ * 判断是否是文件夹
  * */
-fun File.insertImage(context: Context) {
+fun File?.isExistsDir() = this != null && exists() && isDirectory
+
+/**
+ * 判断是否是文件
+ * */
+fun File?.isExistsFile() = this != null && exists() && isFile
+
+/**
+ * 创建父目录
+ * */
+fun File.createParentDir(): Boolean {
+    if (exists()) return true
+    return parentFile?.createOrExistsDir() ?: false
+}
+
+/**
+ * 创建文件夹(存在不处理)
+ * */
+fun File.createOrExistsDir(): Boolean {
+    return if (exists()) isDirectory else mkdirs()
+}
+
+/**
+ * 创建文件(存在不处理)
+ * */
+fun File.createOrExistsFile(): Boolean {
+    if (exists()) return isFile
+    try {
+        if (createParentDir()) return createNewFile()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return false
+}
+
+/**
+ * 创建新文件夹(存在删除)
+ * */
+fun File.createDir(): Boolean {
+    if (exists() && !delete()) return false
+    return if (createOrExistsDir()) true else mkdirs()
+}
+
+/**
+ * 创建新文件(存在删除)
+ * */
+fun File.createFile(): Boolean {
+    if (exists() && !delete()) return false
+    try {
+        return if (createOrExistsFile()) true else createNewFile()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return false
+}
+
+/**
+ * 复制文件
+ * @param targetPath 目标路径
+ * */
+fun File.copyToPath(targetPath: String): Boolean {
+    if (targetPath.isEmpty()) return false
+    return copyToPath(targetPath.file())
+}
+
+/**
+ * 移动文件
+ * @param targetPath 目标路径
+ * */
+fun File.moveToPath(targetPath: String): Boolean {
+    if (targetPath.isEmpty()) return false
+    return moveToPath(targetPath.file())
+}
+
+/**
+ * 复制文件
+ * @param target 目标文件
+ * */
+fun File.copyToPath(target: File?): Boolean {
+    if (target == null) return false
+    return if (isDirectory) copyOrMoveDir(target) else copyOrMoveFile(target)
+}
+
+/**
+ * 移动文件
+ * @param target 目标文件
+ * */
+fun File.moveToPath(target: File?): Boolean {
+    if (target == null) return false
+    return if (isDirectory) copyOrMoveDir(target, true) else copyOrMoveFile(target, true)
+}
+
+/**
+ * 复制或者移动文件夹
+ * @param target 目标文件
+ * @param move   true 移动 false 复制
+ * */
+fun File.copyOrMoveDir(target: File, move: Boolean = false): Boolean {
+    //目标文件夹判断
+    if (target.path.contains(path)) return false
+    if (!isExistsDir()) return false
+    if (!target.createOrExistsDir()) return false
+    listFiles()?.forEach {
+        val tempFile = (target.path + File.separator + it.name).file()
+        if (it.isFile) {
+            if (!it.copyOrMoveFile(tempFile, move)) return false
+        } else if (it.isDirectory) {
+            if (!it.copyOrMoveDir(tempFile, move)) return false
+        }
+    }
+    return !move || delete()
+}
+
+/**
+ * 复制或者移动文件
+ * @param target 目标文件
+ * @param move   true 移动 false 复制
+ * */
+fun File.copyOrMoveFile(target: File?, move: Boolean = false): Boolean {
+    if (target == null) return false
+    //目标文件判断
+    if (this == target) return false
+    if (!isExistsFile()) return false
+    if (target.exists()) {
+        if (!target.delete()) {
+            return false
+        }
+    }
+    try {
+        return target.writeInputStream(inputStream()) && !(move && !deleteFile())
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return false
+}
+
+/**
+ * 删除文件夹
+ * */
+fun File.deleteDir(): Boolean {
+    if (!exists()) return true
+    if (!isDirectory) return false
+    listFiles()?.forEach {
+        if (it.isFile) {
+            if (!it.delete()) return false
+        } else if (it.isDirectory) {
+            if (!it.deleteDir()) return false
+        }
+    }
+    return delete()
+}
+
+/**
+ * 删除文件
+ * */
+fun File.deleteFile(): Boolean {
+    if (!exists()) return true
+    if (isDirectory) {
+        return deleteDir()
+    } else if (isFile) {
+        return delete()
+    }
+    return false
+}
+
+/**
+ * 查找文件
+ * @param filter        文件过滤器
+ * @param isRecursive   是否递归（遍历文件夹全部文件）
+ * @param comparator    排序方式
+ * */
+fun File?.findListFiles(
+    filter: FileFilter = FileFilter { return@FileFilter true },
+    isRecursive: Boolean = true,
+    comparator: Comparator<File>? = null
+): List<File> {
+    if (this == null) return emptyList()
+    if (!exists() || !isDirectory) return emptyList()
+
+    val files = mutableListOf<File>()
+    listFiles()?.forEach {
+        if (filter.accept(it)) {
+            files.add(it)
+        }
+        if (isRecursive && it.isDirectory) {
+            files.addAll(it.findListFiles(filter))
+        }
+    }
+
+    if (comparator != null) {
+        Collections.sort(files, comparator)
+    }
+    return files
+}
+
+/**
+ * 文件长度/大小
+ * */
+fun File.fileLength(): Long {
+    if (!exists()) return 0L
+    if (isDirectory) {
+        var len = 0L
+        listFiles()?.forEach {
+            len += if (it.isDirectory) {
+                it.fileLength()
+            } else {
+                it.length()
+            }
+        }
+        return len
+    }
+    return length()
+}
+
+/**
+ * 文件名
+ * */
+fun File.fileName(): String {
+    val lastSep = absolutePath.lastIndexOf(File.separator)
+    return if (lastSep == -1) absolutePath else absolutePath.substring(lastSep + 1)
+}
+
+/**
+ * 更新媒体文件
+ * */
+@Deprecated("适用于Android 10 以下的版本")
+fun File.notifyMediaFile(context: Context) {
+    notifyScanMediaFile(context)
+    notifyInsertThumbnail(context)
+}
+
+/**
+ * 通知文件夹扫描媒体文件
+ * */
+@Deprecated("适用于Android 10 以下的版本")
+fun File.notifyScanMediaFile(context: Context) {
+    if (!exists()) return
+    context.sendBroadcast(
+        Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also {
+            it.data = "file://${this.absolutePath}".uri()
+        }
+    )
+}
+
+/**
+ * 通知文件夹插入缩略图
+ * */
+@Deprecated("适用于Android 10 以下的版本")
+fun File.notifyInsertThumbnail(context: Context) {
+    if (!exists()) return
     MediaStore.Images.Media.insertImage(context.contentResolver, absolutePath, name, null)
 }
 
 /**
- * 通知相册更新图片 android 10之后Deprecated
- * 和insertImage一起使用 可以直接使用updateMediaStore
+ * 获取StatFs总大小
  * */
-fun File.scanFile(context: Context) = this.uri().scanFile(context)
-
-/**
- * 通知相册更新图片 android 10之后Deprecated
- * */
-fun Uri.scanFile(context: Context) {
-    context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { it.data = this })
+fun String.getStatFsTotalSize(): Long {
+    if (isEmpty()) return 0L
+    StatFs(this).run {
+        return blockSizeLong * blockCountLong
+    }
 }
 
-object FileUtils {
-
-    private const val FILEPROVIDER = ".fileprovider"
-    private const val APP = "/app"
-    private const val DATA = "_data"
-
-    fun openFile(context: Context, path: String) {
-        openFile(context, path.file())
+/**
+ * 获取StatFs可用大小
+ * */
+fun String.getStatFsAvailableSize(): Long {
+    if (isEmpty()) return 0L
+    StatFs(this).run {
+        return blockSizeLong * availableBlocksLong
     }
+}
 
-    fun openFile(context: Context, file: File) {
-        val mimeType = file.typeFindSuffix()
-        val uri = getFileUri(context, file)
-        mimeType?.run {
-            Intent(Intent.ACTION_VIEW).let {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    it.flags = (Intent.FLAG_ACTIVITY_NEW_TASK
-                            or Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                } else {
-                    it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                }
-                it.setDataAndType(uri, this)
-                it.startActivity(context)
+/**
+ * 获取StatFs总大小
+ * */
+fun File.getStatFsTotalSize() = path.getStatFsTotalSize()
+
+/**
+ * 获取StatFs可用大小
+ * */
+fun File.getStatFsAvailableSize() = path.getStatFsAvailableSize()
+
+/**
+ * 打开文件
+ * */
+fun Context.openFile(file: File) {
+    if (!file.exists()) return
+    val mimeType = file.getMimeTypeFromExtension()
+    mimeType.run {
+        Intent(Intent.ACTION_VIEW).let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                it.flags = (Intent.FLAG_ACTIVITY_NEW_TASK
+                        or Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            } else {
+                it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
+            it.setDataAndType(getLocalFileUri(file), this)
+            it.startActivity(this@openFile)
         }
     }
+}
 
-    fun getFileUri(context: Context, path: String): Uri {
-        return getFileUri(context, path.file())
+/**
+ * 获取本地文件uri
+ * */
+fun Context.getLocalFileUri(file: File): Uri {
+    if (!file.exists()) return Uri.EMPTY
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        FileProvider.getUriForFile(this, packageName + FILEPROVIDER, file)
+    else
+        Uri.fromFile(file)
+}
+
+/**
+ * 获取本地文件通过uri
+ * */
+fun Context.getLocalFileFromUri(uri: Uri): File? {
+    return when (uri.scheme) {
+        ContentResolver.SCHEME_CONTENT -> getLocalFileFromContentUri(uri)
+        ContentResolver.SCHEME_FILE -> uri.file()
+        else -> null
     }
+}
 
-    fun getFileUri(context: Context, file: File): Uri =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            FileProvider.getUriForFile(context, context.packageName + FILEPROVIDER, file)
+/**
+ * 获取本地文件通过ContentUri
+ * */
+fun Context.getLocalFileFromContentUri(uri: Uri): File? {
+    var filePath = ""
+    try {
+        if (uri.authority!!.contains(packageName)) {
+            filePath = uri.path!!.replace(APP, "")
         } else {
-            Uri.fromFile(file)
-        }
-
-    fun getFileFromUri(context: Context, uri: Uri?): File? {
-        if (uri == null) return null
-        return when (uri.scheme) {
-            ContentResolver.SCHEME_CONTENT -> getFileFormContentUri(context, uri)
-            ContentResolver.SCHEME_FILE -> uri.file()
-            else -> null
-        }
-    }
-
-    fun getFileFormContentUri(context: Context, uri: Uri): File? {
-        var filePath: String? = ""
-        try {
-            if (uri.authority!!.contains(context.packageName)) {
-                filePath = uri.path!!.replace(APP, "")
-            } else {
-                val cursor = context.contentResolver.query(
-                    uri, arrayOf(DATA), null, null, null
-                )
-                cursor?.run {
-                    if (moveToFirst()) {
-                        val index = getColumnIndex(DATA)
-                        if (index != -1) filePath = getString(index)
-                    }
-                    close()
+            contentResolver.query(uri, arrayOf(DATA), null, null, null)?.run {
+                if (moveToFirst()) {
+                    val index = getColumnIndex(DATA)
+                    if (index != -1) filePath = getString(index)
                 }
+                close()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
-        return filePath?.file()
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
+    return if (filePath.isEmpty()) null else filePath.file()
+}
 
-    @Throws(IOException::class)
-    fun unZip(
-        context: Context,
-        assetName: String,
-        outputDirectory: String
-    ) {
-        // 创建解压目标目录
-        var file = outputDirectory.file()
-        // 如果目标目录不存在，则创建
-        file.create()
-        // 打开压缩文件
-        val inputStream = context.assets.open(assetName)
-        val zipInputStream = ZipInputStream(inputStream)
-        // 读取一个进入点
-        var zipEntry = zipInputStream.nextEntry
-        // 使用1Mbuffer
-        val buffer = ByteArray(1024 * 1024)
-        // 解压时字节计数
-        var count: Int
-        // 如果进入点为空说明已经遍历完所有压缩包中文件和目录
-        while (zipEntry != null) {
-            // 如果是一个目录
-            if (zipEntry.isDirectory) {
-                file = File(outputDirectory + File.separator + zipEntry.name)
-                // 文件需要覆盖或者是文件不存在
-                file.create()
-            } else {
-                // 如果是文件
-                file = File(outputDirectory + File.separator + zipEntry.name)
-                // 文件需要覆盖或者文件不存在，则解压文件
-                if (!file.exists()) {
-                    file.createNewFile()
-                    val fileOutputStream = FileOutputStream(file)
-                    while (zipInputStream.read(buffer).also { count = it } > 0) {
-                        fileOutputStream.write(buffer, 0, count)
-                    }
-                    fileOutputStream.close()
+fun Context.unzipAssetsFile(assetName: String, targetPath: String): Boolean {
+    if (assetName.isEmpty() || targetPath.isEmpty()) return false
+    return unzipAssetsFile(assetName, targetPath.file())
+}
+
+/**
+ * 解压Assets文件
+ * @param assetName 文件名
+ * @param target    目标文件
+ * */
+fun Context.unzipAssetsFile(assetName: String, target: File?): Boolean {
+    if (assetName.isEmpty() || target == null) return false
+    if (!target.createOrExistsDir()) return false
+    try {
+        ZipInputStream(assets.open(assetName)).use { input ->
+            var zipEntry = input.nextEntry
+            var file: File
+            while (zipEntry != null) {
+                file = File(target.path + File.separator + zipEntry.name)
+                if (zipEntry.isDirectory) {
+                    file.createDir()
+                } else {
+                    file.createFile()
+                    input.copyTo(file.outputStream())
                 }
+                zipEntry = input.nextEntry
             }
-            // 定位到下一个文件入口
-            zipEntry = zipInputStream.nextEntry
         }
-        zipInputStream.close()
+        return true
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
+    return false
+}
+
+/**
+ * zip4j解压文件
+ * github地址 https://github.com/srikanth-lingala/zip4j
+ * */
+fun File.unzipFileUseZip4j(outputDir: String, password: CharArray? = null) {
+    if (!exists()) return
+    val zipFile = ZipFile(absolutePath)
+    if (zipFile.isEncrypted) {
+        zipFile.setPassword(password)
+    }
+    zipFile.extractAll(outputDir)
 }

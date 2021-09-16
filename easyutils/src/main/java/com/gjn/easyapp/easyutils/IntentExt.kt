@@ -37,10 +37,10 @@ fun FragmentActivity.takePictures(folderPath: String, block: (Int, Intent?) -> U
     simpleActivityResult(Intent().also {
         it.action = MediaStore.ACTION_IMAGE_CAPTURE
         it.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-        it.putExtra(MediaStore.EXTRA_OUTPUT, FileUtils.getFileUri(this, fileName.file()))
+        it.putExtra(MediaStore.EXTRA_OUTPUT, getLocalFileUri(fileName.file()))
     }) { code, data ->
         block.invoke(code, data)
-        fileName.file().updateMediaStore(this)
+        fileName.file().notifyMediaFile(this)
     }
     return fileName
 }

@@ -49,7 +49,7 @@ class DownLoadManager(private val activity: FragmentActivity) {
                 return
             }
         }
-        FileUtils.openFile(activity, file)
+        activity.openFile(file)
     }
 
     fun downLoadFile(url: String, path: String, name: String? = url.urlObtainName()) {

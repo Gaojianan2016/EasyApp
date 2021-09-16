@@ -77,8 +77,12 @@ fun String.escapeSpecialWord(): String {
 fun Double.decimalFormat(prefix: String? = null, suffix: String? = null, len: Int = 2): String {
     val pattern = StringBuilder()
     if (!prefix.isNullOrEmpty()) pattern.append(prefix)
-    pattern.append("0.")
-    for (i in 0 until len) {
+    if (len > 0) {
+        pattern.append("0.")
+        for (i in 0 until len) {
+            pattern.append("0")
+        }
+    } else {
         pattern.append("0")
     }
     if (!suffix.isNullOrEmpty()) pattern.append(suffix)
@@ -132,13 +136,13 @@ fun Char.isEmojiChar(): Boolean = !(this.toInt() == 0x0
         || this.toInt() in 0xE000..0xFFFD)
 
 /**
- * 字节转gb mb kb字符串 0.5T 1.20G 60.00M 798.35K 666b
+ * 字节转gb mb kb字符串 0.5Tb 1.20Gb 60.00Mb 798.35Kb 666b
  * */
 fun Long.byteToStr(): String = when {
-    this >= TB -> (this / 1024 / 1024 / 1024 / 1024.toDouble()).decimalFormat(suffix = "T")
-    this >= GB -> (this / 1024 / 1024 / 1024.toDouble()).decimalFormat(suffix = "G")
-    this >= MB -> (this / 1024 / 1024.toDouble()).decimalFormat(suffix = "M")
-    this >= KB -> (this / 1024.toDouble()).decimalFormat(suffix = "K")
+    this >= TB -> (this / TB.toDouble()).decimalFormat(suffix = "Tb")
+    this >= GB -> (this / GB.toDouble()).decimalFormat(suffix = "Gb")
+    this >= MB -> (this / MB.toDouble()).decimalFormat(suffix = "Mb")
+    this >= KB -> (this / KB.toDouble()).decimalFormat(suffix = "Kb")
     else -> (this.toDouble()).decimalFormat(suffix = "b", len = 0)
 }
 

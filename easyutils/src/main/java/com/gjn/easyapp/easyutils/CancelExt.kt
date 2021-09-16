@@ -54,15 +54,15 @@ fun Context.clearAppDatabases() {
 //文件大小
 fun Context.appExternalCacheSize() =
     if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED)
-        externalCacheDir?.fileSize() ?: 0 else 0
+        externalCacheDir?.fileLength() ?: 0 else 0
 
-fun Context.appInternalCacheSize() = cacheDir.fileSize()
+fun Context.appInternalCacheSize() = cacheDir.fileLength()
 
-fun Context.appFileSize() = filesDir.fileSize()
+fun Context.appFileSize() = filesDir.fileLength()
 
-fun Context.appSharedPrefsSize() = sharedPreferenceDir().fileSize()
+fun Context.appSharedPrefsSize() = sharedPreferenceDir().fileLength()
 
-fun Context.appDatabasesSize() = databasesDir().fileSize()
+fun Context.appDatabasesSize() = databasesDir().fileLength()
 
 object CancelUtils {
 

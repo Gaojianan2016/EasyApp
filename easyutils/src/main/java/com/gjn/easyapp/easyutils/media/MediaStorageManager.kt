@@ -66,7 +66,7 @@ class MediaStorageManager(private val context: Context) {
         paths: Array<String> = arrayOf(Environment.getExternalStorageDirectory().toString()),
         mimeTypes: Array<String>? = null,
         client: OnScanCompletedListener? = OnScanCompletedListener { path, uri ->
-            uri.scanFile(context)
+            uri.file().notifyScanMediaFile(context)
         }
     ) {
         val proxy = MediaScannerProxy(paths, mimeTypes, client)

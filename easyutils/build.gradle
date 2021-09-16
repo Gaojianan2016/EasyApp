@@ -34,4 +34,5 @@ dependencies {
 
     compileOnly 'com.google.zxing:core:3.4.0'
     compileOnly 'com.tencent:mmkv-static:1.2.5'
+    compileOnly 'net.lingala.zip4j:zip4j:2.9.0'
 }

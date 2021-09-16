@@ -2,12 +2,14 @@ package com.gjn.easyapp.demo
 
 import android.content.Intent
 import android.graphics.Color
+import android.os.Environment
 import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easyutils.*
 import kotlinx.android.synthetic.main.activity_demo.*
 import kotlinx.android.synthetic.main.fragment_a1.*
 import kotlinx.coroutines.delay
+import java.io.FileFilter
 
 class DemoActivity : ABaseActivity() {
 
@@ -120,7 +122,7 @@ class DemoActivity : ABaseActivity() {
         }
 
         btn15_ad.click {
-            iv2_ad.setImageDrawable(this@DemoActivity.getAppIcon());
+            iv2_ad.setImageDrawable(this@DemoActivity.getAppIcon())
             println("iconId ${this@DemoActivity.getAppIconId()}")
             println("applicationName ${this@DemoActivity.getApplicationName()}")
             println("appPath ${this@DemoActivity.getAppPath()}")
@@ -237,6 +239,99 @@ class DemoActivity : ABaseActivity() {
 
             encryptStr = str.encryptHmacMD5ToString("123456".toByteArray())
             println("encryptHmacMD5ToString $encryptStr")
+        }
+
+        btn28_ad.click {
+            val file =
+                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".file()
+
+            println("file createOrExistsFile ${file.createOrExistsFile()}")
+//            println("file createFile ${file.createFile()}")
+        }
+
+        btn29_ad.click {
+            val file =
+                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".file()
+
+            println("file deleteFile ${file.deleteFile()}")
+        }
+
+        btn30_ad.click {
+            val file =
+                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".file()
+
+            println("file rename ${file.rename("text2.txt")}")
+        }
+
+        btn31_ad.click {
+            val dir = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test".file()
+            val file =
+                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".file()
+            println("dir absolutePath ${dir.absolutePath}")
+            println("file absolutePath ${file.absolutePath}")
+
+            println("dir isExistsDir ${dir.isExistsDir()}")
+            println("dir isExistsFile ${dir.isExistsFile()}")
+
+            println("file isExistsDir ${file.isExistsDir()}")
+            println("file isExistsFile ${file.isExistsFile()}")
+
+            println("file MimeType ${file.getMimeTypeFromExtension()}")
+
+            dir.findListFiles(FileFilter {
+                return@FileFilter it.isFile
+            }).forEach {
+                println("list file-> " + it.path)
+            }
+            println("list ---------------------- ")
+            dir.findListFiles(FileFilter {
+                return@FileFilter it.isDirectory
+            }).forEach {
+                println("list dir -> " + it.path)
+            }
+
+            val file3 =
+                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text_副本.txt".file()
+            println("${file3.fileName()} fileLength ${file3.fileLength().byteToStr()}")
+
+            println(
+                "externalDir getStatFsTotalSize ${
+                    Environment.getExternalStorageDirectory().getStatFsTotalSize().byteToStr()
+                }"
+            )
+            println(
+                "externalDir getStatFsAvailableSize ${
+                    Environment.getExternalStorageDirectory().getStatFsAvailableSize().byteToStr()
+                }"
+            )
+        }
+
+        btn32_ad.click {
+            val path = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/"
+            val file = "${path}text.txt".file()
+            val dir = "${path}test1".file()
+
+            println("unzipAssetsFile ${mActivity.unzipAssetsFile("test1.zip", "${path}test1")}")
+
+//            mActivity.openFile(file)
+
+            println("file getLocalFileUri ${mActivity.getLocalFileUri(file)}")
+            println("dir getLocalFileUri ${mActivity.getLocalFileUri(dir)}")
+
+//            println("file writeString ${file.writeString("111")}")
+//            println("file appendString ${file.writeString("\n123", true)}")
+
+//            val file2 = "${path}test1/tt1.txt".file()
+//            println("file writeInputStream ${file.writeInputStream(file2.inputStream())}")
+//            println("file appendInputStream ${file.writeInputStream(file2.inputStream(), true)}")
+
+//            println("file copyToPath ${file.copyToPath("${path}text_副本.txt")}")
+//            println("file moveToPath ${file.moveToPath("${path}text_副本2.txt")}")
+
+//            val dir2 = "${path}test1/t1/t3".file()
+//            val dir3 = "${path}t3_副本".file()
+//            println("dir copyToPath ${dir2.copyToPath(dir3)}")
+
         }
     }
 

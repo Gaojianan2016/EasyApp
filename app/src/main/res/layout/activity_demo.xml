@@ -282,5 +282,41 @@
             android:layout_height="wrap_content"
             android:text="加解密操作" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="FileExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn28_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="文件新建操作" />
+
+        <Button
+            android:id="@+id/btn29_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="文件删除操作" />
+
+        <Button
+            android:id="@+id/btn30_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="文件修改操作" />
+
+        <Button
+            android:id="@+id/btn31_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="文件查询操作" />
+
+        <Button
+            android:id="@+id/btn32_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="文件其他操作" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
