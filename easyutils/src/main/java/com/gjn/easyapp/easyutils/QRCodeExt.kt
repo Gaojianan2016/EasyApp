@@ -75,7 +75,7 @@ object QRCodeUtils {
         logoBitmap: Bitmap?,
         scale: Float = 0.2f
     ): Bitmap? {
-        return qrCodeBitmap.drawMiniBitmap(logoBitmap, scale = scale)
+        return qrCodeBitmap?.addImageWatermark(logoBitmap, scale = scale)
     }
 
     fun bitmapToBinaryBitmap(bitmap: Bitmap?): BinaryBitmap? {

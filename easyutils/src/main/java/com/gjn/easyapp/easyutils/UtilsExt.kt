@@ -2,6 +2,7 @@ package com.gjn.easyapp.easyutils
 
 import android.app.Application
 import android.graphics.Color
+import android.graphics.Paint
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -25,21 +26,21 @@ fun Double.intervalOpen(min: Double, max: Double): Double =
 
 fun Long.intervalOpen(min: Long, max: Long): Long = min.coerceAtLeast(this.coerceAtMost(max))
 
-fun Int?.isNotNullOrZero(): Boolean = !isNullOrZero()
+fun Int?.isNotNullOrZero() = !isNullOrZero()
 
-fun Float?.isNotNullOrZero(): Boolean = !isNullOrZero()
+fun Float?.isNotNullOrZero() = !isNullOrZero()
 
-fun Double?.isNotNullOrZero(): Boolean = !isNullOrZero()
+fun Double?.isNotNullOrZero() = !isNullOrZero()
 
-fun Long?.isNotNullOrZero(): Boolean = !isNullOrZero()
+fun Long?.isNotNullOrZero() = !isNullOrZero()
 
-fun Int?.isNullOrZero(): Boolean = this == null || this == 0
+fun Int?.isNullOrZero() = this == null || this == 0
 
-fun Float?.isNullOrZero(): Boolean = this == null || this == 0f
+fun Float?.isNullOrZero() = this == null || this == 0f
 
-fun Double?.isNullOrZero(): Boolean = this == null || this == 0.0
+fun Double?.isNullOrZero() = this == null || this == 0.0
 
-fun Long?.isNullOrZero(): Boolean = this == null || this == 0L
+fun Long?.isNullOrZero() = this == null || this == 0L
 
 /**
  * 创建ViewModel对象

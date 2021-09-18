@@ -15,6 +15,7 @@ class DemoActivity : ABaseActivity() {
 
     override fun layoutId() = R.layout.activity_demo
 
+
     override fun initView() {
         val bmp = R.mipmap.test_img.toBitmap(mActivity)
 
@@ -65,20 +66,49 @@ class DemoActivity : ABaseActivity() {
 
         btn6_ad.click {
             println("bmp old ${bmp?.width} * ${bmp?.height} = ${bmp?.toByte()?.size} ")
-            val newBmp = bmp?.scale(0.5f)
-            println("newBmp new ${newBmp?.width} * ${newBmp?.height} = ${newBmp?.toByte()?.size} ")
+            val bmp2 = bmp?.scale(0.5f)
+            println("newBmp new ${bmp2?.width} * ${bmp2?.height} = ${bmp2?.toByte()?.size} ")
+            iv1_ad.setImageBitmap(bmp2)
 
-            iv1_ad.setImageBitmap(newBmp)
+//            val bmp3 = btn7_ad.toBitmap()
+//            iv1_ad.setImageBitmap(bmp3)
+
+//            val bmp4 = logo?.scale(0.5f)
+//            iv1_ad.setImageBitmap(bmp4)
+
+//            val bmp5 = bmp?.clip(0, 0, 50, 50)
+//            iv1_ad.setImageBitmap(bmp5)
+
+//            val bmp6 = bmp?.skew(5f, 0f)
+//            iv1_ad.setImageBitmap(bmp6)
+
+//            val bmp7 = bmp?.rotate(50f)
+//            iv1_ad.setImageBitmap(bmp7)
+
+//            val bmp8 = bmp?.alpha()
+//            iv1_ad.setImageBitmap(bmp8)
+
+//            val bmp9 = bmp?.gray()
+//            iv1_ad.setImageBitmap(bmp9)
         }
 
         btn7_ad.click {
             val logo = R.drawable.ic_launcher_foreground.vectorToBitmap(mActivity)
-            val bmp2 = bmp.drawMiniBitmap(logo, 9, 0.5f)
+            val bmp2 = bmp?.addImageWatermark(logo, 9, 0.5f, 88, -45f)
             iv1_ad.setImageBitmap(bmp2)
+
+//            val bmp3 = bmp?.toCircle(5, Color.BLUE)
+//            iv1_ad.setImageBitmap(bmp3)
+
+//            val bmp4 = bmp?.toRoundCorner(10f, 5, Color.RED)
+//            iv1_ad.setImageBitmap(bmp4)
+
+//            val bmp5 = bmp?.addTextWatermark("水印\n12345", textSize = 40f, degrees = -45f, alpha = 188)
+//            iv1_ad.setImageBitmap(bmp5)
         }
 
         btn8_ad.click {
-            val bmp2 = bmp?.blurBitmap(mActivity)
+            val bmp2 = bmp?.fastBlur(mActivity)
             iv1_ad.setImageBitmap(bmp2)
         }
 

@@ -141,7 +141,7 @@
             android:id="@+id/btn6_ad"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="缩放Bitmap"
+            android:text="操作Bitmap"
             android:textAllCaps="false" />
 
         <Button

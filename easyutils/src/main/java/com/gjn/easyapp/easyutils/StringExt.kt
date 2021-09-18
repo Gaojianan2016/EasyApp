@@ -64,7 +64,7 @@ fun String.escapeSpecialWord(): String {
     val specials = arrayOf("\\", "$", "(", ")", "*", "+", ".", "[", "]", "?", "^", "{", "}", "|")
     for (special in specials) {
         if (result.contains(special)) {
-            result = this.replace(special, "\\$special")
+            result = replace(special, "\\$special")
         }
     }
     return result
@@ -95,7 +95,7 @@ fun Long.dataFormat(format: String = "yyyy-MM-dd HH:mm:ss"): String =
     SimpleDateFormat(format).format(this)
 
 fun String.hasChinese(): Boolean {
-    if (this.isEmpty()) return false
+    if (isEmpty()) return false
     for (c in this) {
         if (c.isChineseChar()) return true
     }
@@ -103,7 +103,7 @@ fun String.hasChinese(): Boolean {
 }
 
 fun String.isChinese(): Boolean {
-    if (this.isEmpty()) return false
+    if (isEmpty()) return false
     for (c in this) {
         if (!c.isChineseChar()) return false
     }
@@ -121,19 +121,15 @@ fun Char.isChineseChar(): Boolean {
 }
 
 fun String.hasEmoji(): Boolean {
-    if (this.isEmpty()) return false
+    if (isEmpty()) return false
     for (c in this) {
         if (c.isEmojiChar()) return true
     }
     return false
 }
 
-fun Char.isEmojiChar(): Boolean = !(this.toInt() == 0x0
-        || this.toInt() == 0x9
-        || this.toInt() == 0xA
-        || this.toInt() == 0xD
-        || this.toInt() in 0x20..0xD7FF
-        || this.toInt() in 0xE000..0xFFFD)
+fun Char.isEmojiChar(): Boolean = !(toInt() == 0x0 || toInt() == 0x9 || toInt() == 0xA
+        || toInt() == 0xD || toInt() in 0x20..0xD7FF || toInt() in 0xE000..0xFFFD)
 
 /**
  * 字节转gb mb kb字符串 0.5Tb 1.20Gb 60.00Mb 798.35Kb 666b
@@ -143,7 +139,7 @@ fun Long.byteToStr(): String = when {
     this >= GB -> (this / GB.toDouble()).decimalFormat(suffix = "Gb")
     this >= MB -> (this / MB.toDouble()).decimalFormat(suffix = "Mb")
     this >= KB -> (this / KB.toDouble()).decimalFormat(suffix = "Kb")
-    else -> (this.toDouble()).decimalFormat(suffix = "b", len = 0)
+    else -> (toDouble()).decimalFormat(suffix = "b", len = 0)
 }
 
 fun String.hidePhone(): String = hideSubstring(3, 4)
@@ -221,10 +217,10 @@ fun String.urlObtainName(): String =
     uri().lastPathSegment ?: substring(lastIndexOf('/') + 1)
 
 fun String?.maxLengthMore(len: Int, more: String = "..."): String? =
-    if (this.isNullOrEmpty() || this.length < len) {
+    if (isNullOrEmpty() || length < len) {
         this
     } else {
-        this.substring(0, len) + "..."
+        substring(0, len) + "..."
     }
 
 @SuppressLint("SimpleDateFormat")

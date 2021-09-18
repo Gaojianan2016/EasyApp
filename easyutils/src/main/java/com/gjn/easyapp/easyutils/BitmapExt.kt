@@ -2,11 +2,21 @@ package com.gjn.easyapp.easyutils
 
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.media.ExifInterface
 import android.os.Build
 import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextPaint
+import android.view.View
+import androidx.annotation.ColorInt
+import androidx.annotation.FloatRange
+import androidx.annotation.IntRange
 import androidx.core.app.ActivityCompat
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -19,27 +29,34 @@ fun Bitmap.compress(quality: Int = 90): Bitmap? {
     return toByte(quality = quality)?.toBitmap()
 }
 
+//toDrawable
+fun Bitmap.toDrawable(context: Context) = BitmapDrawable(context.resources, this)
+
+fun ByteArray.toDrawable(context: Context) = toBitmap()?.toDrawable(context)
+
 //toByte
 fun Bitmap.toByte(
     format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG,
     quality: Int = 90
 ): ByteArray? {
-    val outputStream = ByteArrayOutputStream()
-    compress(format, quality, outputStream)
-    return outputStream.toByteArray()
+    return ByteArrayOutputStream().also {
+        compress(format, quality, it)
+    }.toByteArray()
 }
 
-fun File.toByte(quality: Int = 90, opts: BitmapFactory.Options? = null) =
-    this.toBitmap(opts = opts)?.toByte(quality = quality)
+fun File.toByte(quality: Int = 90, opts: BitmapFactory.Options? = null): ByteArray? {
+    if (!exists()) return null
+    return toBitmap(opts = opts)?.toByte(quality = quality)
+}
 
 fun Int.toByte(context: Context, quality: Int = 90, opts: BitmapFactory.Options? = null) =
-    this.toBitmap(context, opts = opts)?.toByte(quality = quality)
+    toBitmap(context, opts = opts)?.toByte(quality = quality)
 
 fun InputStream.toByte(
     quality: Int = 90,
     outPadding: Rect? = null,
     opts: BitmapFactory.Options? = null
-) = this.toBitmap(outPadding = outPadding, opts = opts)?.toByte(quality = quality)
+) = toBitmap(outPadding = outPadding, opts = opts)?.toByte(quality = quality)
 
 //toBitmap
 fun ByteArray.toBitmap(quality: Int = 90, opts: BitmapFactory.Options? = null) =
@@ -50,6 +67,33 @@ fun Int.toBitmap(
     quality: Int = 90,
     opts: BitmapFactory.Options? = null
 ) = BitmapFactory.decodeResource(context.resources, this, opts).compress(quality = quality)
+
+fun Drawable.toBitmap(): Bitmap? {
+    if (this is BitmapDrawable) return bitmap ?: null
+
+    val w = if (intrinsicWidth <= 0) 1 else intrinsicWidth
+    val h = if (intrinsicHeight <= 0) 1 else intrinsicHeight
+    val config =
+        if (opacity != PixelFormat.OPAQUE) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565
+
+    return Bitmap.createBitmap(w, h, config).apply {
+        Canvas(this).let { canvas ->
+            setBounds(0, 0, canvas.width, canvas.height)
+            draw(canvas)
+        }
+    }
+}
+
+fun InputStream.toBitmap(
+    quality: Int = 90,
+    outPadding: Rect? = null,
+    opts: BitmapFactory.Options? = null
+) = BitmapFactory.decodeStream(this, outPadding, opts)?.compress(quality = quality)
+
+fun File.toBitmap(quality: Int = 90, opts: BitmapFactory.Options? = null): Bitmap? {
+    if (!exists()) return null
+    return BitmapFactory.decodeFile(path, opts).compress(quality = quality)
+}
 
 /**
  * 向量图转bitmap
@@ -70,187 +114,386 @@ fun Int.vectorToBitmap(context: Context): Bitmap? {
             drawable.draw(canvas)
         }
     } else {
-        bitmap = this.toBitmap(context)
+        bitmap = toBitmap(context)
     }
     return bitmap
 }
 
-fun InputStream.toBitmap(
-    quality: Int = 90,
-    outPadding: Rect? = null,
-    opts: BitmapFactory.Options? = null
-) = BitmapFactory.decodeStream(this, outPadding, opts)?.compress(quality = quality)
-
-fun File.toBitmap(quality: Int = 90, opts: BitmapFactory.Options? = null) =
-    BitmapFactory.decodeFile(path, opts).compress(quality = quality)
-
 fun File.toRectBitmap(
     quality: Int = 90,
-    maxWidth: Int? = null,
-    maxHeight: Int? = null
+    newWidth: Int? = null,
+    newHeight: Int? = null,
+    recycle: Boolean = false
 ): Bitmap? {
-    when {
-        !exists() -> return null
-        maxWidth.isNotNullOrZero() || maxWidth.isNotNullOrZero() -> {
-            val options = BitmapFactory.Options()
-            options.inJustDecodeBounds = true
-            var bitmap = BitmapFactory.decodeFile(path, options)
-            var sampleSize = 2
-            if (maxWidth != null) {
-                val width = options.outWidth
-                if (width > maxWidth) {
-                    sampleSize = width / maxWidth
-                    if (sampleSize <= 1) sampleSize = 2
-                }
-            } else if (maxHeight != null) {
-                val height = options.outHeight
-                if (height > maxHeight) {
-                    sampleSize = height / maxHeight
-                    if (sampleSize <= 1) sampleSize = 2
-                }
-            }
-            options.inSampleSize = sampleSize
-            options.inJustDecodeBounds = false
-            return this.toBitmap(quality, options)
+    if (!exists()) return null
+    if (newWidth.isNullOrZero() || newHeight.isNullOrZero()) return toBitmap(quality)
+    return toBitmap(quality)?.scale(newWidth!!, newHeight!!, recycle)
+}
+
+fun View.toBitmap(): Bitmap {
+    val enabled = isDrawingCacheEnabled
+    val drawing = willNotCacheDrawing()
+    isDrawingCacheEnabled = true
+    setWillNotCacheDrawing(false)
+    val bitmap: Bitmap
+    if (drawingCache == null || drawingCache.isRecycled) {
+        val spec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        measure(spec, spec)
+        layout(0, 0, measuredWidth, measuredHeight)
+        buildDrawingCache()
+        if (drawingCache == null || drawingCache.isRecycled) {
+            bitmap = Bitmap.createBitmap(measuredWidth, measuredHeight, Bitmap.Config.RGB_565)
+            draw(Canvas(bitmap))
+        } else {
+            bitmap = Bitmap.createBitmap(drawingCache)
         }
-        else -> {
-            return this.toBitmap(quality)
-        }
+    } else {
+        bitmap = Bitmap.createBitmap(drawingCache)
     }
+    isDrawingCacheEnabled = enabled
+    setWillNotCacheDrawing(drawing)
+    return bitmap
 }
 
-fun Bitmap.scale(ratio: Float): Bitmap {
-    if (ratio == 1f) return this
-    val matrix = Matrix().apply {
-        postScale(ratio, ratio)
-    }
-    return Bitmap.createBitmap(this, 0, 0, width, height, matrix, false)
+///////////////////////////////////////////////////////////////////////////
+// Bitmap operate
+///////////////////////////////////////////////////////////////////////////
+
+fun Bitmap.scale(
+    sx: Float,
+    sy: Float,
+    recycle: Boolean = false
+): Bitmap {
+    if (sx == 1f && sy == 1f) return this
+    val bitmap = Bitmap.createBitmap(
+        this, 0, 0, width, height,
+        Matrix().apply { postScale(sx, sy) }, true
+    )
+    if (recycle && !isRecycled && bitmap != this) recycle()
+    return bitmap
 }
 
-fun Bitmap.scale(newWidth: Int, newHeight: Int): Bitmap {
-    if (newWidth.isNullOrZero() || newHeight.isNullOrZero()) return this
-    val sx = newWidth / width.toFloat()
-    val sy = newHeight / height.toFloat()
-    val matrix = Matrix().apply {
-        postScale(sx, sy)
-    }
-    return Bitmap.createBitmap(this, 0, 0, width, height, matrix, false)
+fun Bitmap.scale(
+    ratio: Float,
+    recycle: Boolean = false
+) = scale(ratio, ratio, recycle)
+
+fun Bitmap.scale(
+    newWidth: Int,
+    newHeight: Int,
+    recycle: Boolean = false
+): Bitmap {
+    if (newWidth == 0 || newHeight == 0) return this
+    return scale(newWidth / width.toFloat(), newHeight / height.toFloat(), recycle)
 }
 
-fun Bitmap?.drawBitmap(
-    bmp: Bitmap?,
-    drawLeft: Float? = null,
-    drawTop: Float? = null
-): Bitmap? {
-    if (this == null || bmp == null) return this
-    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    canvas.drawBitmap(this, 0f, 0f, null)
-    val left = drawLeft ?: 0f
-    val top = drawTop ?: 0f
-    canvas.drawBitmap(bmp, left, top, null)
-    canvas.save()
-    canvas.restore()
-    if (bitmap.isRecycled) bitmap.recycle()
+fun Bitmap.clip(
+    x: Int,
+    y: Int,
+    width: Int,
+    height: Int,
+    recycle: Boolean = false
+): Bitmap {
+    if (x == 0 && y == 0 && width == this.width && height == this.height) return this
+    val bitmap = Bitmap.createBitmap(this, x, y, width, height)
+    if (recycle && !isRecycled && bitmap != this) recycle()
+    return bitmap
+}
+
+fun Bitmap.skew(
+    kx: Float,
+    ky: Float,
+    px: Float = 0f,
+    py: Float = 0f,
+    recycle: Boolean = false
+): Bitmap {
+    if (kx == 0f && ky == 0f) return this
+    val bitmap = Bitmap.createBitmap(
+        this, 0, 0, width, height,
+        Matrix().apply { setSkew(kx, ky, px, py) }, true
+    )
+    if (recycle && !isRecycled && bitmap != this) recycle()
+    return bitmap
+}
+
+fun Bitmap.rotate(
+    degrees: Float,
+    px: Float = 0f,
+    py: Float = 0f,
+    recycle: Boolean = false
+): Bitmap {
+    if (degrees == 0f) return this
+    val bitmap = Bitmap.createBitmap(
+        this, 0, 0, width, height,
+        Matrix().apply { setRotate(degrees, px, py) }, true
+    )
+    if (recycle && !isRecycled && bitmap != this) recycle()
+    return bitmap
+}
+
+fun Bitmap.alpha(recycle: Boolean = false): Bitmap {
+    val bitmap = extractAlpha()
+    if (recycle && !isRecycled && bitmap != this) recycle()
+    return bitmap
+}
+
+fun Bitmap.gray(recycle: Boolean = false): Bitmap {
+    val bitmap = Bitmap.createBitmap(width, height, config)
+    val paint = Paint()
+    val colorMatrix = ColorMatrix().apply {
+        setSaturation(0f)
+    }
+    paint.colorFilter = ColorMatrixColorFilter(colorMatrix)
+    Canvas(bitmap).drawBitmap(this, 0f, 0f, paint)
+    if (recycle && !isRecycled && bitmap != this) recycle()
     return bitmap
 }
 
 /**
- * 缩放绘制迷你bitmap
- * gravity 目前只支持9种情况 不传或者超过都为5
- * 位置如下
+ * 切圆
+ * */
+fun Bitmap.toCircle(
+    @IntRange(from = 0) borderSize: Int = 0,
+    @ColorInt borderColor: Int = 0,
+    recycle: Boolean = false
+): Bitmap {
+    val size = width.coerceAtMost(height)
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    val bitmap = Bitmap.createBitmap(width, height, config)
+    //取中心和 中心RectF
+    val center = size / 2f
+    val rectF = RectF(0f, 0f, width.toFloat(), height.toFloat()).apply {
+        inset((width - size) / 2f, (height - size) / 2f)
+    }
+    //绘制Bitmap
+    val matrix = Matrix().apply {
+        setTranslate(rectF.left, rectF.top)
+        if (width != height) {
+            preScale(size / width.toFloat(), size / height.toFloat())
+        }
+    }
+    paint.shader = BitmapShader(this, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP).apply {
+        setLocalMatrix(matrix)
+    }
+    val canvas = Canvas(bitmap).apply {
+        drawRoundRect(rectF, center, center, paint)
+    }
+    //绘制边框
+    if (borderSize > 0) {
+        paint.shader = null
+        paint.color = borderColor
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = borderSize.toFloat()
+        canvas.drawCircle(width / 2f, height / 2f, center - borderSize / 2f, paint)
+    }
+    if (recycle && !isRecycled && bitmap != this) recycle()
+    return bitmap
+}
+
+/**
+ * 切圆角
+ * */
+fun Bitmap.toRoundCorner(
+    radius: Float,
+    @IntRange(from = 0) borderSize: Int = 0,
+    @ColorInt borderColor: Int = 0,
+    recycle: Boolean = false
+) = toRoundCorner(
+    floatArrayOf(radius, radius, radius, radius, radius, radius, radius, radius),
+    borderSize,
+    borderColor,
+    recycle
+)
+
+/**
+ * 切圆角
+ * @param radii 8个值的数组，4对[X,Y]半径
+ * */
+fun Bitmap.toRoundCorner(
+    radii: FloatArray,
+    @IntRange(from = 0) borderSize: Int = 0,
+    @ColorInt borderColor: Int = 0,
+    recycle: Boolean = false
+): Bitmap {
+    if (radii.isEmpty()) return this
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    val bitmap = Bitmap.createBitmap(width, height, config)
+    //取绘制矩形和圆角路径
+    val rectF = RectF(0f, 0f, width.toFloat(), height.toFloat()).apply {
+        inset(borderSize / 2f, borderSize / 2f)
+    }
+    val path = Path().apply {
+        addRoundRect(rectF, radii, Path.Direction.CW)
+    }
+    //绘制Bitmap
+    paint.shader = BitmapShader(this, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
+    val canvas = Canvas(bitmap).apply {
+        drawPath(path, paint)
+    }
+    //绘制边框
+    if (borderSize > 0) {
+        paint.shader = null
+        paint.color = borderColor
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = borderSize.toFloat()
+        paint.strokeCap = Paint.Cap.ROUND
+        canvas.drawPath(path, paint)
+    }
+    if (recycle && !isRecycled && bitmap != this) recycle()
+    return bitmap
+}
+
+/**
+ * 添加文字水印
+ * */
+fun Bitmap.addTextWatermark(
+    text: CharSequence,
+    textSize: Float = 24f,
+    @ColorInt color: Int = Color.RED,
+    x: Float = 0f,
+    y: Float = 0f,
+    degrees: Float = 0f,
+    @IntRange(from = 0, to = 255) alpha: Int = 255,
+    recycle: Boolean = false
+): Bitmap {
+    if (text.isEmpty()) return this
+    val bitmap = copy(config, true)
+    val textPaint = TextPaint().apply {
+        this.color = color
+        this.alpha = alpha
+        this.textSize = textSize
+    }
+    Canvas(bitmap).apply {
+        rotate(degrees, x, y)
+        translate(x, y)
+    }.drawStaticLayout(text, textPaint)
+    if (recycle && !isRecycled && bitmap != this) recycle()
+    return bitmap
+}
+
+private fun Canvas.drawStaticLayout(text: CharSequence, textPaint: TextPaint) {
+    val textLayout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        StaticLayout.Builder.obtain(text, 0, text.length, textPaint, width).build()
+    } else {
+        StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false)
+    }
+    textLayout.draw(this)
+}
+
+/**
+ * 添加图片水印
+ * */
+fun Bitmap.addImageWatermark(
+    mark: Bitmap?,
+    left: Float = 0f,
+    top: Float = 0f,
+    degrees: Float = 0f,
+    @IntRange(from = 0, to = 255) alpha: Int = 255,
+    recycle: Boolean = false
+): Bitmap {
+    if (mark == null) return this
+    val bitmap = copy(config, true)
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        this.alpha = alpha
+    }
+    Canvas(bitmap).run {
+        rotate(degrees, left, top)
+        drawBitmap(mark, left, top, paint)
+    }
+    if (recycle && !isRecycled && bitmap != this) recycle()
+    return bitmap
+}
+
+/**
+ * 添加图片水印
+ * @param gravity [0..9]之间
+ * 位置入下
  * 1 2 3
  * 4 5 6
  * 7 8 9
  * */
-fun Bitmap?.drawMiniBitmap(
-    miniBmp: Bitmap?,
-    gravity: Int = 5,
-    scale: Float = 0.2f
-): Bitmap? {
-    if (this == null || miniBmp == null) return this
-    val newWidth = (miniBmp.width * scale).toInt()
-    val newHeight = (miniBmp.height * scale).toInt()
-    val bitmap = miniBmp.scale(newWidth = newWidth, newHeight = newHeight)
-    val left: Float
-    val top: Float
-    when (gravity) {
-        1 -> {
-            left = 0f
-            top = 0f
-        }
-        2 -> {
-            left = (width - newWidth) / 2f
-            top = 0f
-        }
-        3 -> {
-            left = (width - newWidth).toFloat()
-            top = 0f
-        }
-        4 -> {
-            left = 0f
-            top = (height - newHeight) / 2f
-        }
-        6 -> {
-            left = (width - newWidth).toFloat()
-            top = (height - newHeight) / 2f
-        }
-        7 -> {
-            left = 0f
-            top = (height - newHeight).toFloat()
-        }
-        8 -> {
-            left = (width - newWidth) / 2f
-            top = (height - newHeight).toFloat()
-        }
-        9 -> {
-            left = (width - newWidth).toFloat()
-            top = (height - newHeight).toFloat()
-        }
-        else -> {
-            left = (width - newWidth) / 2f
-            top = (height - newHeight) / 2f
-        }
+fun Bitmap.addImageWatermark(
+    mark: Bitmap?,
+    @IntRange(from = 1, to = 9) gravity: Int = 5,
+    @FloatRange(from = 0.1, to = 1.0) scale: Float = 0.2f,
+    @IntRange(from = 0, to = 255) alpha: Int = 255,
+    degrees: Float = 0f,
+    recycle: Boolean = false
+): Bitmap {
+    if (mark == null) return this
+    val markWidth = (mark.width * scale).toInt()
+    val markHeight = (mark.height * scale).toInt()
+    val markBitmap = mark.scale(markWidth, markHeight)
+    val left = when (gravity % 3) {
+        1 -> 0f
+        2 -> (width - markWidth) / 2f
+        else -> (width - markHeight).toFloat()
     }
-    return drawBitmap(bitmap, left, top)
+    val top = when {
+        gravity > 6 -> (height - markHeight).toFloat()
+        gravity > 3 -> (height - markHeight) / 2f
+        else -> 0f
+    }
+    return addImageWatermark(markBitmap, left, top, degrees, alpha, recycle)
 }
 
 /**
- * @param context    上下文
- * @param blurRadius 模糊半径 1-25f
- * @param scaleSize  缩放比例 0.1-1f
+ * 快速模糊
  * */
-fun Bitmap.blurBitmap(
+fun Bitmap.fastBlur(
     context: Context,
-    blurRadius: Float = 13f,
-    scaleSize: Float = 1f
+    @FloatRange(from = 0.0, to = 1.0, fromInclusive = false) scale: Float = 0.8f,
+    @FloatRange(from = 0.1, to = 25.0, fromInclusive = false) blurRadius: Float = 13f,
+    recycle: Boolean = false
 ): Bitmap {
+    if (scale == 0f) return this
     // 计算图片缩小后的长宽
-    val width = (width * scaleSize).roundToInt()
-    val height = (height * scaleSize).roundToInt()
-
+    val width = (width * scale).roundToInt()
+    val height = (height * scale).roundToInt()
     // 将缩小后的图片做为预渲染的图片
     val inputBitmap = Bitmap.createScaledBitmap(this, width, height, false)
     // 创建一张渲染后的输出图片
     val outputBitmap = Bitmap.createBitmap(inputBitmap)
-
     // 创建RenderScript内核对象
     // 创建一个模糊效果的RenderScript的工具对象
     val rs = RenderScript.create(context)
     val blurScript = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs))
-
     // 由于RenderScript并没有使用VM来分配内存,所以需要使用Allocation类来创建和分配内存空间
     // 创建Allocation对象的时候其实内存是空的,需要使用copyTo()将数据填充进去
     val tmpIn = Allocation.createFromBitmap(rs, inputBitmap)
     val tmpOut = Allocation.createFromBitmap(rs, outputBitmap)
-
-    // 设置渲染的模糊程度, 0.1f - 25f
-    blurScript.setRadius(blurRadius.intervalOpen(0.1f, 25f))
-    // 设置blurScript对象的输入内存
-    blurScript.setInput(tmpIn)
-    // 将输出数据保存到输出内存中
-    blurScript.forEach(tmpOut)
+    blurScript.run {
+        // 设置渲染的模糊程度, 0.1f - 25f
+        setRadius(blurRadius.intervalOpen(0.1f, 25f))
+        // 设置blurScript对象的输入内存
+        setInput(tmpIn)
+        // 将输出数据保存到输出内存中
+        forEach(tmpOut)
+    }
     // 将数据填充到Allocation中
     tmpOut.copyTo(outputBitmap)
+    if (recycle && !isRecycled && outputBitmap != this) recycle()
     return outputBitmap
+}
+
+/**
+ * 获取图片文件旋转角度
+ * */
+fun File.getRotateDegree(): Int {
+    if (!exists()) return -1
+    try {
+        val orientation = ExifInterface(path).getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_NORMAL
+        )
+        return when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> 90
+            ExifInterface.ORIENTATION_ROTATE_180 -> 180
+            ExifInterface.ORIENTATION_ROTATE_270 -> 270
+            else -> 0
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return -1
 }

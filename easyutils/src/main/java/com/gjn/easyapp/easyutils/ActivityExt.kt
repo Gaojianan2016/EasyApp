@@ -34,7 +34,11 @@ fun Context?.startActivity(
     sharedElements: Array<View>? = null
 ) {
     if (enterAnim == null || exitAnim == null) {
-        startActivity(clz, extras, extrasMap, sharedElements?.let { createOptionsBundle(this, *it) })
+        startActivity(
+            clz,
+            extras,
+            extrasMap,
+            sharedElements?.let { createOptionsBundle(this, *it) })
         return
     }
     startActivity(clz, extras, extrasMap, createOptionsBundle(this, enterAnim, exitAnim))
@@ -58,11 +62,7 @@ fun Intent.startActivity(
         is Fragment -> context.activity
         else -> null
     } ?: return
-    if (extras == null) {
-        this.put(extrasMap)
-    } else {
-        this.putExtras(extras)
-    }
+    if (extras == null) put(extrasMap) else putExtras(extras)
     activity.startActivity(this, options)
 }
 
@@ -121,11 +121,7 @@ fun Intent.startActivityForResult(
     extrasMap: Map<String, Any?> = mapOf(),
     options: Bundle? = null
 ) {
-    if (extras == null) {
-        this.put(extrasMap)
-    } else {
-        this.putExtras(extras)
-    }
+    if (extras == null) put(extrasMap) else putExtras(extras)
     when (context) {
         is Activity -> context.startActivityForResult(this, requestCode, options)
         is Fragment -> context.startActivityForResult(this, requestCode, options)
@@ -146,6 +142,20 @@ fun Activity.isKeyboardShowing(): Boolean {
     //考虑到虚拟导航栏的情况（虚拟导航栏情况下：screenHeight = rect.bottom + 虚拟导航栏高度）
     //选取screenHeight*2/3进行判断
     return screenHeight * 2 / 3 > rect.bottom
+}
+
+/**
+ * 获取入口Activity类名
+ * */
+fun Context.getLauncherActivity(pkg: String = packageName): String {
+    if (pkg.isEmpty()) return ""
+    val intent = Intent(Intent.ACTION_MAIN, null).apply {
+        addCategory(Intent.CATEGORY_LAUNCHER)
+        `package` = pkg
+    }
+    val info = packageManager.queryIntentActivities(intent, 0)
+    if (info.size == 0) return ""
+    return info[0].activityInfo.name
 }
 
 /**

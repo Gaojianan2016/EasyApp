@@ -362,7 +362,7 @@ class A1Fragment : BaseLazyFragment() {
                 }
                 btn9 -> {
                     val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.test_img)
-                    iv_bitmap.setImageBitmap(bitmap.blurBitmap(mActivity, 24f))
+                    iv_bitmap.setImageBitmap(bitmap.fastBlur(mActivity, 24f))
                 }
                 btn10 -> {
 //                    mActivity.openQQ()
