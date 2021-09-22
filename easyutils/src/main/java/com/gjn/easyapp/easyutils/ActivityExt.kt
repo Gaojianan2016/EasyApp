@@ -145,20 +145,6 @@ fun Activity.isKeyboardShowing(): Boolean {
 }
 
 /**
- * 获取入口Activity类名
- * */
-fun Context.getLauncherActivity(pkg: String = packageName): String {
-    if (pkg.isEmpty()) return ""
-    val intent = Intent(Intent.ACTION_MAIN, null).apply {
-        addCategory(Intent.CATEGORY_LAUNCHER)
-        `package` = pkg
-    }
-    val info = packageManager.queryIntentActivities(intent, 0)
-    if (info.size == 0) return ""
-    return info[0].activityInfo.name
-}
-
-/**
  * 5.0之后启动页面 跳转动画Bundle创建
  * */
 fun createOptionsBundle(

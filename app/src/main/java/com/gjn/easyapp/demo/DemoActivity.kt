@@ -2,6 +2,7 @@ package com.gjn.easyapp.demo
 
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Environment
 import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
@@ -9,6 +10,7 @@ import com.gjn.easyapp.easyutils.*
 import kotlinx.android.synthetic.main.activity_demo.*
 import kotlinx.android.synthetic.main.fragment_a1.*
 import kotlinx.coroutines.delay
+import java.io.File
 import java.io.FileFilter
 
 class DemoActivity : ABaseActivity() {
@@ -134,33 +136,36 @@ class DemoActivity : ABaseActivity() {
         }
 
         btn11_ad.click {
-            this@DemoActivity.requestWRPermission {
-                this@DemoActivity.installApp("/sdcard/Android/jsq.apk")
+            mActivity.requestWRPermission {
+                mActivity.installApp("/sdcard/Android/jsq.apk")
             }
         }
 
         btn12_ad.click {
-            this@DemoActivity.uninstallApp("com.ddnapalon.calculator.gp")
+            mActivity.uninstallApp("com.ddnapalon.calculator.gp")
         }
 
         btn13_ad.click {
-            this@DemoActivity.openApp("com.ddnapalon.calculator.gp")
+            mActivity.openApp("com.ddnapalon.calculator.gp")
         }
 
         btn14_ad.click {
-            this@DemoActivity.openAppDetailsSettings("com.ddnapalon.calculator.gp")
+            mActivity.openAppDetailsSettings("com.ddnapalon.calculator.gp")
         }
 
         btn15_ad.click {
-            iv2_ad.setImageDrawable(this@DemoActivity.getAppIcon())
-            println("iconId ${this@DemoActivity.getAppIconId()}")
-            println("applicationName ${this@DemoActivity.getApplicationName()}")
-            println("appPath ${this@DemoActivity.getAppPath()}")
-            println("versionName ${this@DemoActivity.getAppVersionName()}")
-            println("versionCode ${this@DemoActivity.getAppVersionCode()}")
-            println("signaturesSHA1 ${this@DemoActivity.getAppSignaturesSHA1()}")
-            println("signaturesSHA256 ${this@DemoActivity.getAppSignaturesSHA256()}")
-            println("signaturesMD5 ${this@DemoActivity.getAppSignaturesMD5()}")
+            iv2_ad.setImageDrawable(mActivity.getAppIcon())
+            println("iconId ${mActivity.getAppIconId()}")
+            println("applicationName ${mActivity.getApplicationName()}")
+            println("appPath ${mActivity.getAppPath()}")
+            println("versionName ${mActivity.getAppVersionName()}")
+            println("versionCode ${mActivity.getAppVersionCode()}")
+            println("signaturesSHA1 ${mActivity.getAppSignaturesSHA1()}")
+            println("signaturesSHA256 ${mActivity.getAppSignaturesSHA256()}")
+            println("signaturesMD5 ${mActivity.getAppSignaturesMD5()}")
+
+            println("getAppLauncherClassName ${mActivity.getAppLauncherClassName(WECHAT_PACKAGE_NAME)}")
+            println("getAppLauncherIntent ${mActivity.getAppLauncherIntent(WECHAT_PACKAGE_NAME)}")
         }
 
         btn16_ad.click {
@@ -199,7 +204,7 @@ class DemoActivity : ABaseActivity() {
         }
 
         btn20_ad.debouncingClick {
-            mActivity.copyClipboardText(text = "我是复制文字")
+            mActivity.copyClipboardText("我是复制文字")
         }
 
         btn21_ad.debouncingClick {
@@ -362,6 +367,34 @@ class DemoActivity : ABaseActivity() {
 //            val dir3 = "${path}t3_副本".file()
 //            println("dir copyToPath ${dir2.copyToPath(dir3)}")
 
+        }
+
+        btn33_ad.click {
+            val intent = Intent()
+            println("intentIsAvailable ${mActivity.intentIsAvailable(intent)}")
+            
+//            mActivity.openQQ()
+            mActivity.openWeChat()
+
+        }
+
+        btn34_ad.click {
+            val dir = "${Environment.getExternalStorageDirectory()}/aA_test".file()
+
+            val file = "${Environment.getExternalStorageDirectory()}/aA_test/2b.jpg".file()
+            val file2 = "${Environment.getExternalStorageDirectory()}/aA_test/e7.jpg".file()
+
+//            mActivity.shareText("分享文字")
+//            mActivity.shareTextImage("分享文字图片", file)
+//            mActivity.shareTextImage("分享文字多图片", file, file2)
+
+//            mActivity.dialPhone("17745645645")
+//            mActivity.sendSms("1774564", "发送内容")
+//            mActivity.openBrowser("https://www.baidu.com")
+
+            mActivity.imageCapture(File(dir, "111.png")){ code, data->
+                println("code $code, data $data")
+            }
         }
     }
 

@@ -18,7 +18,6 @@ import com.gjn.easyapp.easynetworker.SimpleDownLoadListener
 import com.gjn.easyapp.easyutils.*
 import kotlinx.android.synthetic.main.fragment_a1.*
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import okhttp3.Call
 import java.io.File
 
@@ -212,8 +211,8 @@ class A1Fragment : BaseLazyFragment() {
         }
 
         btn17.click {
-            fileName = mActivity.takePictures(
-                Environment.getExternalStorageDirectory().toString() + "/Test/"
+            fileName = mActivity.imageCapture(
+                "${Environment.getExternalStorageDirectory()}/Test/".file()
             ) { code, data ->
                 val file = fileName.file()
                 if (file.exists()) {
@@ -362,7 +361,7 @@ class A1Fragment : BaseLazyFragment() {
                 }
                 btn9 -> {
                     val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.test_img)
-                    iv_bitmap.setImageBitmap(bitmap.fastBlur(mActivity, 24f))
+                    iv_bitmap.setImageBitmap(bitmap.fastBlur(mActivity))
                 }
                 btn10 -> {
 //                    mActivity.openQQ()

@@ -1,12 +1,8 @@
 package com.gjn.easyapp.easyutils
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.MediaStore
@@ -21,55 +17,19 @@ fun Context.intentIsAvailable(intent: Intent) =
     packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).size > 0
 
 /**
- * filePath获取安装app Intent
+ * 包名获取组件 Intent
  * */
-fun Context.getInstallAppIntent(path: String): Intent? {
-    if (path.isEmpty()) return null
-    return getInstallAppIntent(path.file())
-}
-
-/**
- * file获取安装app Intent
- * */
-fun Context.getInstallAppIntent(file: File): Intent? {
-    if (!file.exists()) return null
-    return getLocalFileUri(file).getInstallAppIntent()
-}
-
-/**
- * uri获取安装app Intent
- * */
-fun Uri.getInstallAppIntent(): Intent? {
-    try {
-        return Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(this@getInstallAppIntent, "application/vnd.android.package-archive")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-            }
-        }.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    } catch (e: Exception) {
-        e.printStackTrace()
+fun String.getComponentIntent(
+    className: String,
+    bundle: Bundle? = null,
+    isNewTask: Boolean = false
+): Intent? {
+    if (isEmpty() || className.isEmpty()) return null
+    val intent = Intent().apply {
+        if (bundle != null) putExtras(bundle)
+        component = ComponentName(this@getComponentIntent, className)
     }
-    return null
-}
-
-/**
- * 包名获取卸载app Intent
- * */
-fun String.getUninstallAppIntent() =
-    Intent(Intent.ACTION_DELETE).apply { data = toPackageNameUri() }
-        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-/**
- * 包名获取app入口 Intent
- * */
-fun Context.getLaunchAppIntent(pkg: String): Intent? {
-    val launcherActivity = getLauncherActivity(pkg)
-    if (launcherActivity.isEmpty()) return null
-    return Intent().apply {
-        addCategory(Intent.CATEGORY_LAUNCHER)
-        setClassName(pkg, launcherActivity)
-    }.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    return if (isNewTask) intent.addNewTaskFlag() else intent
 }
 
 const val QQ_PACKAGE_NAME = "com.tencent.mobileqq"
@@ -83,41 +43,107 @@ fun Context.openQQ() {
     openApp(QQ_PACKAGE_NAME)
 }
 
-fun Context.callPhone(phone: String) {
-    startActivity(Intent(Intent.ACTION_DIAL).apply {
-        data = "tel:${phone}".uri()
-    })
+/**
+ * 分享text
+ * */
+fun Context.shareText(content: CharSequence) {
+    if (content.isEmpty()) return
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, content)
+    }
+    startActivity(Intent.createChooser(intent, "").addNewTaskFlag())
 }
 
-fun FragmentActivity.takePictures(folderPath: String, block: (Int, Intent?) -> Unit): String {
-    val fileName = "$folderPath${System.currentTimeMillis()}.png"
-    val folder = folderPath.file()
-    if (!folder.exists()) {
-        folder.mkdirs()
+/**
+ * 分享图片
+ * */
+fun Context.shareImage(vararg paths: String) {
+    if (paths.isEmpty()) return
+    val files = mutableListOf<File>()
+    paths.forEach {
+        files.add(it.file())
     }
-    simpleActivityResult(Intent().also {
-        it.action = MediaStore.ACTION_IMAGE_CAPTURE
-        it.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-        it.putExtra(MediaStore.EXTRA_OUTPUT, getLocalFileUri(fileName.file()))
-    }) { code, data ->
+    shareTextImage(null, *files.toTypedArray())
+}
+
+/**
+ * 分享文字图片
+ * */
+fun Context.shareTextImage(content: CharSequence?, vararg files: File) {
+    if (files.isEmpty()) return
+    val uris = java.util.ArrayList<Uri>()
+    for (file in files) {
+        if (file.exists()) {
+            uris.add(getLocalFileUri(file))
+        }
+    }
+    val intent = if (files.size == 1) {
+        Intent(Intent.ACTION_SEND).apply {
+            type = "image/*"
+            putExtra(Intent.EXTRA_TEXT, content)
+            putExtra(Intent.EXTRA_STREAM, uris[0])
+        }
+    } else {
+        //todo 多图片分享 错误
+        // Key android.intent.extra.TEXT expected ArrayList<CharSequence> but value was a java.lang.String.
+        Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+            type = "image/*"
+            putExtra(Intent.EXTRA_TEXT, content)
+            putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
+        }
+    }
+    startActivity(Intent.createChooser(intent, "").addNewTaskFlag())
+}
+
+/**
+ * 拨打电话 无需权限
+ * */
+fun Context.dialPhone(phone: String) {
+    if (phone.isEmpty()) return
+    val intent = Intent(Intent.ACTION_DIAL, "tel:$phone".uri())
+    startActivity(intent.addNewTaskFlag())
+}
+
+/**
+ * 发送短信
+ * */
+fun Context.sendSms(phone: String, content: String) {
+    if (phone.isEmpty() || content.isEmpty()) return
+    val intent = Intent(Intent.ACTION_SENDTO, "smsto:$phone".uri()).apply {
+        putExtra("sms_body", content)
+    }
+    startActivity(intent.addNewTaskFlag())
+}
+
+/**
+ * 打开浏览器
+ * */
+fun Context.openBrowser(url: String) {
+    if (url.isEmpty()) return
+    val intent = Intent(Intent.ACTION_VIEW, url.uri())
+    startActivity(intent.addNewTaskFlag())
+}
+
+/**
+ * 图像捕捉
+ * */
+fun FragmentActivity.imageCapture(file: File, block: (Int, Intent?) -> Unit): String {
+    if (!file.createParentDir()) return file.fileName()
+    val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        putExtra(MediaStore.EXTRA_OUTPUT, getLocalFileUri(file))
+    }
+    simpleActivityResult(intent) { code, data ->
         block.invoke(code, data)
-        fileName.file().notifyMediaFile(this)
+        file.notifyMediaFile(this)
     }
-    return fileName
+    return file.fileName()
 }
 
-fun Context.openBrowser(url: String?) {
-    if (url.isNullOrEmpty()) return
-    startActivity(Intent(Intent.ACTION_VIEW).also {
-        it.data = Uri.parse(url)
-    })
-}
-
-fun Context.clipData(str: String) {
-    val cm = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    cm.setPrimaryClip(ClipData.newPlainText(null, str))
-}
-
+///////////////////////////////////////
+///    intent 快捷方式
+///////////////////////////////////////
 fun Intent.put(map: Map<String, Any?>): Intent {
     map.forEach { (k, v) ->
         when (v) {
@@ -140,3 +166,5 @@ fun Intent.put(map: Map<String, Any?>): Intent {
     }
     return this
 }
+
+fun Intent.addNewTaskFlag() = addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

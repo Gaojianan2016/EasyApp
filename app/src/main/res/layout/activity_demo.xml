@@ -318,5 +318,23 @@
             android:layout_height="wrap_content"
             android:text="文件其他操作" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="IntentExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn33_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Intent操作" />
+
+        <Button
+            android:id="@+id/btn34_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="手机操作" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

@@ -12,7 +12,7 @@ fun Context.getClipboardManager() = getSystemService(Context.CLIPBOARD_SERVICE) 
 /**
  * 剪切Text
  * */
-fun Context.copyClipboardText(label: CharSequence? = packageName, text: CharSequence) {
+fun Context.copyClipboardText(text: CharSequence, label: CharSequence? = packageName) {
     getClipboardManager().setPrimaryClip(ClipData.newPlainText(label, text))
 }
 
@@ -20,7 +20,7 @@ fun Context.copyClipboardText(label: CharSequence? = packageName, text: CharSequ
  * 清空剪切板
  * */
 fun Context.clearClipboard() {
-    copyClipboardText(null, "")
+    copyClipboardText("",null)
 }
 
 /**
