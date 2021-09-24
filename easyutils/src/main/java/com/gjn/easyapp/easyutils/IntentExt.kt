@@ -126,9 +126,9 @@ fun Context.openBrowser(url: String) {
 }
 
 /**
- * 图像捕捉
+ * 快速摄影
  * */
-fun FragmentActivity.imageCapture(file: File, block: (Int, Intent?) -> Unit): String {
+fun FragmentActivity.quickPhotography(file: File, block: (Int, Intent?) -> Unit): String {
     if (!file.createParentDir()) return file.fileName()
     val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
         flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION

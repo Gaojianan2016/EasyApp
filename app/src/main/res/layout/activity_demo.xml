@@ -44,6 +44,7 @@
             android:text="转场动画打开新页面2" />
 
         <EditText
+            android:id="@+id/soft_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName" />
@@ -335,6 +336,42 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="手机操作" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="KeyboardExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn35_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="软键盘操作" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MetaDataExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn36_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MetaData操作" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="NetworkExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn37_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="网络操作" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

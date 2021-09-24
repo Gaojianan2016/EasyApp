@@ -15,17 +15,14 @@ class MMKVUtil private constructor(private val mmkv: MMKV) {
             is Double -> mmkv.encode(key, value)
             is Long -> mmkv.encode(key, value)
             is ByteArray -> mmkv.encode(key, value)
+            is Parcelable -> mmkv.encode(key, value)
             else -> {
                 Log.e(TAG, "$value encode fail.")
             }
         }
     }
 
-    fun encodeSet(key: String, value: Set<String>) {
-        mmkv.encode(key, value)
-    }
-
-    fun encodeParcelable(key: String, value: Parcelable) {
+    fun encodeStringSet(key: String, value: Set<String>) {
         mmkv.encode(key, value)
     }
 

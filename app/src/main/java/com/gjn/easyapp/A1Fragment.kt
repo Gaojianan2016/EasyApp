@@ -82,13 +82,13 @@ class A1Fragment : BaseLazyFragment() {
 
             println("list isList ${list.isList()}")
             println("list2 isList ${list2.isList()}")
-            println("list3 isList ${list3.isList()}")
-            println("list4 isList ${list4.isList()}")
+            println("list3 isList ${list3?.isList()}")
+            println("list4 isList ${list4?.isList()}")
 
             println("list insufficientSize 2 ${list.insufficientSize(2)}")
             println("list2 insufficientSize 10 ${list2.insufficientSize()}")
 
-            println("12,7,8,sad,s4a, splitToList ${"12,7,8,sad,s4a".splitToList(",")}")
+            println("12,7,8,sad,s4a, splitToList ${"12,7,8,sad,s4a".split2List(",")}")
 
             println("name = $name age = $age")
             if (name == "张三") {
@@ -211,7 +211,7 @@ class A1Fragment : BaseLazyFragment() {
         }
 
         btn17.click {
-            fileName = mActivity.imageCapture(
+            fileName = mActivity.quickPhotography(
                 "${Environment.getExternalStorageDirectory()}/Test/".file()
             ) { code, data ->
                 val file = fileName.file()

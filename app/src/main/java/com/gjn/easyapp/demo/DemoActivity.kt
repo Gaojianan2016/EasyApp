@@ -2,7 +2,7 @@ package com.gjn.easyapp.demo
 
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
@@ -17,21 +17,26 @@ class DemoActivity : ABaseActivity() {
 
     override fun layoutId() = R.layout.activity_demo
 
+    var manager: NetworkStateManager? = null
 
     override fun initView() {
         val bmp = R.mipmap.test_img.toBitmap(mActivity)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            manager = NetworkStateManager(mActivity)
+        }
 
         btn1_ad.click {
 //            ImageActivity::class.java.startActivity(mActivity, extrasMap = mapOf(ImageActivity.DATA to "数据1"),
 //                enterAnim = R.anim.anim_bottom_in, exitAnim = R.anim.anim_bottom_out)
             ImageActivity::class.java.startActivity(
                 mActivity, extrasMap = mapOf(ImageActivity.DATA to "Explode"),
-                options = createOptionsBundle(mActivity)
+                options = mActivity.createOptionsBundle()
             )
 //            ImageActivity::class.java.startActivity(mActivity, extrasMap = mapOf(ImageActivity.DATA to "Slide"),
-//                options = createOptionsBundle(mActivity))
+//                options = mActivity.createOptionsBundle())
 //            ImageActivity::class.java.startActivity(mActivity, extrasMap = mapOf(ImageActivity.DATA to "Fade"),
-//                options = createOptionsBundle(mActivity))
+//                options = mActivity.createOptionsBundle())
         }
 
         btn2_ad.click {
@@ -56,7 +61,7 @@ class DemoActivity : ABaseActivity() {
         }
 
         btn4_ad.click {
-            showToast("是否打开软键盘 ${mActivity.isKeyboardShowing()}")
+            showToast("是否打开软键盘 ${mActivity.isSoftInputVisible()}")
         }
 
         btn5_ad.click {
@@ -372,7 +377,7 @@ class DemoActivity : ABaseActivity() {
         btn33_ad.click {
             val intent = Intent()
             println("intentIsAvailable ${mActivity.intentIsAvailable(intent)}")
-            
+
 //            mActivity.openQQ()
             mActivity.openWeChat()
 
@@ -392,14 +397,60 @@ class DemoActivity : ABaseActivity() {
 //            mActivity.sendSms("1774564", "发送内容")
 //            mActivity.openBrowser("https://www.baidu.com")
 
-            mActivity.imageCapture(File(dir, "111.png")){ code, data->
+            mActivity.quickPhotography(File(dir, "111.png")) { code, data ->
                 println("code $code, data $data")
+            }
+        }
+
+        btn35_ad.click {
+            mActivity.toggleSoftInput()
+//            mActivity.showSoftInput()
+//            mActivity.hideSoftInput()
+
+//            soft_input.showSoftInput()
+//            soft_input.hideSoftInput()
+//            mActivity.registerSoftInputChangedListener {
+//                println("变化高度 $it")
+//            }
+        }
+
+        btn36_ad.click {
+            println("app getMetaData ${mActivity.getAppMetaData("TEST_KEY")}")
+            println("activity getMetaData ${mActivity.getMetaData("TEST_KEY2")}")
+        }
+
+        btn37_ad.click {
+//            mActivity.openWirelessSettings()
+
+            println("isNetworkConnected ${mActivity.isNetworkConnected()}")
+            println("isWifiConnected ${mActivity.isWifiConnected()}")
+            println("isMobileConnected ${mActivity.isMobileConnected()}")
+            println("isEthernetConnected ${mActivity.isEthernetConnected()}")
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                manager?.registerNetworkCallback(object :
+                    NetworkStateManager.OnNetworkStateListener {
+                    override fun onConnected(type: Int) {
+                        println("连接转换 $type")
+                    }
+
+                    override fun onDisConnected() {
+                        println("连接断开")
+                    }
+                })
             }
         }
     }
 
     override fun initData() {
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            manager?.unregisterNetworkCallback()
+        }
     }
 
 }

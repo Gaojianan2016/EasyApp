@@ -38,7 +38,7 @@ object StatusBarUtil {
     }
 
     fun setContentViewFitsSystemWindows(activity: Activity, flag: Boolean) {
-        val content = activity.findViewById(android.R.id.content) as ViewGroup
+        val content = activity.contentLayout()
         for (i in 0 until content.childCount) {
             val child = content.getChildAt(i)
             if (child !is BarView) {
@@ -127,7 +127,7 @@ fun Activity.setBarBackgroundColor(color: Int) {
         window.statusBarColor = color
         return
     }
-    val content = this.findViewById(android.R.id.content) as ViewGroup
+    val content = contentLayout()
     //清除旧的BarView
     content.clearChildView(BarView::class.java)
     val barView = BarView(this)
@@ -137,7 +137,7 @@ fun Activity.setBarBackgroundColor(color: Int) {
 }
 
 fun Activity.setBarBackgroundDrawable(drawable: Drawable) {
-    val content = this.findViewById(android.R.id.content) as ViewGroup
+    val content = contentLayout()
     //清除旧的BarView
     content.clearChildView(BarView::class.java)
     val barView = BarView(this)

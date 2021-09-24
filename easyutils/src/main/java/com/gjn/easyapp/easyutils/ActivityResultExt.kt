@@ -55,11 +55,10 @@ internal class ActivityResultFragment : Fragment() {
 
         val listener = mFragmentListeners[requestCode]
         mFragmentListeners.remove(requestCode)
-        if (listener == null) return
         try {
-            listener.onActivityResult(resultCode, data)
+            listener?.onActivityResult(resultCode, data)
         } catch (tr: Throwable) {
-            listener.onException(tr)
+            listener?.onException(tr)
         }
     }
 

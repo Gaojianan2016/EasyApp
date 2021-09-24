@@ -404,7 +404,6 @@ fun Context.openFile(file: File) {
  * 获取本地文件uri
  * */
 fun Context.getLocalFileUri(file: File): Uri {
-    if (!file.exists()) return Uri.EMPTY
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         FileProvider.getUriForFile(this, packageName + FILEPROVIDER, file)
     else
@@ -425,7 +424,7 @@ fun Context.getLocalFileFromUri(uri: Uri): File? {
 /**
  * 获取本地文件通过ContentUri
  * */
-fun Context.getLocalFileFromContentUri(uri: Uri): File? {
+private fun Context.getLocalFileFromContentUri(uri: Uri): File? {
     var filePath = ""
     try {
         if (uri.authority!!.contains(packageName)) {

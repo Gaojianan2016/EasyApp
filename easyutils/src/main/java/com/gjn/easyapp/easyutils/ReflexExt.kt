@@ -22,7 +22,6 @@ fun String.toClass(): Class<*> = Class.forName(this)
 /**
  * 创建一个无参对象
  * */
-@JvmOverloads
 fun <T> String.newInstanceClazz(
     parameterTypes: Array<Class<*>> = arrayOf(),
     initArgs: Array<Any> = arrayOf()
@@ -31,7 +30,6 @@ fun <T> String.newInstanceClazz(
 /**
  * 创建一个无参对象
  * */
-@JvmOverloads
 fun <T> Class<T>.newInstanceClazz(
     parameterTypes: Array<Class<*>> = arrayOf(),
     initArgs: Array<Any> = arrayOf()
@@ -112,6 +110,22 @@ fun Class<*>.setField(fieldName: String, any: Any?) {
 }
 
 /**
+ * 获取父类成员对象
+ * */
+fun Class<*>.getField(fieldName: String, any: Any?): Any?{
+    try {
+        val field = getField(fieldName)
+        if (!field.modifiers.isPublic()) {
+            field.isAccessible = true
+        }
+        return field.get(any)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return null
+}
+
+/**
  * 设置当前类成员参数
  * */
 fun Class<*>.setDeclaredField(fieldName: String, any: Any?) {
@@ -124,6 +138,22 @@ fun Class<*>.setDeclaredField(fieldName: String, any: Any?) {
     } catch (e: Exception) {
         e.printStackTrace()
     }
+}
+
+/**
+ * 获取当前类成员对象
+ * */
+fun Class<*>.getDeclaredField(fieldName: String, any: Any?): Any?{
+    try {
+        val field = getDeclaredField(fieldName)
+        if (!field.modifiers.isPublic()) {
+            field.isAccessible = true
+        }
+        return field.get(any)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return null
 }
 
 /**

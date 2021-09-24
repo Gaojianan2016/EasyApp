@@ -315,8 +315,7 @@ private fun Activity.subtractTopOffsetStatusBarHeight() {
 }
 
 private fun Activity.applyStatusBarColor(color: Int, isDecor: Boolean): View {
-    val parent: ViewGroup =
-        if (isDecor) window.decorView as ViewGroup else window.findViewById(android.R.id.content)
+    val parent: ViewGroup = if (isDecor) window.decorView as ViewGroup else contentLayout()
     var fakeStatusBarView = parent.findViewWithTag<View>(TAG_STATUS_BAR)
     if (fakeStatusBarView != null) {
         if (fakeStatusBarView.visibility == View.GONE) {

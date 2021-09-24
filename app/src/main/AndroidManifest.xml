@@ -5,8 +5,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!--8.0安装权限-->
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+<!--    &lt;!&ndash;8.0安装权限&ndash;&gt;-->
+<!--    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />-->
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -37,6 +37,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <meta-data android:name="TEST_KEY2" android:value="activity meta-data 测试数据" />
         </activity>
 
         <activity android:name=".GalleryActivity" />
@@ -46,16 +48,18 @@
         <activity android:name=".demo.ImageActivity" />
         <activity android:name=".demo.DrawerActivity" />
 
-        <!-- 7.0文件路径 -->
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
+        <meta-data android:name="TEST_KEY" android:value="app meta-data 测试数据"/>
+
+<!--        &lt;!&ndash; 7.0文件路径 &ndash;&gt;-->
+<!--        <provider-->
+<!--            android:name="androidx.core.content.FileProvider"-->
+<!--            android:authorities="${applicationId}.fileprovider"-->
+<!--            android:exported="false"-->
+<!--            android:grantUriPermissions="true">-->
+<!--            <meta-data-->
+<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
+<!--                android:resource="@xml/file_paths" />-->
+<!--        </provider>-->
     </application>
 
 </manifest>
