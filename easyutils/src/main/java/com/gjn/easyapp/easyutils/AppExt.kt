@@ -14,12 +14,12 @@ import java.io.File
 /**
  * 包名转uri
  * */
-fun String.toPackageNameUri(): Uri = Uri.parse("package:$this")
+fun String.packageNameUri(): Uri = Uri.parse("package:$this")
 
 /**
  * 获取packageName的Uri
  * */
-fun Context.packageNameUri(): Uri = packageName.toPackageNameUri()
+fun Context.packageNameUri(): Uri = packageName.packageNameUri()
 
 /**
  * 安装app
@@ -44,11 +44,7 @@ fun Context.installApp(uri: Uri?) {
 fun Context.installApp(file: File?) {
     if (file == null || !file.exists()) return
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        if (!packageManager.canRequestPackageInstalls()) {
-            openUnknownAppSettings()
-        } else {
-            openFile(file)
-        }
+        if (!packageManager.canRequestPackageInstalls()) openUnknownAppSettings() else openFile(file)
     }
 }
 
@@ -56,7 +52,7 @@ fun Context.installApp(file: File?) {
  * 卸载app
  * */
 fun Context.uninstallApp(pkgName: String) {
-    startActivity(Intent(Intent.ACTION_DELETE, pkgName.toPackageNameUri()).addNewTaskFlag())
+    startActivity(Intent(Intent.ACTION_DELETE, pkgName.packageNameUri()).addNewTaskFlag())
 }
 
 /**
@@ -70,7 +66,7 @@ fun Context.isInstalled(pkgName: String): Boolean =
     } != null
 
 /**
- * 获取app的启动页名称
+ * 获取app的启动页className
  * */
 fun Context.getAppLauncherClassName(pkgName: String): String {
     val intent = Intent(Intent.ACTION_MAIN, null).apply {
@@ -116,7 +112,7 @@ fun Context.openAppDetailsSettings(pkgName: String = packageName) {
     if (isInstalled(pkgName)) {
         val intent = Intent(
             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-            pkgName.toPackageNameUri()
+            pkgName.packageNameUri()
         )
         if (isIntentAvailable(intent)) {
             startActivity(intent)
@@ -129,7 +125,9 @@ fun Context.openAppDetailsSettings(pkgName: String = packageName) {
  * */
 fun Context.openUnknownAppSettings() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        startActivity(Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageNameUri()))
+        startActivity(Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+            packageNameUri()
+        ))
     }
 }
 

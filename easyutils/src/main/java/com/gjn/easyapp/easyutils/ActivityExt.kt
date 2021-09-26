@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.AnimRes
 import androidx.core.app.ActivityOptionsCompat
@@ -131,4 +132,9 @@ fun Intent.startActivityForResult(
 /**
  * 获取 android.R.id.content 帧布局
  * */
-fun Activity.contentLayout(): FrameLayout = window.findViewById(android.R.id.content)
+fun Activity.contentFrameLayout(): FrameLayout = window.findViewById(android.R.id.content)
+
+/**
+ * 获取 decorView 布局
+ * */
+fun Activity.decorViewGroup(): ViewGroup = window.decorView as ViewGroup

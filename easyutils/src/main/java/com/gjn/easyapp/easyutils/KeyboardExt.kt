@@ -61,10 +61,10 @@ fun View.showSoftInput(flags: Int = 0) {
 fun Activity.hideSoftInput() {
     var focusView = window.currentFocus
     if (focusView == null) {
-        focusView = window.decorView.findViewWithTag("keyboardTagView")
+        focusView = decorViewGroup().findViewWithTag("keyboardTagView")
         if (focusView == null) {
             focusView = EditText(window.context).apply { tag = "keyboardTagView" }
-            (window.decorView as ViewGroup).addView(focusView, 0, 0)
+            decorViewGroup().addView(focusView, 0, 0)
         }
         focusView.requestFocus()
     }
@@ -98,7 +98,7 @@ fun Activity.registerSoftInputChangedListener(block: (Int) -> Unit) {
     if ((flags and WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS) != 0) {
         window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }
-    val content = contentLayout()
+    val content = contentFrameLayout()
     val oldInvisibleHeight = arrayOf(decorViewInvisibleHeight())
     val globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
         val height = decorViewInvisibleHeight()
@@ -115,7 +115,7 @@ fun Activity.registerSoftInputChangedListener(block: (Int) -> Unit) {
  * 取消监听软键盘高度变化
  * */
 fun Activity.unregisterSoftInputChangedListener() {
-    val content = contentLayout()
+    val content = contentFrameLayout()
     content.getTag(-0x456)?.let {
         if (it is ViewTreeObserver.OnGlobalLayoutListener) {
             content.viewTreeObserver.removeOnGlobalLayoutListener(it)
@@ -131,7 +131,7 @@ fun Activity.fixAndroidBug5497() {
     val softInputMode = window.attributes.softInputMode
     //softInputMode & ~SOFT_INPUT_ADJUST_RESIZE
     window.setSoftInputMode(softInputMode and WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE.inv())
-    val content = contentLayout()
+    val content = contentFrameLayout()
     val child = content.getChildAt(0)
     val paddingBottom = content.paddingBottom
     val oldInvisibleHeight = arrayOf(contentViewInvisibleHeight())
@@ -162,7 +162,7 @@ fun Activity.fixSoftInputLeaks() {
             val field = InputMethodManager::class.java.getDeclaredField(leakView)
             val obj = field.get(imm)
             if (obj !is View) continue
-            if (obj.rootView == window.decorView.rootView) {
+            if (obj.rootView == decorViewGroup().rootView) {
                 field.set(imm, null)
             }
         } catch (e: Exception) {
@@ -174,7 +174,7 @@ fun Activity.fixSoftInputLeaks() {
  * 获取 android.R.id.content 未显示高度
  * */
 fun Activity.contentViewInvisibleHeight(): Int {
-    val content = contentLayout()
+    val content = contentFrameLayout()
     val outRect = Rect()
     content.getWindowVisibleDisplayFrame(outRect)
     val delta = abs(content.bottom - outRect.bottom)
@@ -187,8 +187,8 @@ fun Activity.contentViewInvisibleHeight(): Int {
  * */
 fun Activity.decorViewInvisibleHeight(): Int {
     val outRect = Rect()
-    window.decorView.getWindowVisibleDisplayFrame(outRect)
-    val delta = abs(window.decorView.bottom - outRect.bottom)
+    decorViewGroup().getWindowVisibleDisplayFrame(outRect)
+    val delta = abs(decorViewGroup().bottom - outRect.bottom)
     //差值超过通知栏+状态栏高度
     return if (delta > navigationBarHeight() + statusBarHeight()) delta else 0
 }

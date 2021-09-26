@@ -8,7 +8,7 @@ import java.lang.reflect.Modifier
  * */
 fun <T> String.toClazz(): Class<T>? =
     try {
-        Class.forName(this) as Class<T>
+        toClass() as Class<T>
     } catch (e: ClassNotFoundException) {
         e.printStackTrace()
         null
@@ -51,45 +51,49 @@ fun Any.getDeclaredFields(): Array<Field> = javaClass.declaredFields
 /**
  * 执行父类方法
  * */
-fun Class<*>.invokeMethod(
+fun Any.invokeMethod(
     methodName: String,
-    parameterTypes: Array<Class<*>?>?,
+    className: String? = null,
+    parameterTypes: Array<Class<*>?>? = null,
     vararg args: Any?
 ): Any? =
     try {
+        val clazz = if (className.isNullOrEmpty()) this as Class<*> else className.toClass()
         val method = if (parameterTypes == null) {
-            getMethod(methodName)
-        }else{
-            getMethod(methodName, *parameterTypes)
+            clazz.getMethod(methodName)
+        } else {
+            clazz.getMethod(methodName, *parameterTypes)
         }
-        if (method.modifiers.isPublic()) {
+        if (!method.modifiers.isPublic()) {
             method.isAccessible = true
         }
         method.invoke(this, *args)
-    } catch (e: java.lang.Exception) {
+    } catch (e: Exception) {
         e.printStackTrace()
         null
     }
 
 /**
- * 执行当前类方法
+ * 执行父类方法
  * */
-fun Class<*>.invokeDeclaredMethod(
+fun Any.invokeDeclaredMethod(
     methodName: String,
-    parameterTypes: Array<Class<*>?>?,
+    className: String? = null,
+    parameterTypes: Array<Class<*>?>? = null,
     vararg args: Any?
 ): Any? =
     try {
+        val clazz = if (className.isNullOrEmpty()) this as Class<*> else className.toClass()
         val method = if (parameterTypes == null) {
-            getDeclaredMethod(methodName)
-        }else{
-            getDeclaredMethod(methodName, *parameterTypes)
+            clazz.getDeclaredMethod(methodName)
+        } else {
+            clazz.getDeclaredMethod(methodName, *parameterTypes)
         }
-        if (method.modifiers.isPublic()) {
+        if (!method.modifiers.isPublic()) {
             method.isAccessible = true
         }
         method.invoke(this, *args)
-    } catch (e: java.lang.Exception) {
+    } catch (e: Exception) {
         e.printStackTrace()
         null
     }
@@ -112,7 +116,7 @@ fun Class<*>.setField(fieldName: String, any: Any?) {
 /**
  * 获取父类成员对象
  * */
-fun Class<*>.getField(fieldName: String, any: Any?): Any?{
+fun Class<*>.getField(fieldName: String, any: Any?): Any? {
     try {
         val field = getField(fieldName)
         if (!field.modifiers.isPublic()) {
@@ -143,7 +147,7 @@ fun Class<*>.setDeclaredField(fieldName: String, any: Any?) {
 /**
  * 获取当前类成员对象
  * */
-fun Class<*>.getDeclaredField(fieldName: String, any: Any?): Any?{
+fun Class<*>.getDeclaredField(fieldName: String, any: Any?): Any? {
     try {
         val field = getDeclaredField(fieldName)
         if (!field.modifiers.isPublic()) {
@@ -157,7 +161,7 @@ fun Class<*>.getDeclaredField(fieldName: String, any: Any?): Any?{
 }
 
 /**
- * 判断类是否是可以操作的
+ * 判断类是否是静态公共类
  * */
 fun Class<*>.isStaticPublic(): Boolean {
     return if (javaClass.name.contains("$")) {

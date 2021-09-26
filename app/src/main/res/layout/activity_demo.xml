@@ -373,5 +373,29 @@
             android:layout_height="wrap_content"
             android:text="网络操作" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="NotificationExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn38_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="通知操作" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PhoneInfoExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn39_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="手机信息" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

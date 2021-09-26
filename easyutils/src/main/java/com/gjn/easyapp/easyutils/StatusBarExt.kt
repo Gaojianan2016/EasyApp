@@ -2,12 +2,10 @@ package com.gjn.easyapp.easyutils
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.drawerlayout.widget.DrawerLayout
 
@@ -38,7 +36,7 @@ object StatusBarUtil {
     }
 
     fun setContentViewFitsSystemWindows(activity: Activity, flag: Boolean) {
-        val content = activity.contentLayout()
+        val content = activity.contentFrameLayout()
         for (i in 0 until content.childCount) {
             val child = content.getChildAt(i)
             if (child !is BarView) {
@@ -102,7 +100,7 @@ object StatusBarUtil {
     }
 
     private fun setStatusBarModeV23(activity: Activity, dark: Boolean) {
-        val decorView = activity.window.decorView
+        val decorView = activity.decorViewGroup()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (dark) {
                 decorView.systemUiVisibility =
@@ -127,7 +125,7 @@ fun Activity.setBarBackgroundColor(color: Int) {
         window.statusBarColor = color
         return
     }
-    val content = contentLayout()
+    val content = contentFrameLayout()
     //清除旧的BarView
     content.clearChildView(BarView::class.java)
     val barView = BarView(this)
@@ -137,7 +135,7 @@ fun Activity.setBarBackgroundColor(color: Int) {
 }
 
 fun Activity.setBarBackgroundDrawable(drawable: Drawable) {
-    val content = contentLayout()
+    val content = contentFrameLayout()
     //清除旧的BarView
     content.clearChildView(BarView::class.java)
     val barView = BarView(this)

@@ -1,6 +1,7 @@
 package com.gjn.easyapp.easyutils
 
 import android.Manifest.permission.ACCESS_NETWORK_STATE
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.*
@@ -101,72 +102,119 @@ fun Context.unregisterNetworkCallback(callback: ConnectivityManager.NetworkCallb
 }
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-class NetworkStateManager(private val context: Context) : ConnectivityManager.NetworkCallback() {
+class NetworkStateManager : ConnectivityManager.NetworkCallback() {
 
-    private var listener: OnNetworkStateListener? = null
-    var isRegister = false
-        private set
+    private var context: Context? = null
+    private val listeners = mutableListOf<OnNetworkStateListener>()
 
     @RequiresPermission(ACCESS_NETWORK_STATE)
-    fun registerNetworkCallback(listener: OnNetworkStateListener?) {
-        if (isRegister) {
+    fun registerNetworkCallback(listener: OnNetworkStateListener) {
+        if (context == null) return
+        if (isRegister(listener)) {
             if (DEBUG) {
                 "-----isRegistered NetworkCallback -----".logD(TAG)
             }
             return
         }
-        this.listener = listener
-        isRegister = context.registerNetworkCallback(this)
+        listeners.add(listener)
+        val result = context?.registerNetworkCallback(this)
         if (DEBUG) {
-            "-----registerNetworkCallback $isRegister-----".logD(TAG)
+            "-----registerNetworkCallback $result-----".logD(TAG)
         }
     }
 
-    fun unregisterNetworkCallback() {
-        this.listener = null
-        context.unregisterNetworkCallback(this)
-        isRegister = false
+    fun unregisterNetworkCallback(listener: OnNetworkStateListener) {
+        if (context == null) return
+        listeners.remove(listener)
+        context?.unregisterNetworkCallback(this)
         if (DEBUG) {
             "-----unregisterNetworkCallback-----".logD(TAG)
         }
+    }
+
+    fun clearNetworkCallback() {
+        listeners.clear()
+        if (DEBUG) {
+            "-----clearNetworkCallback-----".logD(TAG)
+        }
+    }
+
+    fun isRegister(listener: OnNetworkStateListener) = listeners.contains(listener)
+
+    private fun initManager(context: Context) {
+        this.context = context
+    }
+
+    private fun destroyManager() {
+        context = null
+        clearNetworkCallback()
     }
 
     override fun onAvailable(network: Network) {
         if (DEBUG) {
             "network is connect success".logD(TAG)
         }
-        listener?.onConnected(-1)
+        listeners.forEach {
+            it.onConnected(-1)
+        }
     }
 
     override fun onLost(network: Network) {
         if (DEBUG) {
             "network is connect lost".logD(TAG)
         }
-        listener?.onDisConnected()
+        listeners.forEach {
+            it.onDisConnected()
+        }
     }
 
     override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
         if (DEBUG) {
             "network is connect changed -> $networkCapabilities".logD(TAG)
         }
-        if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-            listener?.onConnected(0)
-        } else if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-            listener?.onConnected(1)
+        val result = when {
+            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> 0
+            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> 1
+            else -> 100
+        }
+        listeners.forEach {
+            it.onConnected(result)
         }
     }
 
     interface OnNetworkStateListener {
         /**
-         * @param type -1 默认连接成功 0 移动网络 1 wifi网络
+         * @param type -1 默认连接成功 0 移动网络 1 wifi网络 100其他网络
          * */
         fun onConnected(type: Int)
 
         fun onDisConnected()
     }
 
+    @SuppressLint("StaticFieldLeak")
+    private object LazyHolder {
+        val instance = NetworkStateManager()
+    }
+
     companion object {
         private const val TAG = "NetworkStateManager"
         private val DEBUG = BuildConfig.DEBUG
+
+        fun get() = LazyHolder.instance
+
+        /**
+         * 初始化
+         * 由于持有context对象关闭必须销毁 {@link destroy()}
+         * */
+        fun init(context: Context) {
+            get().initManager(context)
+        }
+
+        /**
+         * 销毁
+         * */
+        fun destroy() {
+            get().destroyManager()
+        }
     }
 }

@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.AnimRes
 import androidx.core.app.ActivityOptionsCompat
@@ -48,10 +47,11 @@ fun Context.hasNavigationBar(): Boolean {
     if (resId > 0) result = resources.getBoolean(resId)
     try {
         //判断是否修改过底边栏
-        val navBarOverride = "android.os.SystemProperties".toClass().invokeMethod(
-            "get", arrayOf(String::class.java), arrayOf("qemu.hw.mainkeys")
-        ) as String
-        when (navBarOverride) {
+        when ("android.os.SystemProperties".toClass().invokeMethod(
+            "get",
+            parameterTypes = arrayOf(String::class.java),
+            args = arrayOf("qemu.hw.mainkeys")
+        ) as String) {
             "0" -> result = true
             "1" -> result = false
         }
@@ -61,14 +61,23 @@ fun Context.hasNavigationBar(): Boolean {
     return result
 }
 
+/**
+ * 展示吐司
+ * */
 fun Context.showToast(msg: CharSequence, duration: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, msg, duration).show()
 }
 
+/**
+ * 展示吐司
+ * */
 fun Context.showToast(resId: Int, duration: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, resId, duration).show()
 }
 
+/**
+ * 判断权限
+ * */
 fun Context.checkPermission(permission: String) =
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) true
     else ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED

@@ -1,5 +1,6 @@
 package com.gjn.easyapp.demo
 
+import android.Manifest
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
@@ -13,18 +14,12 @@ import kotlinx.coroutines.delay
 import java.io.File
 import java.io.FileFilter
 
-class DemoActivity : ABaseActivity() {
+class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener {
 
     override fun layoutId() = R.layout.activity_demo
 
-    var manager: NetworkStateManager? = null
-
     override fun initView() {
         val bmp = R.mipmap.test_img.toBitmap(mActivity)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            manager = NetworkStateManager(mActivity)
-        }
 
         btn1_ad.click {
 //            ImageActivity::class.java.startActivity(mActivity, extrasMap = mapOf(ImageActivity.DATA to "数据1"),
@@ -419,6 +414,8 @@ class DemoActivity : ABaseActivity() {
             println("activity getMetaData ${mActivity.getMetaData("TEST_KEY2")}")
         }
 
+        NetworkStateManager.init(mActivity)
+
         btn37_ad.click {
 //            mActivity.openWirelessSettings()
 
@@ -428,16 +425,57 @@ class DemoActivity : ABaseActivity() {
             println("isEthernetConnected ${mActivity.isEthernetConnected()}")
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                manager?.registerNetworkCallback(object :
-                    NetworkStateManager.OnNetworkStateListener {
-                    override fun onConnected(type: Int) {
-                        println("连接转换 $type")
-                    }
+                NetworkStateManager.get().registerNetworkCallback(this@DemoActivity)
+            }
+        }
 
-                    override fun onDisConnected() {
-                        println("连接断开")
-                    }
-                })
+        btn38_ad.click {
+            println("areNotificationsEnabled ${mActivity.areNotificationsEnabled()}")
+
+            mActivity.sendNotification(100) {
+                it.setContentTitle("100通知")
+                it.setContentText("内容Text1111111111")
+                it.setWhen(System.currentTimeMillis())
+                it.setSmallIcon(R.mipmap.ic_launcher)
+            }
+
+            mActivity.sendNotification(200) {
+                it.setContentTitle("200通知")
+                it.setContentText("内容Text222222222")
+                it.setWhen(System.currentTimeMillis())
+                it.setSmallIcon(R.mipmap.ic_launcher)
+            }
+
+            launch {
+                delay(500)
+                println("setNotificationBarExpand true")
+                mActivity.setNotificationBarExpand(true)
+            }
+
+            launch {
+                delay(2000)
+                println("cancelNotification")
+                mActivity.cancelNotification(100)
+            }
+
+            launch {
+                delay(4000)
+                println("cancelAllNotification")
+                mActivity.cancelAllNotification()
+            }
+        }
+
+        btn39_ad.click {
+            println("isPhone ${mActivity.isPhone()}")
+            println("isSimCardReady ${mActivity.isSimCardReady()}")
+            println("getSimOperatorName ${mActivity.getSimOperatorName()}")
+            println("getSimOperatorByMnc ${mActivity.getSimOperatorByMnc()}")
+            println("phoneBrand ${phoneBrand()}")
+            println("phoneModel ${phoneModel()}")
+
+            simpleRequestPermissions(arrayOf(Manifest.permission.READ_PHONE_STATE)){
+                println("getDeviceId ${mActivity.getDeviceId()}")
+                println("getSerial ${getSerial()}")
             }
         }
     }
@@ -446,11 +484,22 @@ class DemoActivity : ABaseActivity() {
 
     }
 
+    override fun onConnected(type: Int) {
+        println("连接转换 $type")
+    }
+
+    override fun onDisConnected() {
+        println("连接断开")
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            manager?.unregisterNetworkCallback()
+            NetworkStateManager.get().unregisterNetworkCallback(this@DemoActivity)
         }
+
+        NetworkStateManager.destroy()
     }
 
 }
