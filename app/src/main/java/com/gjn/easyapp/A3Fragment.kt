@@ -13,8 +13,8 @@ import com.bumptech.glide.Glide
 import com.gjn.easyapp.base.BaseKtRecyclerAdapter
 import com.gjn.easyapp.base.BaseVH
 import com.gjn.easyapp.easybase.BaseLazyFragment
-import com.gjn.easyapp.easyutils.ResourcesUtils
 import com.gjn.easyapp.easyutils.click
+import com.gjn.easyapp.easyutils.inflate
 import com.gjn.easyapp.network.AppNetWorker
 import kotlinx.android.synthetic.main.adapter_girl.view.*
 import kotlinx.android.synthetic.main.fragment_a3.*
@@ -145,7 +145,7 @@ class A3Fragment : BaseLazyFragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseVH {
-            return BaseVH(ResourcesUtils.inflate(parent.context, R.layout.adapter_girl, parent)!!)
+            return BaseVH(parent.context.inflate(R.layout.adapter_girl, parent)!!)
         }
 
     }

@@ -9,28 +9,28 @@ object JsonUtil {
     ): String {
         val sb = StringBuilder(tab)
         json?.run {
-            val clearJson = replace(cleanRegex, "")
+            val rawJson = replace(cleanRegex, "")
             val ln = '\n'
             var line = 0
-            for (element in clearJson) {
+            for (element in rawJson) {
                 when (element) {
                     //换行 并且加一级tab
                     '{', '[' -> {
                         sb.append(element).append(ln).append(tab)
                         line++
-                        addTab(sb, line)
+                        sb.addTab(line)
                     }
                     //换行 并且减一级tab
                     '}', ']' -> {
                         sb.append(ln).append(tab)
                         line--
-                        addTab(sb, line)
+                        sb.addTab(line)
                         sb.append(element)
                     }
                     //换行 并且同级tab
                     ',' -> {
                         sb.append(element).append(ln).append(tab)
-                        addTab(sb, line)
+                        sb.addTab(line)
                     }
                     else -> sb.append(element)
                 }
@@ -39,9 +39,9 @@ object JsonUtil {
         return sb.toString()
     }
 
-    private fun addTab(sb: StringBuilder, line: Int) {
+    private fun StringBuilder.addTab(line: Int) {
         for (i in 0 until line) {
-            sb.append('\t')
+            append('\t')
         }
     }
 }

@@ -52,11 +52,7 @@ open class SharedPref<T>(private val context: Context) : ReadWriteProperty<Any?,
                 else -> throw IllegalArgumentException("Unsupported type.")
             }
         }
-        if (commit) {
-            edit.commit()
-        } else {
-            edit.apply()
-        }
+        if (commit) edit.commit() else edit.apply()
     }
 
     fun clearPref(): Boolean = preferences.edit().clear().commit()

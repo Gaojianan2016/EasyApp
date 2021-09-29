@@ -2,13 +2,12 @@ package com.gjn.easyapp.easydialoger.base
 
 import android.content.Context
 import android.util.SparseArray
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import com.gjn.easyapp.easyutils.ResourcesUtils
+import com.gjn.easyapp.easyutils.inflate
+import com.gjn.easyapp.easyutils.inflateDataBindingUtil
 
 class ViewHolder private constructor(var view: View?) {
 
@@ -30,7 +29,7 @@ class ViewHolder private constructor(var view: View?) {
             context: Context?,
             @LayoutRes resource: Int,
             root: ViewGroup?
-        ): ViewHolder = create(ResourcesUtils.inflate(context, resource, root))
+        ): ViewHolder = create(context.inflate(resource, root))
     }
 }
 
@@ -44,9 +43,7 @@ class DataBindingHolder private constructor(var dataBinding: ViewDataBinding) {
             @LayoutRes resource: Int,
             root: ViewGroup?
         ): DataBindingHolder {
-            val binding: ViewDataBinding = DataBindingUtil.inflate(
-                LayoutInflater.from(context), resource, root, false
-            )
+            val binding: ViewDataBinding = context.inflateDataBindingUtil(resource, root)
             return create(binding)
         }
     }

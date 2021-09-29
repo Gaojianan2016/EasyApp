@@ -134,6 +134,9 @@ fun Activity.setBarBackgroundColor(color: Int) {
     content.addView(barView)
 }
 
+/**
+ * 设置
+ * */
 fun Activity.setBarBackgroundDrawable(drawable: Drawable) {
     val content = contentFrameLayout()
     //清除旧的BarView

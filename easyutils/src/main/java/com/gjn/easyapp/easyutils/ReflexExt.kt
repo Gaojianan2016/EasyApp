@@ -17,14 +17,19 @@ fun <T> String.toClazz(): Class<T>? =
 /**
  * 完整类名转Class com.gjn.easyapp.easyutils.ReflexExt -> Class
  * */
-fun String.toClass(): Class<*> = Class.forName(this)
+fun String.toClass(initialize: Boolean? = null, loader: ClassLoader? = null): Class<*> {
+    if (initialize == null || loader == null) {
+        return Class.forName(this)
+    }
+    return Class.forName(this, initialize, loader)
+}
 
 /**
  * 创建一个无参对象
  * */
 fun <T> String.newInstanceClazz(
     parameterTypes: Array<Class<*>> = arrayOf(),
-    initArgs: Array<Any> = arrayOf()
+    vararg initArgs: Any?
 ): T? = toClazz<T>()?.newInstanceClazz(parameterTypes, initArgs)
 
 /**
@@ -32,7 +37,7 @@ fun <T> String.newInstanceClazz(
  * */
 fun <T> Class<T>.newInstanceClazz(
     parameterTypes: Array<Class<*>> = arrayOf(),
-    initArgs: Array<Any> = arrayOf()
+    vararg initArgs: Any?
 ): T? {
     if (!isStaticPublic()) return null
     return try {

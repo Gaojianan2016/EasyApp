@@ -43,7 +43,7 @@ fun Context?.createOptionsBundle(vararg sharedElements: View): Bundle? {
 
 fun Context.hasNavigationBar(): Boolean {
     var result = false
-    val resId = ResourcesUtils.getInternalBoolean("config_showNavigationBar")
+    val resId = getSystemBoolIdentifier("config_showNavigationBar")
     if (resId > 0) result = resources.getBoolean(resId)
     try {
         //判断是否修改过底边栏

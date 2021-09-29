@@ -2,8 +2,10 @@ package com.gjn.easyapp.easyutils
 
 import android.Manifest.permission.EXPAND_STATUS_BAR
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.Service
 import android.content.Context
 import android.media.AudioAttributes
 import android.net.Uri
@@ -49,6 +51,25 @@ fun Context.sendNotification(
 }
 
 /**
+ * 发送前台通知
+ * */
+fun Service.sendForegroundNotification(
+    id: Int,
+    channelId: String = packageName,
+    foregroundServiceType: Int? = null,
+    block: (Notification.Builder) -> Unit
+) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val builder = Notification.Builder(this, channelId)
+        block.invoke(builder)
+        if (foregroundServiceType == null)
+            startForeground(id, builder.build())
+        else
+            startForeground(id, builder.build(), foregroundServiceType)
+    }
+}
+
+/**
  * 取消通知
  * */
 fun Context.cancelNotification(id: Int, tag: String? = null) {
@@ -71,7 +92,7 @@ fun Context.setNotificationBarExpand(isExpand: Boolean) {
     val methodName = if (isExpand) "expandNotificationsPanel" else "collapsePanels"
     try {
         val service = getSystemService("statusbar")
-        service.invokeMethod(methodName,"android.app.StatusBarManager", null)
+        service.invokeMethod(methodName, "android.app.StatusBarManager", null)
     } catch (e: Exception) {
         e.printStackTrace()
     }

@@ -23,7 +23,7 @@ private const val KEY_OFFSET = -0x539
  * 获取状态栏高度(px)
  * */
 fun Context.statusBarHeight(): Int {
-    val resId = getAndroidIdentifierDimen("status_bar_height")
+    val resId = getSystemDimenIdentifier("status_bar_height")
     return if (resId > 0) resources.getDimensionPixelSize(resId) else 0
 }
 
@@ -181,7 +181,7 @@ fun Application.actionBarHeight(): Int {
  * 获取导航栏高度(px)
  * */
 fun Context.navigationBarHeight(): Int {
-    val resId = getAndroidIdentifierDimen("navigation_bar_height")
+    val resId = getSystemDimenIdentifier("navigation_bar_height")
     return if (resId > 0) resources.getDimensionPixelSize(resId) else 0
 }
 

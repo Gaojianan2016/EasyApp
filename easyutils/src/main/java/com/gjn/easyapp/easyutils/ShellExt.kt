@@ -1,28 +1,32 @@
 package com.gjn.easyapp.easyutils
 
 import java.io.BufferedReader
+import java.io.Closeable
 import java.io.DataOutputStream
 import java.io.InputStreamReader
 
 private val LINE_SEP = System.getProperty("line.separator")
 
+/**
+ * 执行命令
+ * */
 fun execCmd(
     command: String,
     isRooted: Boolean,
     isNeedResultMsg: Boolean = false
 ) = execCmd(arrayOf(command), isRooted, isNeedResultMsg)
 
+/**
+ * 执行命令
+ * */
 fun execCmd(
     commands: Array<String?>,
     isRooted: Boolean,
     isNeedResultMsg: Boolean = true
 ): CommandResult {
+    if (commands.isEmpty()) return CommandResult(-1)
 
     var result = -1
-    if (commands.isEmpty()) {
-        return CommandResult(result)
-    }
-
     var process: Process? = null
     var os: DataOutputStream? = null
 
@@ -41,6 +45,7 @@ fun execCmd(
             os.writeBytes(LINE_SEP)
             os.flush()
         }
+
         os.writeBytes("exit$LINE_SEP")
         os.flush()
         result = process.waitFor()
@@ -66,18 +71,31 @@ fun execCmd(
     } catch (e: Exception) {
         e.printStackTrace()
     } finally {
+        os?.tryClose()
+        successResult?.tryClose()
+        errorResult?.tryClose()
         try {
-            os?.close()
-            successResult?.close()
-            errorResult?.close()
             process?.destroy()
         } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
     return CommandResult(result, successMsg.toString(), errorMsg.toString())
 }
 
+/**
+ * 尝试关闭流操作
+ * */
+fun Closeable.tryClose() {
+    try {
+        close()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
+
+/**
+ * 命令结果
+ * */
 class CommandResult(val result: Int, val successMsg: String = "", val errorMsg: String = "") {
 
     override fun toString() = "result=$result, successMsg=$successMsg, errorMsg=$errorMsg"

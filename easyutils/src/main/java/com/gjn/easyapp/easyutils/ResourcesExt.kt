@@ -1,102 +1,159 @@
 package com.gjn.easyapp.easyutils
 
 import android.content.Context
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
-import android.content.res.Resources
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.annotation.RawRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import java.io.File
 
-fun Context.getAndroidIdentifier(name: String, defType: String) =
-    resources.getIdentifier(name, defType, "android")
+/**
+ * 获取标识符
+ * */
+private fun Context.getIdentifier(name: String, defType: String, defPackage: String) =
+    resources.getIdentifier(name, defType, defPackage)
 
-fun Context.getAndroidIdentifierId(name: String) = getAndroidIdentifier(name, "id")
+/////////////////////////////////
+////  android包内的操作
+/////////////////////////////////
 
-fun Context.getAndroidIdentifierLayout(name: String) = getAndroidIdentifier(name, "layout")
+/**
+ * 获取系统标识符
+ * */
+private fun Context.getSystemIdentifier(name: String, defType: String) =
+    getIdentifier(name, defType, "android")
 
-fun Context.getAndroidIdentifierDrawable(name: String) = getAndroidIdentifier(name, "drawable")
+fun Context.getSystemIdIdentifier(name: String) = getSystemIdentifier(name, "id")
 
-fun Context.getAndroidIdentifierColors(name: String) = getAndroidIdentifier(name, "colors")
+fun Context.getSystemLayoutIdentifier(name: String) = getSystemIdentifier(name, "layout")
 
-fun Context.getAndroidIdentifierDimen(name: String) = getAndroidIdentifier(name, "dimen")
+fun Context.getSystemDrawableIdentifier(name: String) = getSystemIdentifier(name, "drawable")
 
-fun Context.getAndroidIdentifierInteger(name: String) = getAndroidIdentifier(name, "integer")
+fun Context.getSystemColorIdentifier(name: String) = getSystemIdentifier(name, "color")
 
-fun Context.getAndroidIdentifierBool(name: String) = getAndroidIdentifier(name, "bool")
+fun Context.getSystemDimenIdentifier(name: String) = getSystemIdentifier(name, "dimen")
 
-fun Context.hasPermission(permission: String): Boolean {
-    val packageInfo = try {
-        packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
+fun Context.getSystemIntIdentifier(name: String) = getSystemIdentifier(name, "integer")
+
+fun Context.getSystemBoolIdentifier(name: String) = getSystemIdentifier(name, "bool")
+
+/////////////////////////////////
+////  app包内的操作
+/////////////////////////////////
+
+/**
+ * 获取App标识符
+ * */
+private fun Context.getAppIdentifier(name: String, defType: String) =
+    getIdentifier(name, defType, packageName)
+
+fun Context.getAppIdIdentifier(name: String) = getAppIdentifier(name, "id")
+
+fun Context.getAppAnimIdentifier(name: String) = getAppIdentifier(name, "anim")
+
+fun Context.getAppMenuIdentifier(name: String) = getAppIdentifier(name, "menu")
+
+fun Context.getAppStyleIdentifier(name: String) = getAppIdentifier(name, "style")
+
+fun Context.getAppLayoutIdentifier(name: String) = getAppIdentifier(name, "layout")
+
+fun Context.getAppDrawableIdentifier(name: String) = getAppIdentifier(name, "drawable")
+
+fun Context.getAppMipmapIdentifier(name: String) = getAppIdentifier(name, "mipmap")
+
+fun Context.getAppColorIdentifier(name: String) = getAppIdentifier(name, "color")
+
+fun Context.getAppDimenIdentifier(name: String) = getAppIdentifier(name, "dimen")
+
+fun Context.getAppIntIdentifier(name: String) = getAppIdentifier(name, "integer")
+
+fun Context.getAppBoolIdentifier(name: String) = getAppIdentifier(name, "bool")
+
+fun Context.getAppXmlIdentifier(name: String) = getAppIdentifier(name, "xml")
+
+/////////////////////////////////
+////  assets 操作
+/////////////////////////////////
+
+/**
+ * 获取assets String
+ * */
+fun Context.assetsStr(fileName: String): String {
+    if (fileName.isEmpty()) return ""
+    return try {
+        String(assets.open(fileName).readBytes())
     } catch (e: Exception) {
-        null
+        e.printStackTrace()
+        ""
     }
-    packageInfo?.run {
-        if (requestedPermissions.contains(permission)) {
-            return true
-        }
-    }
-    return false
 }
 
 /**
- * 获取assets String内容
+ * 复制assets file
  * */
-fun Context.assetsStr(fileName: String): String {
-    try {
-        val stream = assets.open(fileName)
-        val size = stream.available()
-        val buffer = ByteArray(size)
-        stream.read(buffer)
-        stream.close()
-        return String(buffer)
+fun Context.assetsCopyFile(fileName: String, target: File): Boolean {
+    if (fileName.isEmpty()) return false
+    if (!target.createNewFile()) return false
+    return try {
+        assets.open(fileName).copyTo(target.outputStream())
+        true
     } catch (e: Exception) {
         e.printStackTrace()
+        false
     }
-    return ""
 }
 
-object ResourcesUtils {
+/////////////////////////////////
+////  raw 操作
+/////////////////////////////////
 
-    fun inflate(
-        context: Context?,
-        @LayoutRes resource: Int,
-        root: ViewGroup?,
-        attachToRoot: Boolean = false
-    ): View? = LayoutInflater.from(context).inflate(resource, root, attachToRoot)
-
-    fun inflate(
-        inflater: LayoutInflater,
-        @LayoutRes resource: Int,
-        root: ViewGroup?,
-        attachToRoot: Boolean = false
-    ): View? = inflater.inflate(resource, root, attachToRoot)
-
-    fun <T : ViewDataBinding> inflateDataBinding(
-        context: Context?,
-        @LayoutRes resource: Int,
-        root: ViewGroup? = null,
-        attachToRoot: Boolean = false
-    ): T =
-        DataBindingUtil.inflate(LayoutInflater.from(context), resource, root, attachToRoot) as T
-
-    fun getInternalId(name: String?): Int = getInternal(name, "id")
-
-    fun getInternalLayout(name: String?): Int = getInternal(name, "layout")
-
-    fun getInternalDrawable(name: String?): Int = getInternal(name, "drawable")
-
-    fun getInternalColors(name: String?): Int = getInternal(name, "colors")
-
-    fun getInternalDimen(name: String?): Int = getInternal(name, "dimen")
-
-    fun getInternalBoolean(name: String?): Int = getInternal(name, "bool")
-
-    fun getInternal(name: String?, type: String?): Int =
-        Resources.getSystem().getIdentifier(name, type, "android")
-
+/**
+ * 获取raw String
+ * */
+fun Context.rawStr(@RawRes resId: Int): String {
+    return try {
+        String(resources.openRawResource(resId).readBytes())
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
 }
+
+/**
+ * 复制assets file
+ * */
+fun Context.rawCopyFile(@RawRes resId: Int, target: File): Boolean {
+    if (!target.createNewFile()) return false
+    return try {
+        resources.openRawResource(resId).copyTo(target.outputStream())
+        true
+    } catch (e: Exception) {
+        e.printStackTrace()
+        false
+    }
+}
+
+/////////////////////////////////
+////  inflate 操作
+/////////////////////////////////
+
+/**
+ * 布局设置
+ * */
+fun Context?.inflate(
+    @LayoutRes resource: Int,
+    root: ViewGroup? = null,
+    attachToRoot: Boolean = false
+): View? = LayoutInflater.from(this).inflate(resource, root, attachToRoot)
+
+/**
+ * DataBindingUtil 布局设置
+ * */
+fun <T : ViewDataBinding> Context?.inflateDataBindingUtil(
+    @LayoutRes resource: Int,
+    root: ViewGroup? = null,
+    attachToRoot: Boolean = false
+): T = DataBindingUtil.inflate(LayoutInflater.from(this), resource, root, attachToRoot) as T

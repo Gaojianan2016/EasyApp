@@ -397,5 +397,77 @@
             android:layout_height="wrap_content"
             android:text="手机信息" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="QRCodeExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <ImageView
+            android:id="@+id/iv_qr_code"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:id="@+id/btn40_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="二维码操作" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="RegexExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn41_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="正则表达式" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ResourcesExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn42_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="资源操作" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ScreenExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <ImageView
+            android:id="@+id/iv_screen"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:id="@+id/btn43_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="屏幕操作" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ServiceExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn44_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="服务操作" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

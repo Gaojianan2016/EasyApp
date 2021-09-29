@@ -2,7 +2,7 @@ package com.gjn.easyapp
 
 import com.gjn.easyapp.easyutils.SharedPref
 
-class MySP<T> @JvmOverloads constructor(
+class MySP<T> constructor(
     key: String,
     defValue: T,
     name: String = "${App.instance.packageName}_sp",

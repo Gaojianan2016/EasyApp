@@ -185,7 +185,7 @@ class A1Fragment : BaseLazyFragment() {
         }
 
         btn15.click {
-            mActivity.simpleRequestPermissions(
+            mActivity.quickRequestPermissions(
                 arrayOf(
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -325,14 +325,13 @@ class A1Fragment : BaseLazyFragment() {
                     val bmp = QRCodeUtils.stringEncode("你好，我是正常二维码")
                     println("解码 = ${QRCodeUtils.bitmapDecode(bmp)}")
 
-                    iv_qrcode.setQrCodeBitmap(
-                        "你好，我是有图标的二维码",
-                        margin = 1,
-                        positiveColor = Color.RED,
-                        negativeColor = Color.YELLOW,
-                        logoBitmap = BitmapFactory.decodeResource(resources, R.mipmap.balance_bg),
-                        scale = 0.1f
-                    )
+//                    iv_qrcode.setQrCodeBitmap(
+//                        "你好，我是有图标的二维码",
+//                        positiveColor = Color.RED,
+//                        negativeColor = Color.YELLOW,
+//                        logoBitmap = BitmapFactory.decodeResource(resources, R.mipmap.balance_bg),
+//                        scale = 0.1f
+//                    )
                 }
                 btn6 -> {
                     println("是否连接网络 ${mActivity.isNetworkConnected()}")
@@ -384,7 +383,7 @@ class A1Fragment : BaseLazyFragment() {
                     println("底边栏 ${navigation}px -> ${navigation.px2dp(mActivity)}dp")
                 }
                 btn14 -> {
-                    val result = mActivity.hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    val result = mActivity.checkPermissionExistManifest(Manifest.permission.READ_EXTERNAL_STORAGE)
                     println("是否含有权限 $result")
                 }
             }

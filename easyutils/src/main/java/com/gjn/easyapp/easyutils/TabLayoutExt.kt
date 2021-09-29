@@ -56,10 +56,9 @@ class TabScrollBar {
         this.bars = bars
     }
 
-
     fun create() {
         if (bars.isEmpty()) {
-            "bars is null.".logE(TAG)
+            "bars is null.".logW(TAG)
             return
         }
         if (viewPager2 == null) {
@@ -106,7 +105,7 @@ class TabScrollBar {
     }
 
     private fun createCustomView(i: Int): View? {
-        val view = ResourcesUtils.inflate(activity, customViewLayoutId, null)
+        val view = activity.inflate(customViewLayoutId)
         onCustomViewConvertCallback?.convertData(view, bars[i], i, 0)
         return view
     }
@@ -188,12 +187,12 @@ interface OnCustomViewConvertCallback {
  * 强制固定TabLayout宽度 兼容5.0 5.1
  * 地址 https://juejin.cn/post/6925318518128771079
  * */
-fun TabLayout.setSelectedTabIndicatorFixWidth(width: Float){
-    setSelectedTabIndicator(object : DrawableWrapper(tabSelectedIndicator){
+fun TabLayout.setSelectedTabIndicatorFixWidth(width: Float) {
+    setSelectedTabIndicator(object : DrawableWrapper(tabSelectedIndicator) {
         override fun setBounds(left: Int, top: Int, right: Int, bottom: Int) {
             var realLeft = left
             var realRight = right
-            if((right - left).toFloat() != width){
+            if ((right - left).toFloat() != width) {
                 val center = left + (right - left).toFloat() / 2
                 realLeft = (center - width / 2).toInt()
                 realRight = (center + width / 2).toInt()

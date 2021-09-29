@@ -22,11 +22,11 @@ abstract class ABaseActivity : AppCompatActivity(), UIEvent {
     protected lateinit var mDialogManager: EasyDialogManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        mActivity = this
+        mContext = this
         AppManager.instance.addActivity(this)
         preCreate(savedInstanceState)
         super.onCreate(savedInstanceState)
-        mActivity = this
-        mContext = this
         mBundle = intent.extras ?: Bundle()
         mDialogManager = EasyDialogManager(this)
         bindContentView()

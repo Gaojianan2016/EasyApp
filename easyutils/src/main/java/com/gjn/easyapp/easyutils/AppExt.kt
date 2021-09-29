@@ -114,9 +114,7 @@ fun Context.openAppDetailsSettings(pkgName: String = packageName) {
             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
             pkgName.packageNameUri()
         )
-        if (isIntentAvailable(intent)) {
-            startActivity(intent)
-        }
+        if (isIntentAvailable(intent)) startActivity(intent)
     }
 }
 

@@ -6,7 +6,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
-import com.gjn.easyapp.easyutils.ResourcesUtils
+import com.gjn.easyapp.easyutils.inflate
 import kotlinx.coroutines.runBlocking
 
 class ToastUtil(
@@ -15,8 +15,7 @@ class ToastUtil(
 ) {
 
     private var mToast: Toast? = null
-    var mEasyToastView: View? =
-        ResourcesUtils.inflate(mContext, R.layout.easytoast_transient_notification, null)
+    var mEasyToastView = mContext.inflate(R.layout.easytoast_transient_notification)
 
     @SuppressLint("ShowToast")
     fun showToast(

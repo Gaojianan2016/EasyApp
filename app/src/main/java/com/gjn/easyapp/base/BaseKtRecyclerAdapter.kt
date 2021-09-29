@@ -5,10 +5,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.gjn.easyapp.easyutils.ResourcesUtils
-import com.gjn.easyapp.easyutils.click
-import com.gjn.easyapp.easyutils.clickLong
-import com.gjn.easyapp.easyutils.intervalOpen
+import com.gjn.easyapp.easyutils.*
 
 abstract class BaseKtRecyclerAdapter<T>(
     val context: Context,
@@ -27,7 +24,7 @@ abstract class BaseKtRecyclerAdapter<T>(
     var onItemLongClickListener: OnItemLongClickListener<T>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseVH {
-        val vh = BaseVH(ResourcesUtils.inflate(context, layoutId, parent)!!)
+        val vh = BaseVH(context.inflate(layoutId, parent)!!)
         initVH(vh)
         addItemClick(vh)
         return vh

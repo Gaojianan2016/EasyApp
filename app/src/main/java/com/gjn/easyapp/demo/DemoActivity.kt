@@ -1,6 +1,7 @@
 package com.gjn.easyapp.demo
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
@@ -18,6 +19,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
     override fun layoutId() = R.layout.activity_demo
 
+    @SuppressLint("MissingPermission")
     override fun initView() {
         val bmp = R.mipmap.test_img.toBitmap(mActivity)
 
@@ -473,10 +475,85 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("phoneBrand ${phoneBrand()}")
             println("phoneModel ${phoneModel()}")
 
-            simpleRequestPermissions(arrayOf(Manifest.permission.READ_PHONE_STATE)){
+            quickRequestPermissions(arrayOf(Manifest.permission.READ_PHONE_STATE)) {
                 println("getDeviceId ${mActivity.getDeviceId()}")
                 println("getSerial ${getSerial()}")
             }
+        }
+
+        btn40_ad.click {
+            iv_qr_code.setQrCodeImageBitmap("生成二维码信息")
+            println("code ${iv_qr_code.getQrCodeByBitmap()}")
+        }
+
+        btn41_ad.click {
+            println("17745645645 isMobileNumber ${"17745645645".isMobileNumber()}")
+            println("01114556677 isTelNumber ${"01114556677".isTelNumber()}")
+            println("35001119900101237x isTelNumber ${"35001119900101237x".isIdCard()}")
+            println("456456@asd.com isEmail ${"456456@asd.com".isEmail()}")
+            println("aaa://www.456.net isUrl ${"aaa://www.456.net".isUrl()}")
+            println("127.0.0.01 isIpAddress ${"127.0.0.01".isIpAddress()}")
+            println("360000 isZhPostCode ${"360000".isZhPostCode()}")
+        }
+
+        btn42_ad.click {
+            println("get status_bar_height ${mActivity.getSystemDimenIdentifier("status_bar_height")}")
+            println("get ic_launcher_background ${mActivity.getAppDrawableIdentifier("ic_launcher_background")}")
+            println("get anim_bottom_in ${mActivity.getAppAnimIdentifier("anim_bottom_in")}")
+            println("get network_security_config ${mActivity.getAppXmlIdentifier("network_security_config")}")
+
+            val file = "${Environment.getExternalStorageDirectory()}/aA_test/assetsFile.txt".file()
+            val file2 = "${Environment.getExternalStorageDirectory()}/aA_test/rawFile.txt".file()
+
+            println("assetsStr ${mActivity.assetsStr("test_file.txt")}")
+            println("assetsCopyFile ${mActivity.assetsCopyFile("test_file.txt", file)}")
+
+            println("rawStr ${mActivity.rawStr(R.raw.test_raw)}")
+            println("rawCopyFile ${mActivity.rawCopyFile(R.raw.test_raw, file2)}")
+        }
+
+        btn43_ad.click {
+            println("screenWidth ${mActivity.screenWidth()}")
+            println("screenHeight ${mActivity.screenHeight()}")
+            println("appScreenWidth ${mActivity.appScreenWidth()}")
+            println("appScreenHeight ${mActivity.appScreenHeight()}")
+
+            println("getScreenDensity ${getScreenDensity()}")
+            println("getScreenDensityDpi ${getScreenDensityDpi()}")
+
+            println("isFullScreen ${mActivity.isFullScreen()}")
+            println("isLandscape ${mActivity.isLandscape()}")
+            println("isPortrait ${mActivity.isPortrait()}")
+            println("screenRotation ${mActivity.screenRotation()}")
+            println("isScreenLock ${mActivity.isScreenLock()}")
+            println("getScreenLockTime ${mActivity.getScreenLockTime()}")
+
+            iv_screen.setImageBitmap(mActivity.screenShot(false))
+        }
+
+        btn44_ad.click {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                mActivity.quickRequestPermissions(arrayOf(Manifest.permission.FOREGROUND_SERVICE)) {
+                    runService()
+                }
+            } else {
+                runService()
+            }
+        }
+    }
+
+    private fun runService() {
+        launch {
+            TestService::class.java.startService(mActivity)
+            println("isServiceRunning1 ${mActivity.isServiceRunning(TestService::class.java)}")
+
+            mActivity.getAllRunningServiceNames().forEach {
+                println("running $it")
+            }
+
+            delay(6000)
+            TestService::class.java.stopService(mActivity)
+            println("isServiceRunning2 ${mActivity.isServiceRunning(TestService::class.java)}")
         }
     }
 

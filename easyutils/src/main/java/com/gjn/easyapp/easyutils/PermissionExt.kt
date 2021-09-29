@@ -3,6 +3,7 @@ package com.gjn.easyapp.easyutils
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -237,9 +238,9 @@ class PermissionHelper {
         eventListener: IListener.IPermissionEvent? = null,
         fragmentListener: IListener.IPermissionFragment? = null
     ) {
-        if (mPermissions.size <= 0) return
+        if (mPermissions.size <= 0 || activity == null) return
         for (permission in mPermissions) {
-            if (!activity!!.hasPermission(permission)) {
+            if (!activity!!.checkPermissionExistManifest(permission)) {
                 "AndroidManifest.xml have not $permission".logE(TAG)
                 return
             }
@@ -346,7 +347,23 @@ class PermissionHelper {
     }
 }
 
-fun FragmentActivity.simpleRequestPermissions(
+/**
+ * 检查存在权限
+ * */
+fun Context.checkPermissionExistManifest(permission: String): Boolean{
+    return try {
+        val pi = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
+        pi.requestedPermissions.contains(permission)
+    }catch (e: Exception){
+        e.printStackTrace()
+        false
+    }
+}
+
+/**
+ * 快速请求权限
+ * */
+fun FragmentActivity.quickRequestPermissions(
     permissions: Array<String>,
     customDialogBlock: ((List<Permission>) -> Unit)? = null,
     block: () -> Unit
@@ -367,7 +384,7 @@ fun FragmentActivity.simpleRequestPermissions(
                     if (customDialogBlock == null) {
                         if (hasShouldShowRequestPermissionRationale) {
                             PermissionHelper.requestDialogAgain(
-                                this@simpleRequestPermissions,
+                                this@quickRequestPermissions,
                                 refusePermissions
                             )
                         }
@@ -381,7 +398,10 @@ fun FragmentActivity.simpleRequestPermissions(
     }
 }
 
-fun Fragment.simpleRequestPermissions(
+/**
+ * 快速请求权限
+ * */
+fun Fragment.quickRequestPermissions(
     permissions: Array<String>,
     customDialogBlock: ((List<Permission>) -> Unit)? = null,
     block: () -> Unit
@@ -401,7 +421,7 @@ fun Fragment.simpleRequestPermissions(
                     }
                     if (customDialogBlock == null) {
                         if (hasShouldShowRequestPermissionRationale) {
-                            this@simpleRequestPermissions.activity?.let {
+                            this@quickRequestPermissions.activity?.let {
                                 PermissionHelper.requestDialogAgain(it, refusePermissions)
                             }
                         }
@@ -415,23 +435,28 @@ fun Fragment.simpleRequestPermissions(
     }
 }
 
-//常用的权限询问 读写权限
+/**
+ * 读写权限获取
+ * */
 fun FragmentActivity.requestWRPermission(
     customDialogBlock: ((List<Permission>) -> Unit)? = null,
     block: () -> Unit
 ) {
-    simpleRequestPermissions(
+    quickRequestPermissions(
         arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ), customDialogBlock, block
+        ),
+        customDialogBlock, block
     )
 }
 
-//常用的权限询问 相机权限
+/**
+ * 相机权限获取
+ * */
 fun FragmentActivity.requestCameraPermission(
     customDialogBlock: ((List<Permission>) -> Unit)? = null,
     block: () -> Unit
 ) {
-    simpleRequestPermissions(arrayOf(Manifest.permission.CAMERA), customDialogBlock, block)
+    quickRequestPermissions(arrayOf(Manifest.permission.CAMERA), customDialogBlock, block)
 }

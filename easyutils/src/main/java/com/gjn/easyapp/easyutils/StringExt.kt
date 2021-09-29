@@ -73,7 +73,6 @@ fun String.escapeSpecialWord(): String {
 /**
  * 强制取小数点后几位 0.110 0.25 0.10 1.00
  * */
-@JvmOverloads
 fun Double.decimalFormat(prefix: String? = null, suffix: String? = null, len: Int = 2): String {
     val pattern = StringBuilder()
     if (!prefix.isNullOrEmpty()) pattern.append(prefix)
@@ -90,7 +89,6 @@ fun Double.decimalFormat(prefix: String? = null, suffix: String? = null, len: In
 }
 
 @SuppressLint("SimpleDateFormat")
-@JvmOverloads
 fun Long.dataFormat(format: String = "yyyy-MM-dd HH:mm:ss"): String =
     SimpleDateFormat(format).format(this)
 
@@ -167,14 +165,12 @@ fun String.hideSubstring(start: Int, end: Int): String {
 /**
  * 秒转时间格式 01:50:00 or 16:18 中文版 01时50分00秒 or 16分18秒
  * */
-@JvmOverloads
 fun Int.toSecondFormat(isChinese: Boolean = false): String =
     (this * 1000).toLong().toSecondFormat(isChinese)
 
 /**
  * 毫秒转时间格式 01:50:00 or 16:18 中文版 01时50分00秒 or 16分18秒
  * */
-@JvmOverloads
 fun Long.toSecondFormat(isChinese: Boolean = false): String {
     val second = this / 1000
     return when {
@@ -232,7 +228,6 @@ fun String.timestampToLong(dateFormat: String = "yyyy-MM-dd") =
 
 object StringUtils {
 
-    @JvmOverloads
     fun elapsedTime(now: Long = System.currentTimeMillis(), time: Long): String {
         val year = GregorianCalendar().get(Calendar.YEAR)
         val newYear = createGregorianCalendar(year).timeInMillis
@@ -260,7 +255,6 @@ object StringUtils {
         }
     }
 
-    @JvmOverloads
     fun createGregorianCalendar(
         year: Int,
         month: Int = 0,
@@ -295,7 +289,6 @@ object StringUtils {
         return spannable
     }
 
-    @JvmOverloads
     fun matcherDrawableSpan(
         prefix: String,
         text: String,
