@@ -14,6 +14,8 @@ import kotlinx.android.synthetic.main.fragment_a1.*
 import kotlinx.coroutines.delay
 import java.io.File
 import java.io.FileFilter
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener {
 
@@ -539,6 +541,33 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             } else {
                 runService()
             }
+        }
+
+        btn45_ad.click {
+            println("string ${mActivity.string(R.string.test_string)}")
+            println("string ${mActivity.string(R.string.test_string2, "123455")}")
+            mActivity.stringArray(R.array.test_string_array).forEach {
+                println("stringArray ->  $it")
+            }
+
+            println("toMD5 ${"我是md5源".toMd5()}")
+
+            println("escapeSpecialWord ${"\\ \$ | ^".escapeSpecialWord()}")
+
+            println("format ${(-75.011).format(prefix = "￥")}")
+            println("format ${75.766.format(suffix = "元")}")
+
+            val calendar = Calendar.getInstance()
+            val now = calendar.timeInMillis
+            calendar.add(Calendar.DATE, 1)
+            val tomorrow = calendar.timeInMillis
+
+            println("--> ${now.timeMillisDifference(tomorrow, TimeUnit.MILLISECONDS)}")
+            println("--> ${now.timeMillisDifference(tomorrow, TimeUnit.SECONDS)}")
+            println("--> ${now.timeMillisDifference(tomorrow, TimeUnit.MINUTES)}")
+            println("--> ${now.timeMillisDifference(tomorrow, TimeUnit.HOURS)}")
+            println("--> ${now.timeMillisDifference(tomorrow, TimeUnit.DAYS)}")
+
         }
     }
 

@@ -125,10 +125,12 @@ class NetworkStateManager : ConnectivityManager.NetworkCallback() {
 
     fun unregisterNetworkCallback(listener: OnNetworkStateListener) {
         if (context == null) return
-        listeners.remove(listener)
-        context?.unregisterNetworkCallback(this)
-        if (DEBUG) {
-            "-----unregisterNetworkCallback-----".logD(TAG)
+        if (isRegister(listener)) {
+            listeners.remove(listener)
+            context?.unregisterNetworkCallback(this)
+            if (DEBUG) {
+                "-----unregisterNetworkCallback-----".logD(TAG)
+            }
         }
     }
 

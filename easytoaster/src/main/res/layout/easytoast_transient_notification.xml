@@ -10,7 +10,7 @@
     android:background="@drawable/easy_toast_background">
 
     <ImageView
-        android:id="@+id/iv_easy_toast_transient_notification"
+        android:id="@+id/iv_easy_toast_icon"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center_horizontal|top"

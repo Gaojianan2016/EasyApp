@@ -1,62 +1,54 @@
 package com.gjn.easyapp.easyutils
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
+import androidx.annotation.ArrayRes
+import androidx.annotation.StringRes
+import java.math.RoundingMode
 import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 import kotlin.math.abs
 
-const val MINUTE = 60.toLong()
-const val HOUR = 60 * 60.toLong()
-const val DAY = 60 * 60 * 24.toLong()
-const val WEEK = 60 * 60 * 24 * 7.toLong()
-const val MONTH = 60 * 60 * 24 * 30.toLong()
-const val YEAR = 60 * 60 * 24 * 365.toLong()
-
-const val KB = 1024.toLong()
-const val MB = 1024 * 1024.toLong()
-const val GB = 1024 * 1024 * 1024.toLong()
-const val TB = 1024 * 1024 * 1024 * 1024.toLong()
-
 /**
- * MD5加密
+ * 获取字符串
  * */
-fun String.toMd5(): String {
-    try {
-        //获取摘要器 MessageDigest
-        val messageDigest = MessageDigest.getInstance("MD5")
-        //通过摘要器对字符串的二进制字节数组进行hash计算
-        val digest = messageDigest.digest(toByteArray())
-        val stringBuilder = StringBuilder()
-        for (byte in digest) {
-            //循环每个字符 将计算结果转化为正整数
-            val digestInt = byte.toInt() and 0xff
-            //将10进制转化为较短的16进制
-            val hex = digestInt.toHexString()
-            //转化结果如果是个位数会省略0,因此判断并补0
-            if (hex.length < 2) stringBuilder.append(0)
-            //将循环结果添加到缓冲区
-            stringBuilder.append(hex)
-        }
-        return stringBuilder.toString()
-    } catch (e: NoSuchAlgorithmException) {
-        e.printStackTrace()
-    }
-    return this
+fun Context.string(
+    @StringRes resId: Int,
+    vararg formatArgs: Any
+) = try {
+    getString(resId, *formatArgs)
+} catch (e: Exception) {
+    e.printStackTrace()
+    resId.toString()
 }
 
-fun String.toSpannableStringBuilder(): SpannableStringBuilder = SpannableStringBuilder(this)
+/**
+ * 获取字符串数组
+ * */
+fun Context.stringArray(@ArrayRes resId: Int): Array<String> =
+    try {
+        resources.getStringArray(resId)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        arrayOf(resId.toString())
+    }
 
 /**
- * 格式转译字符  \ -> \\
+ * 转为MD5
+ * */
+fun String.toMd5() = encryptMD5ToString()
+
+/**
+ * 转义特殊词 e.g. [\ -> \\, $ -> \$, ....]
  * */
 fun String.escapeSpecialWord(): String {
     if (isEmpty()) return this
@@ -70,45 +62,147 @@ fun String.escapeSpecialWord(): String {
     return result
 }
 
-/**
- * 强制取小数点后几位 0.110 0.25 0.10 1.00
- * */
-fun Double.decimalFormat(prefix: String? = null, suffix: String? = null, len: Int = 2): String {
-    val pattern = StringBuilder()
-    if (!prefix.isNullOrEmpty()) pattern.append(prefix)
-    if (len > 0) {
-        pattern.append("0.")
-        for (i in 0 until len) {
-            pattern.append("0")
-        }
-    } else {
-        pattern.append("0")
+///////////////////////////
+//// number string
+///////////////////////////
+
+private val SAFE_DECIMAL_FORMAT = object : ThreadLocal<DecimalFormat>() {
+    override fun initialValue(): DecimalFormat {
+        return NumberFormat.getInstance() as DecimalFormat
     }
-    if (!suffix.isNullOrEmpty()) pattern.append(suffix)
-    return DecimalFormat(pattern.toString()).format(this)
+}
+
+private fun safeDecimalFormat() = SAFE_DECIMAL_FORMAT.get()
+
+/**
+ * 格式化小数点
+ * */
+fun Float.format(
+    fractionDigits: Int = 2,
+    prefix: String = "",
+    suffix: String = "",
+    minIntegerDigits: Int = 1,
+    isGrouping: Boolean = false,
+    isHalfUp: Boolean = false
+) = toDouble().format(fractionDigits, prefix, suffix, minIntegerDigits, isGrouping, isHalfUp)
+
+/**
+ * 格式化小数点
+ * */
+fun Double.format(
+    fractionDigits: Int = 2,
+    prefix: String = "",
+    suffix: String = "",
+    minIntegerDigits: Int = 1,
+    isGrouping: Boolean = false,
+    isHalfUp: Boolean = false
+): String {
+    val df = safeDecimalFormat()?.apply {
+        isGroupingUsed = isGrouping
+        roundingMode = if (isHalfUp) RoundingMode.HALF_UP else RoundingMode.DOWN
+        minimumIntegerDigits = minIntegerDigits
+        minimumFractionDigits = fractionDigits
+        maximumFractionDigits = fractionDigits
+    }
+    return prefix + (df?.format(this) ?: "") + suffix
+}
+
+///////////////////////////
+//// time string
+///////////////////////////
+
+private val SAFE_DATE_FORMAT = object : ThreadLocal<MutableMap<String, SimpleDateFormat>>() {
+    override fun initialValue(): MutableMap<String, SimpleDateFormat> {
+        return mutableMapOf()
+    }
 }
 
 @SuppressLint("SimpleDateFormat")
-fun Long.dataFormat(format: String = "yyyy-MM-dd HH:mm:ss"): String =
-    SimpleDateFormat(format).format(this)
+private fun safeDateFormat(pattern: String): SimpleDateFormat {
+    val map = SAFE_DATE_FORMAT.get() ?: return SimpleDateFormat(pattern)
+    var dateFormat: SimpleDateFormat? = map[pattern]
+    if (dateFormat == null) {
+        dateFormat = SimpleDateFormat(pattern)
+        map[pattern] = dateFormat
+    }
+    return dateFormat
+}
 
-fun String.hasChinese(): Boolean {
+/**
+ * 时间戳转日期格式
+ * */
+fun Long.toDateFormat(pattern: String = "yyyy-MM-dd HH:mm:ss"): String =
+    safeDateFormat(pattern).format(this)
+
+/**
+ * 时间戳转日期
+ * */
+fun Long.toDate() = Date(this)
+
+/**
+ * 日期格式转时间戳
+ * */
+fun String.toTimeMillis(pattern: String = "yyyy-MM-dd HH:mm:ss"): Long =
+    toDate(pattern)?.time ?: -1L
+
+/**
+ * 日期格式转日期
+ * */
+fun String.toDate(pattern: String = "yyyy-MM-dd HH:mm:ss"): Date? =
+    try {
+        safeDateFormat(pattern).parse(this)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+
+/**
+ * 日期转日期格式
+ * */
+fun Date.toDateFormat(pattern: String = "yyyy-MM-dd HH:mm:ss"): String =
+    safeDateFormat(pattern).format(this)
+
+/**
+ * 时间差
+ * @param timeUnit [MILLISECONDS, SECONDS, MINUTES, HOURS, DAYS]
+ * */
+fun Long.timeMillisDifference(time: Long, timeUnit: TimeUnit = TimeUnit.MILLISECONDS): Long {
+    val result = abs(this - time)
+    return when (timeUnit) {
+        TimeUnit.DAYS -> result / UnitObj.TIME_DAY / 1000
+        TimeUnit.HOURS -> result / UnitObj.TIME_HOUR / 1000
+        TimeUnit.MINUTES -> result / UnitObj.TIME_MINUTE / 1000
+        TimeUnit.SECONDS -> result / 1000
+        else -> result
+    }
+}
+
+/**
+ * 是否包含中文字符串
+ * */
+fun String.containsChinese(): Boolean {
     if (isEmpty()) return false
     for (c in this) {
-        if (c.isChineseChar()) return true
+        if (c.isChinese()) return true
     }
     return false
 }
 
+/**
+ * 是否全是中文字符串
+ * */
 fun String.isChinese(): Boolean {
     if (isEmpty()) return false
     for (c in this) {
-        if (!c.isChineseChar()) return false
+        if (!c.isChinese()) return false
     }
     return true
 }
 
-fun Char.isChineseChar(): Boolean {
+/**
+ * 是否是中文字符
+ * */
+fun Char.isChinese(): Boolean {
     val ub = Character.UnicodeBlock.of(this)
     return (ub === Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
             || ub === Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
@@ -118,26 +212,33 @@ fun Char.isChineseChar(): Boolean {
             || ub === Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS)
 }
 
-fun String.hasEmoji(): Boolean {
+/**
+ * 是否包含emoji字符
+ * */
+fun String.containsEmoji(): Boolean {
     if (isEmpty()) return false
     for (c in this) {
-        if (c.isEmojiChar()) return true
+        if (c.isEmoji()) return true
     }
     return false
 }
 
-fun Char.isEmojiChar(): Boolean = !(toInt() == 0x0 || toInt() == 0x9 || toInt() == 0xA
-        || toInt() == 0xD || toInt() in 0x20..0xD7FF || toInt() in 0xE000..0xFFFD)
+/**
+ * 是否是emoji字符
+ * */
+fun Char.isEmoji() = !(toInt() == 0x0 || toInt() == 0x9 ||
+        toInt() == 0xA || toInt() == 0xD || toInt() in 0x20..0xD7FF
+        || toInt() in 0xE000..0xFFFD)
 
 /**
  * 字节转gb mb kb字符串 0.5Tb 1.20Gb 60.00Mb 798.35Kb 666b
  * */
 fun Long.byteToStr(): String = when {
-    this >= TB -> (this / TB.toDouble()).decimalFormat(suffix = "Tb")
-    this >= GB -> (this / GB.toDouble()).decimalFormat(suffix = "Gb")
-    this >= MB -> (this / MB.toDouble()).decimalFormat(suffix = "Mb")
-    this >= KB -> (this / KB.toDouble()).decimalFormat(suffix = "Kb")
-    else -> (toDouble()).decimalFormat(suffix = "b", len = 0)
+    this >= UnitObj.SIZE_TB -> (this / UnitObj.SIZE_TB.toDouble()).format(suffix = "Tb")
+    this >= UnitObj.SIZE_GB -> (this / UnitObj.SIZE_GB.toDouble()).format(suffix = "Gb")
+    this >= UnitObj.SIZE_MB -> (this / UnitObj.SIZE_MB.toDouble()).format(suffix = "Mb")
+    this >= UnitObj.SIZE_KB -> (this / UnitObj.SIZE_KB.toDouble()).format(suffix = "Kb")
+    else -> (toDouble()).format(0, suffix = "b")
 }
 
 fun String.hidePhone(): String = hideSubstring(3, 4)
@@ -174,19 +275,23 @@ fun Int.toSecondFormat(isChinese: Boolean = false): String =
 fun Long.toSecondFormat(isChinese: Boolean = false): String {
     val second = this / 1000
     return when {
-        second > HOUR -> if (isChinese) String.format(
+        second > UnitObj.TIME_HOUR -> if (isChinese) String.format(
             "%02d时%02d分%02d秒",
-            second / HOUR, second / MINUTE % MINUTE, second % MINUTE
+            second / UnitObj.TIME_HOUR,
+            second / UnitObj.TIME_MINUTE % UnitObj.TIME_MINUTE,
+            second % UnitObj.TIME_MINUTE
         ) else String.format(
             "%02d:%02d:%02d",
-            second / HOUR, second / MINUTE % MINUTE, second % MINUTE
+            second / UnitObj.TIME_HOUR,
+            second / UnitObj.TIME_MINUTE % UnitObj.TIME_MINUTE,
+            second % UnitObj.TIME_MINUTE
         )
-        second > MINUTE -> if (isChinese) String.format(
-            "%02d分%02d秒", second / MINUTE, second % MINUTE
+        second > UnitObj.TIME_MINUTE -> if (isChinese) String.format(
+            "%02d分%02d秒", second / UnitObj.TIME_MINUTE, second % UnitObj.TIME_MINUTE
         )
-        else String.format("%02d:%02d", second / MINUTE, second % MINUTE)
-        second > 0 -> if (isChinese) String.format("00分%02d秒", second % MINUTE)
-        else String.format("00:%02d", second % MINUTE)
+        else String.format("%02d:%02d", second / UnitObj.TIME_MINUTE, second % UnitObj.TIME_MINUTE)
+        second > 0 -> if (isChinese) String.format("00分%02d秒", second % UnitObj.TIME_MINUTE)
+        else String.format("00:%02d", second % UnitObj.TIME_MINUTE)
         else -> if (isChinese) "00分00秒" else "00:00"
     }
 }
@@ -197,13 +302,13 @@ fun Long.toSecondFormat(isChinese: Boolean = false): String {
 fun Long.elapsedTime(): String {
     val second = abs(this) / 1000
     return when {
-        second >= YEAR -> "${second / YEAR}年前"
-        second >= MONTH -> "${second / MONTH}个月前"
-        second >= WEEK -> "${second / WEEK}周前"
-        second >= DAY * 2 -> "两天前"
-        second >= DAY -> "一天前"
-        second >= HOUR -> "${second / HOUR}小时前"
-        second >= MINUTE -> "${second / MINUTE}分钟前"
+        second >= UnitObj.TIME_YEAR -> "${second / UnitObj.TIME_YEAR}年前"
+        second >= UnitObj.TIME_MONTH -> "${second / UnitObj.TIME_MONTH}个月前"
+        second >= UnitObj.TIME_WEEK -> "${second / UnitObj.TIME_WEEK}周前"
+        second >= UnitObj.TIME_DAY * 2 -> "两天前"
+        second >= UnitObj.TIME_DAY -> "一天前"
+        second >= UnitObj.TIME_HOUR -> "${second / UnitObj.TIME_HOUR}小时前"
+        second >= UnitObj.TIME_MINUTE -> "${second / UnitObj.TIME_MINUTE}分钟前"
         second > 5 -> "${second % 60}秒前"
         else -> "刚刚"
     }
@@ -219,13 +324,6 @@ fun String?.maxLengthMore(len: Int, more: String = "..."): String? =
         substring(0, len) + "..."
     }
 
-@SuppressLint("SimpleDateFormat")
-fun String.timestampToDate(dateFormat: String = "yyyy-MM-dd") =
-    SimpleDateFormat(dateFormat).parse(this)
-
-fun String.timestampToLong(dateFormat: String = "yyyy-MM-dd") =
-    timestampToDate(this)?.time
-
 object StringUtils {
 
     fun elapsedTime(now: Long = System.currentTimeMillis(), time: Long): String {
@@ -235,23 +333,23 @@ object StringUtils {
         val second = abs(msec) / 1000
         return when {
             //1分钟误差
-            msec < -MINUTE -> "刚刚"
-            second > MONTH ->
+            msec < -UnitObj.TIME_MINUTE -> "刚刚"
+            second > UnitObj.TIME_MONTH ->
                 if (time < newYear) {
                     //超过一年
-                    time.dataFormat("yyyy-MM-dd")
+                    time.toDateFormat("yyyy-MM-dd")
                 } else {
                     //超过一月
-                    time.dataFormat("MM-dd")
+                    time.toDateFormat("MM-dd")
                 }
-            second >= WEEK -> "${second / WEEK}周前"
-            second >= DAY * 2 -> "${second / DAY}天前"
-            second >= DAY -> "昨天"
-            second >= HOUR -> "${second / HOUR}小时前"
-            second >= MINUTE -> "${second / MINUTE}分钟前"
-            second >= 3 -> "${second % MINUTE}秒前"
+            second >= UnitObj.TIME_WEEK -> "${second / UnitObj.TIME_WEEK}周前"
+            second >= UnitObj.TIME_DAY * 2 -> "${second / UnitObj.TIME_DAY}天前"
+            second >= UnitObj.TIME_DAY -> "昨天"
+            second >= UnitObj.TIME_HOUR -> "${second / UnitObj.TIME_HOUR}小时前"
+            second >= UnitObj.TIME_MINUTE -> "${second / UnitObj.TIME_MINUTE}分钟前"
+            second >= 3 -> "${second % UnitObj.TIME_MINUTE}秒前"
             second > 0 -> "刚刚"
-            else -> time.dataFormat("yyyy-MM-dd")
+            else -> time.toDateFormat("yyyy-MM-dd")
         }
     }
 

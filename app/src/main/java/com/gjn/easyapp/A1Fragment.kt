@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
@@ -32,7 +31,6 @@ class A1Fragment : BaseLazyFragment() {
 
     override fun initView() {
         println("A1Fragment initView")
-        StatusBarUtil.setContentViewFitsSystemWindows(mActivity, true)
     }
 
     override fun lazyData() {
@@ -48,19 +46,13 @@ class A1Fragment : BaseLazyFragment() {
         btn5.click {
             println("屏幕宽度 ${mActivity.screenWidth()} 屏幕高度 ${mActivity.screenHeight()}")
             val d = 35.7
-            println(
-                "${d.decimalFormat()} , ${d.decimalFormat(prefix = "￥")}, ${
-                    d.decimalFormat(
-                        suffix = "MB"
-                    )
-                }"
-            )
+            println("${d.format()} , ${d.format(prefix = "￥")}, ${d.format(suffix = "MB")}")
             val s = "我是一段中文"
             val s2 = "我has中文"
             val s3 = "easdasdk.213123"
             val s4 = "easdasdk。213123"
             val s5 = "17745645645"
-            println("s = ${s.isChinese()} s2 = ${s2.hasChinese()} s3 = ${s3.hasChinese()} s4 = ${s4.hasChinese()}")
+            println("s = ${s.isChinese()} s2 = ${s2.containsChinese()} s3 = ${s3.containsChinese()} s4 = ${s4.containsChinese()}")
 
             println(s.toMd5())
 
@@ -105,13 +97,13 @@ class A1Fragment : BaseLazyFragment() {
 
         btn7.click {
             val data1 = 2 * 1000
-            val data2 = 3 * MINUTE * 1000
-            val data3 = 2 * HOUR * 1000
-            val data4 = DAY * 1000
-            val data5 = 6 * DAY * 1000
-            val data6 = 15 * DAY * 1000
-            val data7 = 2 * DAY * 1000
-            val data8 = 377 * DAY * 1000
+            val data2 = 3 * UnitObj.TIME_MINUTE * 1000
+            val data3 = 2 * UnitObj.TIME_HOUR * 1000
+            val data4 = UnitObj.TIME_DAY * 1000
+            val data5 = 6 * UnitObj.TIME_DAY * 1000
+            val data6 = 15 * UnitObj.TIME_DAY * 1000
+            val data7 = 2 * UnitObj.TIME_DAY * 1000
+            val data8 = 377 * UnitObj.TIME_DAY * 1000
             println(
                 "${
                     data1.toLong()
@@ -224,30 +216,11 @@ class A1Fragment : BaseLazyFragment() {
         }
 
         btn18.click {
-//            StatusBarUtil.statusBarMode(mActivity, true)
-            StatusBarUtil.statusBarMode(
-                mActivity, true,
-                BitmapDrawable(
-                    resources,
-                    BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
-                )
-            )
+
         }
 
         btn19.click {
-            var color = Color.RED
-            when {
-                size % 2 == 0 -> {
-                    color = Color.YELLOW
-                }
-                size % 3 == 0 -> {
-                    color = Color.BLUE
-                }
-                size % 5 == 0 -> {
-                    color = Color.BLACK
-                }
-            }
-            StatusBarUtil.statusBarMode(mActivity, colorOrDrawable = color)
+
         }
         btn20.click {
 

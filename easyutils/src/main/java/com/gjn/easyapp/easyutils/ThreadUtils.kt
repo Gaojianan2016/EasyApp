@@ -36,7 +36,6 @@ object ThreadUtils {
         THREAD_POOL_EXECUTOR = threadPoolExecutor
     }
 
-    @JvmOverloads
     fun runOnUiThread(runnable: Runnable, delayed: Long = 0) {
         sMainHandler.postDelayed(runnable, delayed)
     }

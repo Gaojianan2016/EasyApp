@@ -469,5 +469,17 @@
             android:layout_height="wrap_content"
             android:text="服务操作" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="StringExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn45_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="字符串操作" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
