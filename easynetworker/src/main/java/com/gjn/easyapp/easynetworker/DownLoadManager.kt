@@ -52,7 +52,7 @@ class DownLoadManager(private val activity: FragmentActivity) {
         activity.openFile(file)
     }
 
-    fun downLoadFile(url: String, path: String, name: String? = url.urlObtainName()) {
+    fun downLoadFile(url: String, path: String, name: String? = url.getUrlLastName()) {
         if (url.isEmpty() || path.isEmpty() || name.isNullOrEmpty()) {
             onDownLoadListener?.downLoadStatus(downLoadStatus, "下载内容为空")
             return

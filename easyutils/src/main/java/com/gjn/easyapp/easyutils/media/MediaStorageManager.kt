@@ -81,7 +81,7 @@ class MediaStorageManager(private val context: Context) {
 
     private fun generatePhotoInfo(cursor: Cursor): MediaInfo? {
         val path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
-        val name = path.urlObtainName()
+        val name = path.getUrlLastName()
         val parent =
             cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
         val mimeType =
@@ -109,7 +109,7 @@ class MediaStorageManager(private val context: Context) {
 
     private fun generateVideoInfo(cursor: Cursor): MediaInfo? {
         val path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
-        val name = path.urlObtainName()
+        val name = path.getUrlLastName()
         val parent =
             cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.BUCKET_DISPLAY_NAME))
         val mimeType =

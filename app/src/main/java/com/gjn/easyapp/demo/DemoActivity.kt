@@ -557,17 +557,55 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("format ${(-75.011).format(prefix = "￥")}")
             println("format ${75.766.format(suffix = "元")}")
 
-            val calendar = Calendar.getInstance()
-            val now = calendar.timeInMillis
-            calendar.add(Calendar.DATE, 1)
-            val tomorrow = calendar.timeInMillis
+            // 2000-1-1 0:0:0
+            val day1 = createGregorianCalendar(2000).timeInMillis
+            // 2000-1-2 0:0:0
+            val day2 = createGregorianCalendar(2000, 1, 2).timeInMillis
+            // 2000-1-2 1:0:0
+            val day3 = createGregorianCalendar(2000, 1, 2, 1).timeInMillis
+            // 2000-1-2 1:5:0
+            val day4 = createGregorianCalendar(2000, 1, 2, 1, 5).timeInMillis
+            // 2000-1-2 1:5:30
+            val day5 = createGregorianCalendar(2000, 1, 2, 1, 5, 30).timeInMillis
+            // 2000-1-2 1:5:31
+            val day6 = createGregorianCalendar(2000, 1, 2, 1, 5, 31).timeInMillis
+            // 2010-1-1 0:0:0
+            val day7 = createGregorianCalendar(2010).timeInMillis
 
-            println("--> ${now.timeMillisDifference(tomorrow, TimeUnit.MILLISECONDS)}")
-            println("--> ${now.timeMillisDifference(tomorrow, TimeUnit.SECONDS)}")
-            println("--> ${now.timeMillisDifference(tomorrow, TimeUnit.MINUTES)}")
-            println("--> ${now.timeMillisDifference(tomorrow, TimeUnit.HOURS)}")
-            println("--> ${now.timeMillisDifference(tomorrow, TimeUnit.DAYS)}")
+            println("--> ${timeDifferenceMillis(day1, day2, TimeUnit.MILLISECONDS)}")
+            println("--> ${timeDifferenceMillis(day1, day2, TimeUnit.DAYS)}")
 
+            println("--> ${timeDifferenceString(day2, day3)}")
+            println("--> ${timeDifferenceString(day3, day4)}")
+            println("--> ${timeDifferenceString(day4, day5)}")
+            println("--> ${timeDifferenceString(day5, day6)}")
+            println("--> ${timeDifferenceString(day6, day7)}")
+
+            val now = Calendar.getInstance().timeInMillis
+
+            val time0 = now - UnitObj.TIME_SECONDS_MILLIS
+            val time1 = now - UnitObj.TIME_MINUTE_MILLIS
+            val time2 = now - UnitObj.TIME_MINUTE_MILLIS * 4
+            val time3 = now - UnitObj.TIME_HOUR_MILLIS
+            val time4 = now - UnitObj.TIME_HOUR_MILLIS * 2
+            val time5 = now - UnitObj.TIME_DAY_MILLIS
+            val time6 = now - UnitObj.TIME_HOUR_MILLIS * 22
+            val time7 = now - UnitObj.TIME_DAY_MILLIS * 5
+
+            println("----> ${time0.nowTimeDifference()}")
+            println("----> ${time1.nowTimeDifference()}")
+            println("----> ${time2.nowTimeDifference()}")
+            println("----> ${time3.nowTimeDifference()}")
+            println("----> ${time4.nowTimeDifference()}")
+            println("----> ${time5.nowTimeDifference()}")
+            println("----> ${time6.nowTimeDifference()}")
+            println("----> ${time7.nowTimeDifference()}")
+
+            println("hidePhone ${"17745645645".hidePhone()}")
+            println("hideName ${"张三".hideName()}")
+            println("hideName ${"张三丰".hideName()}")
+            println("hideSubstring ${"张三丰有限公司".hideSubstring(5, 5)}")
+            println("getUrlLastName ${"http://www.baidu.com/xxx.ext".getUrlLastName()}")
         }
     }
 
