@@ -181,6 +181,12 @@ fun Long.isToday(): Boolean {
 }
 
 /**
+ * 获取当前时间字符串
+ * */
+fun getNowTimeString(pattern: String = "yyyy-MM-dd HH:mm:ss") =
+    System.currentTimeMillis().toDateFormat(pattern)
+
+/**
  * 获取当天0:0:0时间戳
  * */
 fun getTodayMillis(): Long = Calendar.getInstance().also {

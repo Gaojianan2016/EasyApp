@@ -20,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="ActivityExt"
+            android:ellipsize="end"
             android:textAppearance="@style/Text_Title" />
 
         <Button
@@ -470,6 +471,7 @@
             android:text="服务操作" />
 
         <TextView
+            android:id="@+id/string_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="StringExt"
@@ -480,6 +482,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="字符串操作" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="VibrateExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn46_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="震动操作" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

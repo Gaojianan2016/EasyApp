@@ -7,8 +7,8 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
 import androidx.annotation.ArrayRes
+import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
-import java.util.regex.Pattern
 
 /**
  * 获取字符串
@@ -153,54 +153,59 @@ fun String.hideSubstring(start: Int = 1, end: Int = 1): String {
 fun String.getUrlLastName(): String =
     uri().lastPathSegment ?: substring(lastIndexOf('/') + 1)
 
-fun String?.maxLengthMore(len: Int, more: String = "..."): String? =
-    if (isNullOrEmpty() || length < len) {
-        this
-    } else {
-        substring(0, len) + "..."
-    }
+/**
+ * 设置省略文本
+ * */
+fun String?.setOmittedText(max: Int, suffix: String = "..."): String? =
+    if (isNullOrEmpty() || length < max) this else substring(0, max) + suffix
 
-object StringUtils {
-
-    fun matcherColorSpan(
-        spannable: SpannableStringBuilder,
-        color: Int,
-        vararg keywords: String
-    ): SpannableStringBuilder {
-        val keyword = arrayOfNulls<String>(keywords.size)
-        //复制数组
-        System.arraycopy(keywords, 0, keyword, 0, keywords.size)
-        val text = spannable.toString()
-        for (i in keyword.indices) {
-            //处理通配符
-            keyword[i] = keyword[i]!!.escapeSpecialWord()
-            //忽略字母大小写
-            val reg = "(?i)${keyword[i]}"
-            val matcher = Pattern.compile(reg).matcher(text)
-            while (matcher.find()) {
-                val span = ForegroundColorSpan(color)
-                spannable.setSpan(span, matcher.start(), matcher.end(), Spannable.SPAN_MARK_MARK)
-            }
-        }
-        return spannable
-    }
-
-    fun matcherDrawableSpan(
-        prefix: String,
-        text: String,
-        start: Int = 0,
-        end: Int = prefix.length,
-        drawable: Drawable? = null,
-        imageSpan: ImageSpan? = null
-    ): SpannableStringBuilder {
-        val spannable = SpannableStringBuilder(prefix + text)
-        if (drawable == null && imageSpan == null) return spannable
-        val image = drawable ?: imageSpan!!.drawable
-        val span = imageSpan ?: ImageSpan(drawable!!)
-        //设置图片矩形
-        image.setBounds(0, 0, image.intrinsicWidth, image.intrinsicHeight)
-        return spannable.apply {
-            setSpan(span, start, end, ImageSpan.ALIGN_BASELINE)
+/**
+ * 匹配文本 改变颜色
+ * */
+fun SpannableStringBuilder.matcherTextToColor(
+    @ColorInt changeColor: Int,
+    texts: Array<String>,
+    ignoreCase: Boolean = false
+): SpannableStringBuilder {
+    if (texts.isEmpty()) return this
+    val list = arrayOfNulls<String>(texts.size)
+    texts.copyInto(list)
+    val temp = toString()
+    for (i in list.indices) {
+        list[i] = list[i]!!.escapeSpecialWord()
+        val regex = if (ignoreCase) "(?i)${list[i]}" else list[i]
+        temp.findRegex(regex) {
+            val span = ForegroundColorSpan(changeColor)
+            setSpan(span, it.start(), it.end(), Spannable.SPAN_MARK_MARK)
         }
     }
+    return this
+}
+
+/**
+ * 匹配文本 改变颜色
+ * */
+fun CharSequence.matcherTextToColor(
+    @ColorInt changeColor: Int,
+    texts: Array<String>,
+    ignoreCase: Boolean = false
+) = SpannableStringBuilder(this).matcherTextToColor(changeColor, texts, ignoreCase)
+
+/**
+ * 创建带图的SpannableStringBuilder
+ * */
+fun CharSequence.createImageSpannableStringBuilder(
+    prefix: String = " ",
+    startIndex: Int = 0,
+    endIndex: Int = prefix.length,
+    drawable: Drawable? = null,
+    imageSpan: ImageSpan? = null
+): SpannableStringBuilder {
+    val spannable = SpannableStringBuilder(prefix + this)
+    if (drawable == null && imageSpan == null) return spannable
+    val image = drawable ?: imageSpan!!.drawable
+    val span = imageSpan ?: ImageSpan(drawable!!)
+    //设置图片矩形
+    image.setBounds(0, 0, image.intrinsicWidth, image.intrinsicHeight)
+    return spannable.apply { setSpan(span, startIndex, endIndex, ImageSpan.ALIGN_BASELINE) }
 }

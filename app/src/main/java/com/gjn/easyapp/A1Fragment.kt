@@ -286,13 +286,13 @@ class A1Fragment : BaseLazyFragment() {
                         delay(5000)
                         try {
                             mDialogManager.clearDialogs()
-                        }catch (e: Exception){
+                        } catch (e: Exception) {
                             e.printStackTrace()
                         }
                     }
                 }
                 btn3 -> {
-                    et_pwd.togglePassword()
+                    et_pwd.togglePasswordVisible()
                 }
                 btn4 -> {
                     val bmp = QRCodeUtils.stringEncode("你好，我是正常二维码")
@@ -314,21 +314,21 @@ class A1Fragment : BaseLazyFragment() {
                 btn8 -> {
                     val drawable = ActivityCompat.getDrawable(mActivity, R.mipmap.icon_bargain)
 
-                    val sp1 = StringUtils.matcherDrawableSpan(
-                        "1 ", "我是一段测试文字(Has En)",
+                    val sp1 = "我是一段测试文字(Has En)".createImageSpannableStringBuilder(
+                        "1 ",
                         imageSpan = CenterAlignImageSpan(drawable!!)
                     )
-                    val sp2 = StringUtils.matcherColorSpan(sp1, Color.RED, "测试", "(H")
+                    val sp2 = sp1.matcherTextToColor(Color.RED, arrayOf("测试", "(H"))
                     tv_wz.run {
                         text = sp2
                         textSize = 24f
                     }
 
-                    val sp3 = StringUtils.matcherDrawableSpan(
-                        "1 ", "我是一段测试文字(Has En)",
+                    val sp3 = "我是一段测试文字(Has En)".createImageSpannableStringBuilder(
+                        "1 ",
                         drawable = drawable
                     )
-                    val sp4 = StringUtils.matcherColorSpan(sp3, Color.BLUE, "文字", "n)")
+                    val sp4 = sp3.matcherTextToColor(Color.BLUE, arrayOf("文字", "n)"))
                     tv_wz2.text = sp4
                 }
                 btn9 -> {
@@ -356,7 +356,8 @@ class A1Fragment : BaseLazyFragment() {
                     println("底边栏 ${navigation}px -> ${navigation.px2dp(mActivity)}dp")
                 }
                 btn14 -> {
-                    val result = mActivity.checkPermissionExistManifest(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    val result =
+                        mActivity.checkPermissionExistManifest(Manifest.permission.READ_EXTERNAL_STORAGE)
                     println("是否含有权限 $result")
                 }
             }

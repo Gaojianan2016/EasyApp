@@ -3,14 +3,16 @@ package com.gjn.easyapp.easyutils
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.AnimRes
-import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
+
+//////////////////////
+///// startActivity
+//////////////////////
 
 fun Class<out Activity>.startActivity(
     context: Context?,
@@ -62,32 +64,38 @@ fun Intent.startActivity(
         is Fragment -> context.activity
         else -> null
     } ?: return
-    if (extras == null) put(extrasMap) else putExtras(extras)
+    put(extrasMap)
+    if (extras != null) putExtras(extras)
     activity.startActivity(this, options)
 }
 
+//////////////////////////////////
+///// startActivityForResult
+//////////////////////////////////
+
 fun Class<out Activity>.startActivityForResult(
-    context: Context?, requestCode: Int,
+    context: Context?,
+    requestCode: Int,
     extras: Bundle? = null,
     extrasMap: Map<String, Any?> = mapOf(),
     @AnimRes enterAnim: Int? = null, @AnimRes exitAnim: Int? = null,
     sharedElements: Array<View>? = null
 ) = context?.startActivityForResult(
-    this, requestCode,
-    extras, extrasMap,
-    enterAnim, exitAnim,
-    sharedElements
+    this, requestCode, extras, extrasMap,
+    enterAnim, exitAnim, sharedElements
 )
 
 fun Class<out Activity>.startActivityForResult(
-    context: Context?, requestCode: Int,
+    context: Context?,
+    requestCode: Int,
     extras: Bundle? = null,
     extrasMap: Map<String, Any?> = mapOf(),
     options: Bundle? = null
 ) = context?.startActivityForResult(this, requestCode, extras, extrasMap, options)
 
 fun Context?.startActivityForResult(
-    clz: Class<out Activity>, requestCode: Int,
+    clz: Class<out Activity>,
+    requestCode: Int,
     extras: Bundle? = null,
     extrasMap: Map<String, Any?> = mapOf(),
     @AnimRes enterAnim: Int? = null, @AnimRes exitAnim: Int? = null,
@@ -95,34 +103,35 @@ fun Context?.startActivityForResult(
 ) {
     if (enterAnim == null || exitAnim == null) {
         startActivityForResult(
-            clz, requestCode,
-            extras, extrasMap,
+            clz, requestCode, extras, extrasMap,
             sharedElements?.let { createOptionsBundle(*it) }
         )
         return
     }
     startActivityForResult(
-        clz, requestCode,
-        extras, extrasMap,
+        clz, requestCode, extras, extrasMap,
         createOptionsBundle(enterAnim, exitAnim)
     )
 }
 
 fun Context?.startActivityForResult(
-    clz: Class<out Activity>, requestCode: Int,
+    clz: Class<out Activity>,
+    requestCode: Int,
     extras: Bundle? = null,
     extrasMap: Map<String, Any?> = mapOf(),
     options: Bundle? = null
 ) = Intent(this, clz).startActivityForResult(this, requestCode, extras, extrasMap, options)
 
 fun Intent.startActivityForResult(
-    context: Context?, requestCode: Int,
+    context: Context?,
+    requestCode: Int,
     extras: Bundle? = null,
     extrasMap: Map<String, Any?> = mapOf(),
     options: Bundle? = null
 ) {
     if (context == null) return
-    if (extras == null) put(extrasMap) else putExtras(extras)
+    put(extrasMap)
+    if (extras != null) putExtras(extras)
     when (context) {
         is Activity -> context.startActivityForResult(this, requestCode, options)
         is Fragment -> context.startActivityForResult(this, requestCode, options)

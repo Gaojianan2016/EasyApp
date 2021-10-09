@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Environment
+import androidx.core.app.ActivityCompat
 import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easyutils.*
@@ -570,7 +571,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             // 2000-1-2 1:5:31
             val day6 = createGregorianCalendar(2000, 1, 2, 1, 5, 31).timeInMillis
             // 2010-1-1 0:0:0
-            val day7 = createGregorianCalendar(2010).timeInMillis
+            val day7 = createGregorianCalendar(2005).timeInMillis
 
             println("--> ${timeDifferenceMillis(day1, day2, TimeUnit.MILLISECONDS)}")
             println("--> ${timeDifferenceMillis(day1, day2, TimeUnit.DAYS)}")
@@ -580,6 +581,9 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("--> ${timeDifferenceString(day4, day5)}")
             println("--> ${timeDifferenceString(day5, day6)}")
             println("--> ${timeDifferenceString(day6, day7)}")
+
+            println("isToday ${day7.isToday()}")
+            println("getNowTimeString ${getNowTimeString()}")
 
             val now = Calendar.getInstance().timeInMillis
 
@@ -606,6 +610,19 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("hideName ${"张三丰".hideName()}")
             println("hideSubstring ${"张三丰有限公司".hideSubstring(5, 5)}")
             println("getUrlLastName ${"http://www.baidu.com/xxx.ext".getUrlLastName()}")
+
+            val sp = "StringExt".createImageSpannableStringBuilder(drawable = ActivityCompat.getDrawable(mActivity, R.mipmap.ic_launcher))
+            string_text.text = sp.matcherTextToColor(Color.RED, arrayOf("ext"), true)
+        }
+
+        btn46_ad.click {
+            mActivity.quickRequestPermissions(arrayOf(Manifest.permission.VIBRATE)){
+                mActivity.startVibrate(10_000)
+                launch {
+                    delay(5000)
+                    mActivity.cancelVibrate()
+                }
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.gjn.easyapp.easyutils
 
+import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 object RegexConstants {
@@ -23,7 +24,8 @@ object RegexConstants {
     /**
      * 二代身份证
      * */
-    const val REGEX_ID_CARD_2 = "^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9Xx])$"
+    const val REGEX_ID_CARD_2 =
+        "^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9Xx])$"
 
     /**
      * E-mail
@@ -102,4 +104,15 @@ fun CharSequence.isIpAddress(): Boolean {
 fun CharSequence.isZhPostCode(): Boolean {
     if (this.isEmpty()) return false
     return Pattern.matches(RegexConstants.REGEX_ZH_POST_CODE, this)
+}
+
+/**
+ * 查找正则表达式
+ * */
+fun CharSequence.findRegex(regex: String?, block: (Matcher) -> Unit) {
+    if (regex.isNullOrEmpty()) return
+    val matcher = Pattern.compile(regex).matcher(this)
+    while (matcher.find()) {
+        block.invoke(matcher)
+    }
 }

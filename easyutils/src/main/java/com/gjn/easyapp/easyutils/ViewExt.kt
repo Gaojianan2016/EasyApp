@@ -1,8 +1,11 @@
 package com.gjn.easyapp.easyutils
 
 import android.app.Activity
+import android.content.Context
 import android.graphics.Paint
+import android.os.Build
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -14,27 +17,32 @@ import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.StyleRes
 import androidx.core.app.ActivityCompat
+import androidx.core.view.forEach
 import androidx.core.widget.TextViewCompat
 
-fun View.viewWidth(): Int {
-    var w = width
-    if (w == 0) {
-        measure(0, 0)
-        w = measuredWidth
-    }
-    return w
-}
+///////////////////////////////////
+///// 基础操作
+///////////////////////////////////
 
-fun View.viewHeight(): Int {
-    var h = height
-    if (h == 0) {
-        measure(0, 0)
-        h = measuredHeight
+fun View.viewWidth() =
+    if (width == 0) {
+        measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        measuredWidth
+    } else {
+        width
     }
-    return h
-}
+
+fun View.viewHeight() =
+    if (height == 0) {
+        measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        measuredHeight
+    } else {
+        height
+    }
 
 fun View.isVisible() = visibility == View.VISIBLE
+
+fun View.isGone() = visibility == View.GONE
 
 fun View.visible() {
     visibility = View.VISIBLE
@@ -48,7 +56,29 @@ fun View.invisible() {
     visibility = View.INVISIBLE
 }
 
-fun ViewGroup.getChildViewByResourceName(resourceEntryName: String): View?{
+fun View.enabled() {
+    isEnabled = true
+}
+
+fun View.disable() {
+    isEnabled = false
+}
+
+/**
+ * 判断是否是RTL布局
+ * */
+fun Context.isLayoutRtl(): Boolean {
+    val local = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        resources.configuration.locales[0]
+    else
+        resources.configuration.locale
+    return TextUtils.getLayoutDirectionFromLocale(local) == View.LAYOUT_DIRECTION_RTL
+}
+
+/**
+ * 获取子视图 按资源名称
+ * */
+fun ViewGroup.getChildViewByResourceName(resourceEntryName: String): View? {
     for (i in 0 until childCount) {
         val child = getChildAt(i)
         if (child.id != View.NO_ID) {
@@ -60,7 +90,10 @@ fun ViewGroup.getChildViewByResourceName(resourceEntryName: String): View?{
     return null
 }
 
-fun ViewGroup.clearChildView(cls: Class<out View>) {
+/**
+ * 移除对应类的子视图
+ * */
+fun ViewGroup.removeChildView(cls: Class<out View>) {
     for (i in 0 until this.childCount) {
         if (this.getChildAt(i)::class.java.name == cls.name) {
             this.removeViewAt(i)
@@ -68,115 +101,157 @@ fun ViewGroup.clearChildView(cls: Class<out View>) {
     }
 }
 
-//画中横线
-fun TextView?.strikeLine(){
-    this?.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+/**
+ * 修复滑动view顶部 内嵌焦点问题 e.g [ListView, GridView, WebView, RecyclerView]
+ * */
+fun View.fixScrollViewTopping() {
+    isFocusable = false
+    val viewGroup = (if (this is ViewGroup) this else null) ?: return
+    viewGroup.forEach { child ->
+        child.isFocusable = false
+        if (child is ViewGroup) child.fixScrollViewTopping()
+    }
 }
 
-fun TextView.trimText(): String = text.toString().trim()
+/**
+ * 划线
+ * */
+fun TextView.strikeLine() {
+    this.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+}
 
-fun TextView.trimHint(): String = hint.toString().trim()
+/**
+ * 下划线
+ */
+fun TextView.underline() {
+    this.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+}
 
+/**
+ * 获取修剪Text
+ * */
+fun TextView.trimText() = text.toString().trim()
+
+/**
+ * 获取修剪Hint
+ * */
+fun TextView.trimHint() = hint.toString().trim()
+
+/**
+ * 获取Text或者Hint
+ * */
+fun TextView.getTrimTextOrHint(): String =
+    if (text.isNullOrEmpty()) {
+        trimHint()
+    } else {
+        trimText()
+    }
+
+/**
+ * 设置TextAppearance
+ * */
 fun TextView.setTextAppearanceResource(@StyleRes resId: Int) {
     TextViewCompat.setTextAppearance(this, resId)
 }
 
+/**
+ * 设置TextColor
+ * */
 fun TextView.setTextColorResource(@ColorRes id: Int) {
     setTextColor(ActivityCompat.getColor(context, id))
 }
 
-fun EditText.getTextOrHint(): String = if (text.isNullOrEmpty()) {
-    trimHint()
-} else {
-    trimText()
-}
-
+/**
+ * 光标移动到最后
+ * */
 fun EditText.toLastSelection() {
     setSelection(text.length)
 }
 
-fun EditText.togglePassword(): Boolean {
-    val isHide: Boolean = if (transformationMethod === PasswordTransformationMethod.getInstance()) {
-        transformationMethod = HideReturnsTransformationMethod.getInstance()
-        true
-    } else {
-        transformationMethod = PasswordTransformationMethod.getInstance()
-        false
-    }
+/**
+ * 切换密码显示隐藏
+ * */
+fun EditText.togglePasswordVisible() {
+    transformationMethod = if (isPasswordVisible())
+        HideReturnsTransformationMethod.getInstance()
+    else
+        PasswordTransformationMethod.getInstance()
     toLastSelection()
-    return isHide
 }
 
+/**
+ * 是否显示密码
+ * */
+fun EditText.isPasswordVisible() =
+    transformationMethod === PasswordTransformationMethod.getInstance()
+
+/**
+ * 监听输入框文本变化
+ * */
 fun EditText.monitorTextChange(
     beforeTextChangedBlock: ((CharSequence?, Int, Int, Int) -> Unit)? = null,
     onTextChangedBlock: ((CharSequence?, Int, Int, Int) -> Unit)? = null,
     afterTextChangedBlock: ((Editable?) -> Unit)
 ) {
     addTextChangedListener(object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            beforeTextChangedBlock?.invoke(s, start, count, after)
+        override fun beforeTextChanged(text: CharSequence?, start: Int, count: Int, after: Int) {
+            beforeTextChangedBlock?.invoke(text, start, count, after)
         }
 
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            onTextChangedBlock?.invoke(s, start, before, count)
+        override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+            onTextChangedBlock?.invoke(text, start, before, count)
         }
 
-        override fun afterTextChanged(s: Editable?) {
-            afterTextChangedBlock.invoke(s)
+        override fun afterTextChanged(editable: Editable?) {
+            afterTextChangedBlock.invoke(editable)
         }
     })
 }
 
-object ViewUtils {
-
-    fun dispatchTouchView(
-        view: View,
-        ev: MotionEvent,
-        listener: OnTouchViewListener
-    ) {
-        if (ev.action == MotionEvent.ACTION_DOWN) {
-            if (isClickInView(view, ev)) {
-                listener.onTouchIn()
-            } else {
-                listener.onTouchOut()
-            }
+/**
+ * 监听点击在指定view内外
+ * */
+fun View.monitorViewClickInOrOut(
+    ev: MotionEvent,
+    clickInBlock: (() -> Unit)? = null,
+    clickOutBlock: (() -> Unit)? = null
+) {
+    if (ev.action == MotionEvent.ACTION_DOWN) {
+        if (isClickIn(ev)) {
+            clickInBlock?.invoke()
+        } else {
+            clickOutBlock?.invoke()
         }
     }
+}
 
-    private fun isClickInView(v: View, event: MotionEvent): Boolean {
-        val leftTop = intArrayOf(0, 0)
-        v.getLocationInWindow(leftTop)
-        val left = leftTop[0]
-        val top = leftTop[1]
-        val bottom = top + v.height
-        val right = left + v.width
-        return event.x > left && event.x < right && event.y > top && event.y < bottom
-    }
-
-    fun dispatchTouchEditText(
-        activity: Activity,
-        ev: MotionEvent,
-        listener: OnTouchViewListener
-    ) {
-        if (ev.action == MotionEvent.ACTION_DOWN) {
-            val v = activity.currentFocus
-            if (isClickInEditText(v, ev)) {
-                listener.onTouchIn()
-            } else {
-                listener.onTouchOut()
-            }
+/**
+ * 监听Activity点击是否在EditText内外
+ * */
+fun Activity.monitorEditTextClickInOrOut(
+    ev: MotionEvent,
+    clickInBlock: (() -> Unit)? = null,
+    clickOutBlock: (() -> Unit)? = null
+) {
+    if (ev.action == MotionEvent.ACTION_DOWN) {
+        val v = currentFocus
+        if (v is EditText && v.isClickIn(ev)) {
+            clickInBlock?.invoke()
+        } else {
+            clickOutBlock?.invoke()
         }
     }
+}
 
-    private fun isClickInEditText(v: View?, event: MotionEvent): Boolean {
-        return if (v is EditText) {
-            isClickInView(v, event)
-        } else false
-    }
-
-    abstract class OnTouchViewListener {
-        fun onTouchIn() {}
-
-        fun onTouchOut() {}
-    }
+/**
+ * 是否点击在view内
+ * */
+private fun View.isClickIn(event: MotionEvent): Boolean {
+    val leftTop = intArrayOf(0, 0)
+    getLocationInWindow(leftTop)
+    val left = leftTop[0]
+    val top = leftTop[1]
+    val bottom = top + height
+    val right = left + width
+    return event.x > left && event.x < right && event.y > top && event.y < bottom
 }
