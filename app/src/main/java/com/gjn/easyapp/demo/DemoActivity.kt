@@ -624,6 +624,13 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
                 }
             }
         }
+
+        btn47_ad.click {
+            println("viewWidth ${btn47_ad.viewWidth()}")
+            println("viewHeight ${btn47_ad.viewHeight()}")
+            println("isVisible ${btn47_ad.isVisible()}")
+            println("isLayoutRtl ${mActivity.isLayoutRtl()}")
+        }
     }
 
     private fun runService() {

@@ -495,5 +495,17 @@
             android:layout_height="wrap_content"
             android:text="震动操作" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ViewExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn47_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="布局view操作" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

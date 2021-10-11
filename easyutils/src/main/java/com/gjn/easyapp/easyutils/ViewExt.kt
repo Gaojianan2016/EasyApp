@@ -42,8 +42,6 @@ fun View.viewHeight() =
 
 fun View.isVisible() = visibility == View.VISIBLE
 
-fun View.isGone() = visibility == View.GONE
-
 fun View.visible() {
     visibility = View.VISIBLE
 }
@@ -211,35 +209,25 @@ fun EditText.monitorTextChange(
 /**
  * 监听点击在指定view内外
  * */
-fun View.monitorViewClickInOrOut(
+fun View.monitorClickInOrOutView(
     ev: MotionEvent,
-    clickInBlock: (() -> Unit)? = null,
-    clickOutBlock: (() -> Unit)? = null
+    block: ((Boolean) -> Unit)? = null
 ) {
     if (ev.action == MotionEvent.ACTION_DOWN) {
-        if (isClickIn(ev)) {
-            clickInBlock?.invoke()
-        } else {
-            clickOutBlock?.invoke()
-        }
+        block?.invoke(isClickIn(ev))
     }
 }
 
 /**
- * 监听Activity点击是否在EditText内外
+ * 监听Activity中点击是否在EditText内外
  * */
-fun Activity.monitorEditTextClickInOrOut(
+fun Activity.monitorClickInOrOutEditText(
     ev: MotionEvent,
-    clickInBlock: (() -> Unit)? = null,
-    clickOutBlock: (() -> Unit)? = null
+    block: ((Boolean) -> Unit)? = null
 ) {
     if (ev.action == MotionEvent.ACTION_DOWN) {
         val v = currentFocus
-        if (v is EditText && v.isClickIn(ev)) {
-            clickInBlock?.invoke()
-        } else {
-            clickOutBlock?.invoke()
-        }
+        block?.invoke(v is EditText && v.isClickIn(ev))
     }
 }
 
