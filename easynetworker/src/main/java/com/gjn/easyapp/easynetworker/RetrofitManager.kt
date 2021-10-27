@@ -1,6 +1,6 @@
 package com.gjn.easyapp.easynetworker
 
-import com.gjn.easyapp.easyutils.JsonUtil
+import com.gjn.easyapp.easyutils.formatJson
 import com.gjn.easyapp.easyutils.logD
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -18,7 +18,6 @@ import java.io.EOFException
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
-import kotlin.jvm.Throws
 
 object RetrofitManager {
 
@@ -57,9 +56,7 @@ object RetrofitManager {
             val byteCount = if (buffer.size < 64) buffer.size else 64
             buffer.copyTo(prefix, 0, byteCount)
             for (i in 0..15) {
-                if (prefix.exhausted()) {
-                    break
-                }
+                if (prefix.exhausted()) break
                 val codePoint = prefix.readUtf8CodePoint()
                 if (Character.isISOControl(codePoint) && !Character.isWhitespace(codePoint)) {
                     return false
@@ -73,7 +70,7 @@ object RetrofitManager {
 
     private fun log(msg: String) {
         if (isDebug) {
-            msg.logD(LoggingInterceptor.TAG)
+            logD(msg, "LoggingInterceptor")
         }
     }
 
@@ -151,17 +148,13 @@ object RetrofitManager {
                         ?: StandardCharsets.UTF_8
                     val result = buffer.clone().readString(charset)
                     if (result.startsWith("{\"") || result.startsWith("[{")) {
-                        log.append(JsonUtil.formatJson(result))
+                        log.append(result.formatJson())
                     } else {
                         log.append(result)
                     }
                 }
             }
             return log.toString()
-        }
-
-        companion object {
-            const val TAG = "LoggingInterceptor"
         }
     }
 
@@ -173,7 +166,6 @@ object RetrofitManager {
 
         override fun <T : Any?> create(gson: Gson?, type: TypeToken<T>?): TypeAdapter<T> {
             val adapter = gson?.getDelegateAdapter(this, type)
-
             return object : TypeAdapter<T>() {
                 @Throws(IOException::class)
                 override fun write(out: JsonWriter?, value: T) {
@@ -222,7 +214,6 @@ object RetrofitManager {
                 }
             }
         }
-
     }
 
     abstract class OnSimpleInterceptorListener : OnCustomInterceptorListener {

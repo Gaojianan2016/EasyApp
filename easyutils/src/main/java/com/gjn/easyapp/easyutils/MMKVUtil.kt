@@ -17,7 +17,7 @@ class MMKVUtil private constructor(private val mmkv: MMKV) {
             is ByteArray -> mmkv.encode(key, value)
             is Parcelable -> mmkv.encode(key, value)
             else -> {
-                Log.e(TAG, "$value encode fail.")
+                Log.e("MMKVUtil", "$value encode fail.")
             }
         }
     }
@@ -49,9 +49,9 @@ class MMKVUtil private constructor(private val mmkv: MMKV) {
         mmkv.decodeStringSet(key, defaultValue)
 
     fun <T : Parcelable> decodeParcelable(key: String, clazz: Class<T>?): T? =
-        mmkv.decodeParcelable<T>(key, clazz)
+        mmkv.decodeParcelable(key, clazz)
 
-    fun hasKey(key: String): Boolean = mmkv.containsKey(key)
+    fun containsKey(key: String): Boolean = mmkv.containsKey(key)
 
     fun removeKey(key: String) {
         mmkv.removeValueForKey(key)
@@ -65,20 +65,5 @@ class MMKVUtil private constructor(private val mmkv: MMKV) {
         mmkv.clearAll()
     }
 
-    companion object {
-        private const val TAG = "MMKVUtil"
-
-        private var mmkvUtil: MMKVUtil? = null
-
-        fun initMMKV(mmkv: MMKV): MMKVUtil {
-            if (mmkvUtil == null) {
-                synchronized(MMKVUtil::class.java) {
-                    if (mmkvUtil == null) {
-                        mmkvUtil = MMKVUtil(mmkv)
-                    }
-                }
-            }
-            return mmkvUtil!!
-        }
-    }
+    companion object : SingletonCompanionImpl<MMKVUtil, MMKV>(::MMKVUtil)
 }

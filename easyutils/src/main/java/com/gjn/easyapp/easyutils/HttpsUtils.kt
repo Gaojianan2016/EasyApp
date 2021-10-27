@@ -1,5 +1,6 @@
 package com.gjn.easyapp.easyutils
 
+import android.annotation.SuppressLint
 import android.util.Log
 import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
@@ -34,10 +35,12 @@ object HttpsUtils {
     }
 
     class TrustAllManager : X509TrustManager {
+        @SuppressLint("TrustAllX509TrustManager")
         override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
             //接受任意客户端证书
         }
 
+        @SuppressLint("TrustAllX509TrustManager")
         override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
             //接受任意服务端证书
         }
@@ -48,6 +51,7 @@ object HttpsUtils {
 
     class TrustAllHostnameVerifier : HostnameVerifier {
         //接受任意域名服务器
+        @SuppressLint("BadHostnameVerifier")
         override fun verify(hostname: String?, session: SSLSession?): Boolean = true
     }
 }

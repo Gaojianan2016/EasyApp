@@ -38,7 +38,7 @@ class DownLoadManager(private val activity: FragmentActivity) {
         //如果是apk 安卓8.0之后需要申请未知来源权限
         if (file.path.endsWith(".apk") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (!activity.packageManager.canRequestPackageInstalls()) {
-                activity.simpleActivityResult(
+                activity.quickActivityResult(
                     Intent(
                         Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
                         Uri.parse("package:${activity.packageName}")

@@ -9,10 +9,7 @@ import android.widget.Toast
 import com.gjn.easyapp.easyutils.inflate
 import kotlinx.coroutines.runBlocking
 
-class ToastUtil(
-    private val mContext: Context,
-    var isApplication: Boolean = false
-) {
+class ToastUtil(private val mContext: Context) {
 
     private var mToast: Toast? = null
     var mEasyToastView = mContext.inflate(R.layout.easytoast_transient_notification)
@@ -24,17 +21,18 @@ class ToastUtil(
         view: View?,
         gravity: Int,
         xOffset: Int,
-        yOffset: Int
+        yOffset: Int,
+        isShowAppName: Boolean
     ) {
         runBlocking {
             if (mToast != null) {
                 mToast!!.cancel()
                 mToast = null
             }
-            mToast = if (isApplication) {
-                Toast.makeText(mContext, "", duration).apply { setText(msg) }
-            } else {
+            mToast = if (isShowAppName) {
                 Toast.makeText(mContext, msg, duration)
+            } else {
+                Toast.makeText(mContext, "", duration).apply { setText(msg) }
             }
             mToast!!.apply {
                 if (view != null) {
@@ -51,9 +49,10 @@ class ToastUtil(
         duration: Int,
         gravity: Int,
         xOffset: Int,
-        yOffset: Int
+        yOffset: Int,
+        isShowAppName: Boolean
     ) {
-        showEasyToast(msg, EASY_TYPE_NULL, duration, gravity, xOffset, yOffset)
+        showEasyToast(msg, EASY_TYPE_NULL, duration, gravity, xOffset, yOffset, isShowAppName)
     }
 
     fun showConfirmToast(
@@ -61,9 +60,10 @@ class ToastUtil(
         duration: Int,
         gravity: Int,
         xOffset: Int,
-        yOffset: Int
+        yOffset: Int,
+        isShowAppName: Boolean
     ) {
-        showEasyToast(msg, EASY_TYPE_CONFIRM, duration, gravity, xOffset, yOffset)
+        showEasyToast(msg, EASY_TYPE_CONFIRM, duration, gravity, xOffset, yOffset, isShowAppName)
     }
 
     fun showInfoToast(
@@ -71,9 +71,10 @@ class ToastUtil(
         duration: Int,
         gravity: Int,
         xOffset: Int,
-        yOffset: Int
+        yOffset: Int,
+        isShowAppName: Boolean
     ) {
-        showEasyToast(msg, EASY_TYPE_INFO, duration, gravity, xOffset, yOffset)
+        showEasyToast(msg, EASY_TYPE_INFO, duration, gravity, xOffset, yOffset, isShowAppName)
     }
 
     fun showWarningToast(
@@ -81,9 +82,10 @@ class ToastUtil(
         duration: Int,
         gravity: Int,
         xOffset: Int,
-        yOffset: Int
+        yOffset: Int,
+        isShowAppName: Boolean
     ) {
-        showEasyToast(msg, EASY_TYPE_WARNING, duration, gravity, xOffset, yOffset)
+        showEasyToast(msg, EASY_TYPE_WARNING, duration, gravity, xOffset, yOffset, isShowAppName)
     }
 
     fun showErrorToast(
@@ -91,9 +93,10 @@ class ToastUtil(
         duration: Int,
         gravity: Int,
         xOffset: Int,
-        yOffset: Int
+        yOffset: Int,
+        isShowAppName: Boolean
     ) {
-        showEasyToast(msg, EASY_TYPE_ERROR, duration, gravity, xOffset, yOffset)
+        showEasyToast(msg, EASY_TYPE_ERROR, duration, gravity, xOffset, yOffset, isShowAppName)
     }
 
     fun showFailToast(
@@ -101,9 +104,10 @@ class ToastUtil(
         duration: Int,
         gravity: Int,
         xOffset: Int,
-        yOffset: Int
+        yOffset: Int,
+        isShowAppName: Boolean
     ) {
-        showEasyToast(msg, EASY_TYPE_FAIL, duration, gravity, xOffset, yOffset)
+        showEasyToast(msg, EASY_TYPE_FAIL, duration, gravity, xOffset, yOffset, isShowAppName)
     }
 
     fun showSuccessToast(
@@ -111,9 +115,10 @@ class ToastUtil(
         duration: Int,
         gravity: Int,
         xOffset: Int,
-        yOffset: Int
+        yOffset: Int,
+        isShowAppName: Boolean
     ) {
-        showEasyToast(msg, EASY_TYPE_SUCCESS, duration, gravity, xOffset, yOffset)
+        showEasyToast(msg, EASY_TYPE_SUCCESS, duration, gravity, xOffset, yOffset, isShowAppName)
     }
 
     fun showWaitToast(
@@ -121,9 +126,10 @@ class ToastUtil(
         duration: Int,
         gravity: Int,
         xOffset: Int,
-        yOffset: Int
+        yOffset: Int,
+        isShowAppName: Boolean
     ) {
-        showEasyToast(msg, EASY_TYPE_WAIT, duration, gravity, xOffset, yOffset)
+        showEasyToast(msg, EASY_TYPE_WAIT, duration, gravity, xOffset, yOffset, isShowAppName)
     }
 
     fun showProhibitToast(
@@ -131,9 +137,10 @@ class ToastUtil(
         duration: Int,
         gravity: Int,
         xOffset: Int,
-        yOffset: Int
+        yOffset: Int,
+        isShowAppName: Boolean
     ) {
-        showEasyToast(msg, EASY_TYPE_PROHIBIT, duration, gravity, xOffset, yOffset)
+        showEasyToast(msg, EASY_TYPE_PROHIBIT, duration, gravity, xOffset, yOffset, isShowAppName)
     }
 
     private fun showEasyToast(
@@ -142,7 +149,8 @@ class ToastUtil(
         duration: Int,
         gravity: Int,
         xOffset: Int,
-        yOffset: Int
+        yOffset: Int,
+        isShowAppName: Boolean
     ) {
         if (mEasyToastView == null) return
         val icon: ImageView = mEasyToastView!!.findViewById(R.id.iv_easy_toast_icon)
@@ -158,7 +166,7 @@ class ToastUtil(
             EASY_TYPE_PROHIBIT -> icon.setImageResource(R.drawable.easy_toast_prohibit)
             else -> icon.visibility = View.GONE
         }
-        showToast(msg, duration, mEasyToastView, gravity, xOffset, yOffset)
+        showToast(msg, duration, mEasyToastView, gravity, xOffset, yOffset, isShowAppName)
     }
 
     companion object {
@@ -175,11 +183,11 @@ class ToastUtil(
         @SuppressLint("StaticFieldLeak")
         private var toastUtils: ToastUtil? = null
 
-        fun getInstant(context: Context, isApplication: Boolean = false): ToastUtil {
+        fun init(context: Context): ToastUtil {
             if (toastUtils == null) {
                 synchronized(ToastUtil::class.java) {
                     if (toastUtils == null) {
-                        toastUtils = ToastUtil(context, isApplication)
+                        toastUtils = ToastUtil(context)
                     }
                 }
             }
@@ -192,9 +200,10 @@ class ToastUtil(
             view: View? = null,
             gravity: Int = Gravity.BOTTOM,
             xOffset: Int = 0,
-            yOffset: Int = 0
+            yOffset: Int = 0,
+            isShowAppName: Boolean = true
         ) {
-            toastUtils?.showToast(msg, duration, view, gravity, xOffset, yOffset)
+            toastUtils?.showToast(msg, duration, view, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showNullToast(
@@ -202,9 +211,10 @@ class ToastUtil(
             duration: Int = Toast.LENGTH_SHORT,
             gravity: Int = Gravity.CENTER,
             xOffset: Int = 0,
-            yOffset: Int = 0
+            yOffset: Int = 0,
+            isShowAppName: Boolean = true
         ) {
-            toastUtils?.showNullToast(msg, duration, gravity, xOffset, yOffset)
+            toastUtils?.showNullToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showConfirmToast(
@@ -212,9 +222,10 @@ class ToastUtil(
             duration: Int = Toast.LENGTH_SHORT,
             gravity: Int = Gravity.CENTER,
             xOffset: Int = 0,
-            yOffset: Int = 0
+            yOffset: Int = 0,
+            isShowAppName: Boolean = true
         ) {
-            toastUtils?.showConfirmToast(msg, duration, gravity, xOffset, yOffset)
+            toastUtils?.showConfirmToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showInfoToast(
@@ -222,9 +233,10 @@ class ToastUtil(
             duration: Int = Toast.LENGTH_SHORT,
             gravity: Int = Gravity.CENTER,
             xOffset: Int = 0,
-            yOffset: Int = 0
+            yOffset: Int = 0,
+            isShowAppName: Boolean = true
         ) {
-            toastUtils?.showInfoToast(msg, duration, gravity, xOffset, yOffset)
+            toastUtils?.showInfoToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showWarningToast(
@@ -232,9 +244,10 @@ class ToastUtil(
             duration: Int = Toast.LENGTH_SHORT,
             gravity: Int = Gravity.CENTER,
             xOffset: Int = 0,
-            yOffset: Int = 0
+            yOffset: Int = 0,
+            isShowAppName: Boolean = true
         ) {
-            toastUtils?.showWarningToast(msg, duration, gravity, xOffset, yOffset)
+            toastUtils?.showWarningToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showErrorToast(
@@ -242,9 +255,10 @@ class ToastUtil(
             duration: Int = Toast.LENGTH_SHORT,
             gravity: Int = Gravity.CENTER,
             xOffset: Int = 0,
-            yOffset: Int = 0
+            yOffset: Int = 0,
+            isShowAppName: Boolean = true
         ) {
-            toastUtils?.showErrorToast(msg, duration, gravity, xOffset, yOffset)
+            toastUtils?.showErrorToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showFailToast(
@@ -252,9 +266,10 @@ class ToastUtil(
             duration: Int = Toast.LENGTH_SHORT,
             gravity: Int = Gravity.CENTER,
             xOffset: Int = 0,
-            yOffset: Int = 0
+            yOffset: Int = 0,
+            isShowAppName: Boolean = true
         ) {
-            toastUtils?.showFailToast(msg, duration, gravity, xOffset, yOffset)
+            toastUtils?.showFailToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showSuccessToast(
@@ -262,9 +277,10 @@ class ToastUtil(
             duration: Int = Toast.LENGTH_SHORT,
             gravity: Int = Gravity.CENTER,
             xOffset: Int = 0,
-            yOffset: Int = 0
+            yOffset: Int = 0,
+            isShowAppName: Boolean = true
         ) {
-            toastUtils?.showSuccessToast(msg, duration, gravity, xOffset, yOffset)
+            toastUtils?.showSuccessToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showWaitToast(
@@ -272,9 +288,10 @@ class ToastUtil(
             duration: Int = Toast.LENGTH_SHORT,
             gravity: Int = Gravity.CENTER,
             xOffset: Int = 0,
-            yOffset: Int = 0
+            yOffset: Int = 0,
+            isShowAppName: Boolean = true
         ) {
-            toastUtils?.showWaitToast(msg, duration, gravity, xOffset, yOffset)
+            toastUtils?.showWaitToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showProhibitToast(
@@ -282,9 +299,10 @@ class ToastUtil(
             duration: Int = Toast.LENGTH_SHORT,
             gravity: Int = Gravity.CENTER,
             xOffset: Int = 0,
-            yOffset: Int = 0
+            yOffset: Int = 0,
+            isShowAppName: Boolean = true
         ) {
-            toastUtils?.showProhibitToast(msg, duration, gravity, xOffset, yOffset)
+            toastUtils?.showProhibitToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
     }
 }

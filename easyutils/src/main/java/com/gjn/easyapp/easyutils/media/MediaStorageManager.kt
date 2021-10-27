@@ -126,7 +126,7 @@ class MediaStorageManager(private val context: Context) {
         val duration = try {
             cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION))
         } catch (e: Exception) {
-            "获取视频duration失败".logW(TAG)
+            logW("获取视频duration失败", TAG)
             0
         }
 
@@ -135,7 +135,7 @@ class MediaStorageManager(private val context: Context) {
             mmr.setDataSource(path)
             mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION).toInt()
         } catch (e: Exception) {
-            "获取视频rotation失败".logW(TAG)
+            logW("获取视频rotation失败", TAG)
             0
         }
 
@@ -218,7 +218,7 @@ class MediaStorageManager(private val context: Context) {
                 //混合排序列表
                 sortList()
             } catch (e: Exception) {
-                "获取数据失败，请检查是否打开给予权限".logE(TAG)
+                logE("获取数据失败，请检查是否打开给予权限", TAG)
             }
             return null
         }
@@ -295,9 +295,7 @@ class MediaStorageManager(private val context: Context) {
             super.onChange(selfChange, uri)
             launchMain {
                 changeCallback?.onChange(
-                    selfChange,
-                    uri,
-                    uri.toString() == "content://media/external"
+                    selfChange, uri, uri.toString() == "content://media/external"
                 )
             }
             val cursor = context.contentResolver.query(

@@ -37,8 +37,6 @@ internal class ActivityResultFragment : Fragment() {
 
     /**
      * 随机生成code
-     *
-     * @return requestCode
      */
     private fun randomRequestCode(): Int {
         var requestCode: Int
@@ -102,24 +100,24 @@ class ActivityResultHelper {
     }
 
     abstract class SimpleActivityResultListener : IActivityResultListener {
-        override fun onActivityResult(resultCode: Int, data: Intent?) {
-        }
+        override fun onActivityResult(resultCode: Int, data: Intent?) { /**/ }
 
-        override fun onException(tr: Throwable) {
-        }
+        override fun onException(tr: Throwable) { /**/ }
     }
 
     companion object {
         const val TAG_ACTIVITY_RESULT = "TAG_ACTIVITY_RESULT"
 
-        fun newInstance(activity: FragmentActivity): ActivityResultHelper =
-            ActivityResultHelper(activity)
+        fun newInstance(activity: FragmentActivity) = ActivityResultHelper(activity)
 
-        fun newInstance(fragment: Fragment): ActivityResultHelper = ActivityResultHelper(fragment)
+        fun newInstance(fragment: Fragment) = ActivityResultHelper(fragment)
     }
 }
 
-fun FragmentActivity.simpleActivityResult(
+/**
+ * 快速Activity结果获取
+ * */
+fun FragmentActivity.quickActivityResult(
     intent: Intent,
     extras: Bundle? = null,
     block: (Int, Intent?) -> Unit
@@ -138,7 +136,10 @@ fun FragmentActivity.simpleActivityResult(
     }
 }
 
-fun Fragment.simpleActivityResult(
+/**
+ * 快速Activity结果获取
+ * */
+fun Fragment.quickActivityResult(
     intent: Intent,
     extras: Bundle? = null,
     block: (Int, Intent?) -> Unit

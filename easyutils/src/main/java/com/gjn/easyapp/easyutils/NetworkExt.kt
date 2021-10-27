@@ -112,14 +112,14 @@ class NetworkStateManager : ConnectivityManager.NetworkCallback() {
         if (context == null) return
         if (isRegister(listener)) {
             if (DEBUG) {
-                "-----isRegistered NetworkCallback -----".logD(TAG)
+                logD("-----isRegistered NetworkCallback -----", TAG)
             }
             return
         }
         listeners.add(listener)
         val result = context?.registerNetworkCallback(this)
         if (DEBUG) {
-            "-----registerNetworkCallback $result-----".logD(TAG)
+            logD("-----registerNetworkCallback $result-----", TAG)
         }
     }
 
@@ -129,7 +129,7 @@ class NetworkStateManager : ConnectivityManager.NetworkCallback() {
             listeners.remove(listener)
             context?.unregisterNetworkCallback(this)
             if (DEBUG) {
-                "-----unregisterNetworkCallback-----".logD(TAG)
+                logD("-----unregisterNetworkCallback-----", TAG)
             }
         }
     }
@@ -137,7 +137,7 @@ class NetworkStateManager : ConnectivityManager.NetworkCallback() {
     fun clearNetworkCallback() {
         listeners.clear()
         if (DEBUG) {
-            "-----clearNetworkCallback-----".logD(TAG)
+            logD("-----clearNetworkCallback-----", TAG)
         }
     }
 
@@ -154,7 +154,7 @@ class NetworkStateManager : ConnectivityManager.NetworkCallback() {
 
     override fun onAvailable(network: Network) {
         if (DEBUG) {
-            "network is connect success".logD(TAG)
+            logD("network is connect success", TAG)
         }
         listeners.forEach {
             it.onConnected(-1)
@@ -163,7 +163,7 @@ class NetworkStateManager : ConnectivityManager.NetworkCallback() {
 
     override fun onLost(network: Network) {
         if (DEBUG) {
-            "network is connect lost".logD(TAG)
+            logD("network is connect lost", TAG)
         }
         listeners.forEach {
             it.onDisConnected()
@@ -172,7 +172,7 @@ class NetworkStateManager : ConnectivityManager.NetworkCallback() {
 
     override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
         if (DEBUG) {
-            "network is connect changed -> $networkCapabilities".logD(TAG)
+            logD("network is connect changed -> $networkCapabilities", TAG)
         }
         val result = when {
             networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> 0

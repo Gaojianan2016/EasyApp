@@ -17,12 +17,12 @@ object LogUtil {
 
     private fun println(level: Int, tag: String = LOG_TAG, msg: String?, tr: Throwable? = null) {
         when (level) {
-            LEVEL_D -> msg?.logD(tag, tr)
-            LEVEL_I -> msg?.logI(tag, tr)
-            LEVEL_W -> msg?.logW(tag, tr)
-            LEVEL_E -> msg?.logE(tag, tr)
-            LEVEL_WTF -> msg?.logWTF(tag, tr)
-            else -> msg?.logV(tag, tr)
+            LEVEL_D -> logD(msg, tag, tr)
+            LEVEL_I -> logI(msg, tag, tr)
+            LEVEL_W -> logW(msg, tag, tr)
+            LEVEL_E -> logE(msg, tag, tr)
+            LEVEL_WTF -> logWTF(msg, tag, tr)
+            else -> logV(msg, tag, tr)
         }
     }
 
@@ -60,6 +60,6 @@ object LogUtil {
             is JSONObject -> any.toString()
             else -> Gson().toJson(any)
         }
-        d(tag, JsonUtil.formatJson(json))
+        d(tag, json.formatJson())
     }
 }

@@ -22,41 +22,39 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
     override fun layoutId() = R.layout.activity_demo
 
+    override fun onResume() {
+        super.onResume()
+        activityList.forEach {
+            println("activityList111 -> ${it.javaClass.simpleName}")
+            println("    ---> isFinishing ${it.isFinishing}")
+        }
+        println("activity top -> ${topActivity.javaClass.simpleName}")
+    }
+
     @SuppressLint("MissingPermission")
     override fun initView() {
         val bmp = R.mipmap.test_img.toBitmap(mActivity)
 
         btn1_ad.click {
-//            ImageActivity::class.java.startActivity(mActivity, extrasMap = mapOf(ImageActivity.DATA to "数据1"),
-//                enterAnim = R.anim.anim_bottom_in, exitAnim = R.anim.anim_bottom_out)
-            ImageActivity::class.java.startActivity(
-                mActivity, extrasMap = mapOf(ImageActivity.DATA to "Explode"),
-                options = mActivity.createOptionsBundle()
-            )
-//            ImageActivity::class.java.startActivity(mActivity, extrasMap = mapOf(ImageActivity.DATA to "Slide"),
-//                options = mActivity.createOptionsBundle())
-//            ImageActivity::class.java.startActivity(mActivity, extrasMap = mapOf(ImageActivity.DATA to "Fade"),
-//                options = mActivity.createOptionsBundle())
+            //id动画
+//            mActivity.startActivity<ImageActivity>(enterResId = R.anim.anim_bottom_in, exitResId = R.anim.anim_bottom_out)
+
+            //特殊动画
+            mActivity.startActivity<ImageActivity>(options = makeSceneTransitionAnimationBundle()) {
+//                putExtra(ImageActivity.DATA, "Explode")
+//                putExtra(ImageActivity.DATA, "Slide")
+                putExtra(ImageActivity.DATA, "Fade")
+            }
         }
 
         btn2_ad.click {
-//            ImageActivity::class.java.startActivity(
-//                mActivity, extrasMap = mapOf(ImageActivity.DATA to "数据2"),
-//                sharedElements = arrayOf(btn1_ad)
-//            )
-            ImageActivity::class.java.startActivity(
-                mActivity, extrasMap = mapOf(ImageActivity.DATA to "数据3"),
-                sharedElements = arrayOf(btn1_ad, btn2_ad)
-            )
+            mActivity.startActivity<ImageActivity>(sharedElements = arrayOf(btn1_ad, btn2_ad))
         }
 
         btn3_ad.click {
-            ImageActivity::class.java.startActivity(
-                mActivity, extrasMap = mapOf(
-                    ImageActivity.DATA to "数据4",
-                    ImageActivity.ID to R.mipmap.ic_launcher
-                ),
-                sharedElements = arrayOf(btn3_ad)
+            mActivity.startActivity<ImageActivity>(
+                sharedElements = arrayOf(btn3_ad),
+                pairs = arrayOf(ImageActivity.DATA to "数据4", ImageActivity.ID to R.mipmap.ic_launcher)
             )
         }
 
@@ -65,7 +63,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn5_ad.click {
-            mActivity.simpleActivityResult(Intent(mActivity, ImageActivity::class.java))
+            mActivity.quickActivityResult(Intent(mActivity, ImageActivity::class.java))
             { code, data ->
                 showToast("code=$code data=${data?.getStringExtra("data")}")
             }
@@ -194,7 +192,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 //            nsv_ad.addMarginTopEqualStatusBarHeight()
 //            //设置Light模式
 //            mActivity.setStatusBarLightMode(true)
-            showNextActivity(DrawerActivity::class.java)
+            mActivity.startActivity<DrawerActivity>()
         }
 
         btn18_ad.click {

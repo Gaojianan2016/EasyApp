@@ -11,7 +11,7 @@ class TestService: Service() {
 
     override fun onCreate() {
         super.onCreate()
-        "onCreate".logE()
+        logE("onCreate")
 
         sendForegroundNotification(111){
             it.setContentTitle("TestService通知")
@@ -22,13 +22,13 @@ class TestService: Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        "onStartCommand $intent $flags $startId".logE()
+        logE("onStartCommand $intent $flags $startId")
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        "onDestroy".logE()
+        logE("onDestroy")
     }
 
 

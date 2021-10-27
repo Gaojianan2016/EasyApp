@@ -1,6 +1,5 @@
 package com.gjn.easyapp.easybase
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -12,7 +11,6 @@ import com.gjn.easyapp.easytoaster.ToastUtil
 import com.gjn.easyapp.easyutils.AppManager
 import com.gjn.easyapp.easyutils.createAndroidViewModel
 import com.gjn.easyapp.easyutils.createViewModel
-import com.gjn.easyapp.easyutils.startActivity
 
 abstract class ABaseActivity : AppCompatActivity(), UIEvent {
 
@@ -24,9 +22,9 @@ abstract class ABaseActivity : AppCompatActivity(), UIEvent {
     override fun onCreate(savedInstanceState: Bundle?) {
         mActivity = this
         mContext = this
-        AppManager.instance.addActivity(this)
         preCreate(savedInstanceState)
         super.onCreate(savedInstanceState)
+        AppManager.instance.addActivity(this)
         mBundle = intent.extras ?: Bundle()
         mDialogManager = EasyDialogManager(this)
         bindContentView()
@@ -59,15 +57,6 @@ abstract class ABaseActivity : AppCompatActivity(), UIEvent {
 
     override fun showToast(msg: String?) {
         ToastUtil.showToast(msg)
-    }
-
-    override fun showNextActivity(cls: Class<out Activity>, bundle: Bundle?) {
-        cls.startActivity(mActivity, bundle)
-    }
-
-    override fun toNextActivity(cls: Class<out Activity>, bundle: Bundle?) {
-        showNextActivity(cls, bundle)
-        finish()
     }
 
     override fun showEasyDialog(dialog: BaseDialogFragment) {

@@ -119,7 +119,7 @@ class A3Fragment : BaseLazyFragment() {
             val startIndex = pos * params.loadSize + 1
             val endIndex = (pos + 1) * params.loadSize
             return try {
-                val list = AppNetWorker.getInstant().gankApi.girls(pos, 10).data
+                val list = AppNetWorker.netWorker.gankApi.girls(pos, 10).data
                 LoadResult.Page(
                     list,
                     if (pos <= 0) null else pos - 1,

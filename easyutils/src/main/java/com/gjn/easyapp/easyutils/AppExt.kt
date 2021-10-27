@@ -123,9 +123,12 @@ fun Context.openAppDetailsSettings(pkgName: String = packageName) {
  * */
 fun Context.openUnknownAppSettings() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        startActivity(Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
-            packageNameUri()
-        ))
+        startActivity(
+            Intent(
+                Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+                packageNameUri()
+            )
+        )
     }
 }
 
@@ -214,7 +217,8 @@ fun Context.getAppVersionCode(pkgName: String = packageName): Long {
 /**
  * 获取App 签名SHA1
  * */
-fun Context.getAppSignaturesSHA1(pkgName: String = packageName) = getAppSignaturesHash(pkgName)
+fun Context.getAppSignaturesSHA1(pkgName: String = packageName) =
+    getAppSignaturesHash(pkgName, "SHA1")
 
 /**
  * 获取App 签名MD5
@@ -234,7 +238,7 @@ fun Context.getAppSignaturesSHA256(pkgName: String = packageName) =
  * */
 fun Context.getAppSignaturesHash(
     pkgName: String = packageName,
-    algorithm: String = "SHA1"
+    algorithm: String
 ): List<String> {
     val result = mutableListOf<String>()
     val signatures = getAppSignatures(pkgName)
@@ -253,11 +257,7 @@ fun Context.getAppSignatures(pkgName: String = packageName): Array<Signature>? {
     return try {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             getAppPackageInfo(pkgName, PackageManager.GET_SIGNING_CERTIFICATES)?.signingInfo?.let {
-                if (it.hasMultipleSigners()) {
-                    it.apkContentsSigners
-                } else {
-                    it.signingCertificateHistory
-                }
+                if (it.hasMultipleSigners()) it.apkContentsSigners else it.signingCertificateHistory
             }
         } else {
             getAppPackageInfo(pkgName, PackageManager.GET_SIGNATURES)?.signatures

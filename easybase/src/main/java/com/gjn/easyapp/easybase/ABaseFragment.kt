@@ -1,6 +1,5 @@
 package com.gjn.easyapp.easybase
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,7 +13,6 @@ import com.gjn.easyapp.easydialoger.base.BaseDialogFragment
 import com.gjn.easyapp.easytoaster.ToastUtil
 import com.gjn.easyapp.easyutils.createAndroidViewModel
 import com.gjn.easyapp.easyutils.createViewModel
-import com.gjn.easyapp.easyutils.startActivity
 
 abstract class ABaseFragment : Fragment(), UIEvent {
 
@@ -72,15 +70,6 @@ abstract class ABaseFragment : Fragment(), UIEvent {
 
     override fun showToast(msg: String?) {
         ToastUtil.showToast(msg)
-    }
-
-    override fun showNextActivity(cls: Class<out Activity>, bundle: Bundle?) {
-        cls.startActivity(mActivity, bundle)
-    }
-
-    override fun toNextActivity(cls: Class<out Activity>, bundle: Bundle?) {
-        showNextActivity(cls, bundle)
-        mActivity.finish()
     }
 
     override fun showEasyDialog(dialog: BaseDialogFragment) {

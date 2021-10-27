@@ -12,24 +12,23 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 
-/**
- * 5.0之后启动页面 跳转动画Bundle创建
- * */
-fun Context?.createOptionsBundle(
-    @AnimRes enterAnim: Int?,
-    @AnimRes exitAnim: Int?
-): Bundle? {
-    if (this == null) return null
-    return ActivityOptionsCompat.makeCustomAnimation(this, enterAnim ?: -1, exitAnim ?: -1)
-        .toBundle()
-}
 
 /**
- * 5.0之后启动页面 转场动画Bundle创建
+ * 制作跳转页面 自定义转场动画
  * */
-fun Context?.createOptionsBundle(vararg sharedElements: View): Bundle? {
+fun Context.makeCustomAnimationBundle(
+    @AnimRes enterResId: Int,
+    @AnimRes exitResId: Int
+): Bundle? = ActivityOptionsCompat.makeCustomAnimation(this, enterResId, exitResId).toBundle()
+
+/**
+ * 制作跳转页面 View过渡动画
+ * */
+fun Context.makeSceneTransitionAnimationBundle(
+    vararg sharedElements: View
+): Bundle?{
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return null
-    val activity = when (this) {
+    val activity = when(this){
         is Activity -> this
         is Fragment -> activity
         else -> null
@@ -41,39 +40,25 @@ fun Context?.createOptionsBundle(vararg sharedElements: View): Bundle? {
     return ActivityOptionsCompat.makeSceneTransitionAnimation(activity, *pairs).toBundle()
 }
 
-fun Context.hasNavigationBar(): Boolean {
-    var result = false
-    val resId = getSystemBoolIdentifier("config_showNavigationBar")
-    if (resId > 0) result = resources.getBoolean(resId)
-    try {
-        //判断是否修改过底边栏
-        when ("android.os.SystemProperties".toClass().invokeMethod(
-            "get",
-            parameterTypes = arrayOf(String::class.java),
-            args = arrayOf("qemu.hw.mainkeys")
-        ) as String) {
-            "0" -> result = true
-            "1" -> result = false
-        }
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-    return result
-}
-
-/**
- * 展示吐司
- * */
-fun Context.showToast(msg: CharSequence, duration: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(this, msg, duration).show()
-}
-
-/**
- * 展示吐司
- * */
-fun Context.showToast(resId: Int, duration: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(this, resId, duration).show()
-}
+//fun Context.hasNavigationBar(): Boolean {
+//    var result = false
+//    val resId = getSystemBoolIdentifier("config_showNavigationBar")
+//    if (resId > 0) result = resources.getBoolean(resId)
+//    try {
+//        //判断是否修改过底边栏
+//        when ("android.os.SystemProperties".toClass().invokeMethod(
+//            "get",
+//            parameterTypes = arrayOf(String::class.java),
+//            args = arrayOf("qemu.hw.mainkeys")
+//        ) as String) {
+//            "0" -> result = true
+//            "1" -> result = false
+//        }
+//    } catch (e: Exception) {
+//        e.printStackTrace()
+//    }
+//    return result
+//}
 
 /**
  * 判断权限

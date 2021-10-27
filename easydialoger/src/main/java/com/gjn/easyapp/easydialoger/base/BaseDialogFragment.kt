@@ -90,7 +90,7 @@ abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragmen
                 window.attributes = params
             }
         } catch (e: Exception) {
-            "${e.message}".logE(TAG, e)
+            logE("${e.message}", TAG, e)
         }
     }
 

@@ -3,60 +3,68 @@ package com.gjn.easyapp.easyutils
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
-import java.util.concurrent.CopyOnWriteArrayList
+import java.util.*
+import kotlin.system.exitProcess
 
 class AppManager private constructor() {
 
-    private val activityList: CopyOnWriteArrayList<Activity> = CopyOnWriteArrayList()
+    private val activityStack: Stack<Activity> = Stack()
 
     fun addActivity(activity: Activity) {
-        activityList.add(activity)
+        activityStack.add(activity)
     }
 
     fun removeActivity(activity: Activity) {
-        if (activityList.contains(activity)) {
-            finishActivity(activity)
-            activityList.remove(activity)
-        }
-    }
-
-    fun finishActivity(activity: Activity) {
-        if (!activity.isFinishing) {
-            activity.finish()
+        activityStack.removeAll {
+            if (it == activity) it.finishActivity()
+            it == activity
         }
     }
 
     fun finishActivity(vararg clz: Class<out Activity>) {
-        activityList.forEach { activity ->
+
+        activityStack.forEach { activity ->
             if (clz.contains(activity::class.java)) {
-                finishActivity(activity)
+                removeActivity(activity)
             }
         }
     }
 
-    fun isActivityExists(vararg clz: Class<out Activity>): Boolean{
-        activityList.forEach { activity ->
-            if (clz.contains(activity::class.java)) {
-                return true
-            }
-        }
-        return false
+    fun getTopActivity() = activityStack.lastElement()
+
+    fun finishTopActivity(){
+        removeActivity(getTopActivity())
     }
+
+    fun isActivityExists(clazz: Class<out Activity>): Boolean =
+        activityStack.any { it::class.java == clazz }
 
     fun clearActivity() {
-        for (activity in activityList) {
-            finishActivity(activity)
+        for (activity in activityStack) {
+            activity.finishActivity()
         }
-        activityList.clear()
+        activityStack.clear()
+    }
+
+    fun exitApp(){
+        try {
+            clearActivity()
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
     }
 
     fun killApp(context: Context) {
-        clearActivity()
-        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        activityManager.killBackgroundProcesses(context.packageName)
+        try {
+            clearActivity()
+            context.activityManager().killBackgroundProcesses(context.packageName)
+        }catch (e: Exception){
+            e.printStackTrace()
+            exitProcess(0)
+        }
     }
 
     companion object {
-        val instance: AppManager by lazy { AppManager() }
+        val instance by lazy(AppManager::class.java) { AppManager() }
     }
 }

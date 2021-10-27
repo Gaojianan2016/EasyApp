@@ -9,7 +9,6 @@ import android.content.res.Configuration
  * 今日头条适配方式
  * */
 object AutoScreenUtil {
-    private const val TAG = "AutoScreenUtil"
     private const val LINE = "---------------------------------"
 
     private lateinit var application: Application
@@ -101,7 +100,7 @@ object AutoScreenUtil {
     }
 
     private fun log(content: String?) {
-        if (isDebug) content?.logD(TAG)
+        if (isDebug) logD(content, "AutoScreenUtil")
     }
 }
 

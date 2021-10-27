@@ -395,7 +395,7 @@ fun Context.openFile(file: File) {
                 it.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
             it.setDataAndType(getLocalFileUri(file), this)
-            it.startActivity(this@openFile)
+            this@openFile.startActivity(it)
         }
     }
 }

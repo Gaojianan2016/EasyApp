@@ -19,13 +19,13 @@ fun File.writeString(
         println("create ${fileName()} failed.")
         return false
     }
-    try {
+    return try {
         if (append) appendText(content, charset) else writeText(content, charset)
-        return true
+        true
     } catch (e: Exception) {
         e.printStackTrace()
+        false
     }
-    return false
 }
 
 /**
@@ -39,11 +39,11 @@ fun File.writeInputStream(stream: InputStream?, append: Boolean = false): Boolea
         println("create ${fileName()} failed.")
         return false
     }
-    try {
+    return try {
         if (append) appendBytes(stream.readBytes()) else writeBytes(stream.readBytes())
-        return true
+        true
     } catch (e: Exception) {
         e.printStackTrace()
+        false
     }
-    return false
 }

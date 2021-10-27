@@ -58,7 +58,7 @@ class TabScrollBar {
 
     fun create() {
         if (bars.isEmpty()) {
-            "bars is null.".logW(TAG)
+            logW("bars is null.", TAG)
             return
         }
         if (viewPager2 == null) {
@@ -112,7 +112,7 @@ class TabScrollBar {
 
     fun changeTitle(position: Int, title: String) {
         if (position < 0 || position >= bars.size) {
-            "change Fail error $position not in 0-${bars.size}".logW(TAG)
+            logW("change Fail error $position not in 0-${bars.size}", TAG)
             return
         }
         if (customViewLayoutId == View.NO_ID) {

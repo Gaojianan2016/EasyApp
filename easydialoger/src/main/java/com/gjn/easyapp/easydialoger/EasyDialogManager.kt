@@ -279,7 +279,7 @@ class EasyDialogManager {
     }
 
     private fun log(msg: String) {
-        msg.logI(TAG)
+        logI(msg, TAG)
     }
 
     companion object {

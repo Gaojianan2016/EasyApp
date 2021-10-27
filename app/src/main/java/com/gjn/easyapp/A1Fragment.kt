@@ -23,8 +23,6 @@ import java.io.File
 class A1Fragment : BaseLazyFragment() {
 
     var size = -1
-    var name by MySP("name", "")
-    var age by MySP("age", -1)
     var fileName = ""
 
     override fun layoutId(): Int = R.layout.fragment_a1
@@ -82,17 +80,8 @@ class A1Fragment : BaseLazyFragment() {
 
             println("12,7,8,sad,s4a, splitToList ${"12,7,8,sad,s4a".split2List(",")}")
 
-            println("name = $name age = $age")
-            if (name == "张三") {
-                name = "李四"
-                age = 26
-            } else {
-                name = "张三"
-                age = 18
-            }
-            println("new name = $name new age = $age")
             val json = "{\"code\":0,\"message\":\"操 作 成 功 ！\"}"
-            println("json ${JsonUtil.formatJson(json)}")
+            println("json ${json.formatJson()}")
         }
 
         btn7.click {
@@ -188,7 +177,7 @@ class A1Fragment : BaseLazyFragment() {
         }
 
         btn16.click {
-            mActivity.simpleActivityResult(
+            mActivity.quickActivityResult(
                 Intent(
                     mActivity,
                     ActivityResultActivity::class.java
@@ -260,7 +249,7 @@ class A1Fragment : BaseLazyFragment() {
         override fun onClick(v: View?) {
             when (v) {
                 btn0 -> {
-                    DemoActivity::class.java.startActivity(mActivity)
+//                    DemoActivity::class.java.startActivity(mActivity)
                 }
                 btn1 -> {
                     size++
@@ -345,9 +334,9 @@ class A1Fragment : BaseLazyFragment() {
                     iv_icon3.setImageDrawable(mActivity.getAppIcon(WECHAT_PACKAGE_NAME))
                 }
                 btn12 -> {
-                    showNextActivity(GalleryActivity::class.java, Bundle().apply {
-                        putString("msg", "首页发送的数据")
-                    })
+//                    showNextActivity(GalleryActivity::class.java, Bundle().apply {
+//                        putString("msg", "首页发送的数据")
+//                    })
                 }
                 btn13 -> {
                     val status = mActivity.statusBarHeight()

@@ -6,27 +6,19 @@ import java.lang.reflect.Field
  * 判断类是否被注解
  * */
 fun Any.containAnnotation(clazz: Class<out Annotation>): Boolean =
-    javaClass.apply {
-        annotations
-    }.isAnnotationPresent(clazz)
+    javaClass.apply { annotations }.isAnnotationPresent(clazz)
 
 /**
  * 判断Field是否被注解
  * */
 fun Field.containAnnotation(clazz: Class<out Annotation>): Boolean =
-    apply {
-        annotations
-    }.isAnnotationPresent(clazz)
+    apply { annotations }.isAnnotationPresent(clazz)
 
 /**
  * 获取注解的对象
  * */
 fun Any.getAnnotation(clazz: Class<out Annotation>): Annotation? =
-    if (containAnnotation(clazz)) {
-        javaClass.getAnnotation(clazz)
-    } else {
-        null
-    }
+    if (containAnnotation(clazz)) javaClass.getAnnotation(clazz) else null
 
 /**
  * 获取注解的成员变量

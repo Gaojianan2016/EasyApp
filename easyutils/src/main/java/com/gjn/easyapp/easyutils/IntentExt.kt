@@ -6,6 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.MediaStore
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import java.io.File
 import java.io.Serializable
@@ -134,7 +136,7 @@ fun FragmentActivity.quickPhotography(file: File, block: (Int, Intent?) -> Unit)
         flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         putExtra(MediaStore.EXTRA_OUTPUT, getLocalFileUri(file))
     }
-    simpleActivityResult(intent) { code, data ->
+    quickActivityResult(intent) { code, data ->
         block.invoke(code, data)
         file.notifyMediaFile(this)
     }
@@ -144,6 +146,19 @@ fun FragmentActivity.quickPhotography(file: File, block: (Int, Intent?) -> Unit)
 ///////////////////////////////////////
 ///    intent 快捷方式
 ///////////////////////////////////////
+
+inline fun <reified T> Context.intentOf(vararg pairs: Pair<String, *>) =
+    intentOf<T>(bundleOf(*pairs))
+
+inline fun <reified T> Context.intentOf(bundle: Bundle): Intent =
+    Intent(this, T::class.java).apply { putExtras(bundle) }
+
+inline fun <reified T> Fragment.intentOf(vararg pairs: Pair<String, *>) =
+    intentOf<T>(bundleOf(*pairs))
+
+inline fun <reified T> Fragment.intentOf(bundle: Bundle): Intent =
+    Intent(this.context, T::class.java).apply { putExtras(bundle) }
+
 fun Intent.put(map: Map<String, Any?>): Intent {
     map.forEach { (k, v) ->
         when (v) {

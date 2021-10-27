@@ -241,7 +241,7 @@ class PermissionHelper {
         if (mPermissions.size <= 0 || activity == null) return
         for (permission in mPermissions) {
             if (!activity!!.checkPermissionExistManifest(permission)) {
-                "AndroidManifest.xml have not $permission".logE(TAG)
+                logE("AndroidManifest.xml have not $permission", "PermissionHelper")
                 return
             }
         }
@@ -295,8 +295,6 @@ class PermissionHelper {
     }
 
     companion object {
-        private const val TAG = "PermissionHelper"
-
         const val TAG_PERMISSION = "TAG_PERMISSION"
 
         const val CODE_SETTING = 0x777
@@ -336,10 +334,13 @@ class PermissionHelper {
 
         fun startAppSetting(activity: Activity) {
             try {
-                Intent().apply {
-                    action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                    data = Uri.fromParts("package", activity.packageName, null)
-                }.startActivityForResult(activity, CODE_SETTING)
+                activity.startActivityForResult(
+                    Intent().apply {
+                        action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                        data = Uri.fromParts("package", activity.packageName, null)
+                    }, CODE_SETTING
+                )
+
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -350,11 +351,11 @@ class PermissionHelper {
 /**
  * 检查存在权限
  * */
-fun Context.checkPermissionExistManifest(permission: String): Boolean{
+fun Context.checkPermissionExistManifest(permission: String): Boolean {
     return try {
         val pi = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
         pi.requestedPermissions.contains(permission)
-    }catch (e: Exception){
+    } catch (e: Exception) {
         e.printStackTrace()
         false
     }
