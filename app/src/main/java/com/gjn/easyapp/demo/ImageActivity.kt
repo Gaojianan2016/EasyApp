@@ -6,10 +6,7 @@ import android.transition.Fade
 import android.transition.Slide
 import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
-import com.gjn.easyapp.easyutils.activityList
-import com.gjn.easyapp.easyutils.click
-import com.gjn.easyapp.easyutils.finishWithResult
-import com.gjn.easyapp.easyutils.topActivity
+import com.gjn.easyapp.easyutils.*
 import kotlinx.android.synthetic.main.activity_image.*
 
 class ImageActivity: ABaseActivity() {
@@ -42,17 +39,16 @@ class ImageActivity: ABaseActivity() {
     }
 
     override fun initView() {
-
-        activityList.forEach {
-            println("activityList222 -> ${it.javaClass.simpleName}")
-            println("    ---> isFinishing ${it.isFinishing}")
-        }
-        println("activity top -> ${topActivity.javaClass.simpleName}")
     }
 
     override fun initData() {
         img1_ai.click {
-            finishWithResult(777, "data" to "img1数据")
+
+//            finishActivityByStack(this@ImageActivity)
+//            finishAllActivitiesByStack()
+            mActivity.killAppByStack()
+
+//            finishWithResult(777, "data" to "img1数据")
         }
         img2_ai.click {
             finishWithResult("data" to "img2数据")

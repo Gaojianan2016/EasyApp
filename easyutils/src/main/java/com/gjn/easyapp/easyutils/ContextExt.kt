@@ -63,6 +63,6 @@ fun Context.makeSceneTransitionAnimationBundle(
 /**
  * 判断权限
  * */
-fun Context.checkPermission(permission: String) =
+fun Context.checkPermission(permission: String): Boolean =
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) true
-    else ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+    else ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED

@@ -145,16 +145,37 @@ fun Activity.finishWithResult(resultCode: Int, vararg pairs: Pair<String, *>) {
 }
 
 //////////////////////////////////
-///// ActivityManager
+///// ActivityStackManager
 //////////////////////////////////
 
-internal val activityCache = Stack<Activity>()
+internal val activityStackCache = Stack<Activity>()
 
-val activityList: List<Activity> get() = activityCache.toList()
+val activityListByStack: List<Activity> get() = activityStackCache.toList()
 
-val topActivity: Activity get() {
-    val activity = activityCache.lastElement()
-    return if (!activity.isFinishing) activity else activityCache[activityCache.size - 2]
+val topActivityByStack: Activity get() = activityStackCache.lastElement()
+
+fun finishActivityByStack(activity: Activity) = finishActivityByStack(activity.javaClass)
+
+fun <T : Activity> finishActivityByStack(clazz: Class<T>): Boolean =
+    activityStackCache.removeAll {
+        if (it.javaClass == clazz) it.finishActivity()
+        it.javaClass == clazz
+    }
+
+fun isActivityExistsByStack(activity: Activity) = isActivityExistsByStack(activity.javaClass)
+
+fun <T : Activity> isActivityExistsByStack(clazz: Class<T>): Boolean =
+    activityStackCache.any { it.javaClass == clazz }
+
+fun finishAllActivitiesByStack(): Boolean =
+    activityStackCache.removeAll {
+        it.finishActivity()
+        true
+    }
+
+fun Context.killAppByStack(){
+    finishAllActivitiesByStack()
+    activityManager().killBackgroundProcesses(packageName)
 }
 
 /**

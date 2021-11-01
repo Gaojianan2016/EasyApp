@@ -19,7 +19,8 @@ internal class EasyAppInitializer : Initializer<Unit> {
     private val lifecycleCallbacks = object : Application.ActivityLifecycleCallbacks {
 
         override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-            activityCache.add(activity)
+            if(debug) logI("add    -> ${activity.javaClass.simpleName}", "EasyAppInitializer")
+            activityStackCache.add(activity)
         }
 
         override fun onActivityStarted(activity: Activity) = Unit
@@ -33,11 +34,14 @@ internal class EasyAppInitializer : Initializer<Unit> {
         override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
 
         override fun onActivityDestroyed(activity: Activity) {
-            activityCache.remove(activity)
+            if(debug) logI("remove -> ${activity.javaClass.simpleName}", "EasyAppInitializer")
+            activityStackCache.remove(activity)
         }
     }
 
     companion object {
         internal lateinit var application: Application private set
+
+        const val debug = true
     }
 }

@@ -22,15 +22,6 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
     override fun layoutId() = R.layout.activity_demo
 
-    override fun onResume() {
-        super.onResume()
-        activityList.forEach {
-            println("activityList111 -> ${it.javaClass.simpleName}")
-            println("    ---> isFinishing ${it.isFinishing}")
-        }
-        println("activity top -> ${topActivity.javaClass.simpleName}")
-    }
-
     @SuppressLint("MissingPermission")
     override fun initView() {
         val bmp = R.mipmap.test_img.toBitmap(mActivity)
