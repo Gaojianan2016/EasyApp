@@ -64,7 +64,7 @@ fun Context.shareImage(vararg paths: String) {
     if (paths.isEmpty()) return
     val files = mutableListOf<File>()
     paths.forEach {
-        files.add(it.file())
+        files.add(it.file)
     }
     shareTextImage(null, *files.toTypedArray())
 }
@@ -131,7 +131,7 @@ fun Context.openBrowser(url: String) {
  * 快速摄影
  * */
 fun FragmentActivity.quickPhotography(file: File, block: (Int, Intent?) -> Unit): String {
-    if (!file.createParentDir()) return file.fileName()
+    if (!file.createParentDir()) return file.fileName
     val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
         flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         putExtra(MediaStore.EXTRA_OUTPUT, getLocalFileUri(file))
@@ -140,7 +140,7 @@ fun FragmentActivity.quickPhotography(file: File, block: (Int, Intent?) -> Unit)
         block.invoke(code, data)
         file.notifyMediaFile(this)
     }
-    return file.fileName()
+    return file.fileName
 }
 
 ///////////////////////////////////////
@@ -158,28 +158,5 @@ inline fun <reified T> Fragment.intentOf(vararg pairs: Pair<String, *>) =
 
 inline fun <reified T> Fragment.intentOf(bundle: Bundle): Intent =
     Intent(this.context, T::class.java).apply { putExtras(bundle) }
-
-fun Intent.put(map: Map<String, Any?>): Intent {
-    map.forEach { (k, v) ->
-        when (v) {
-            is Int -> putExtra(k, v)
-            is Float -> putExtra(k, v)
-            is Double -> putExtra(k, v)
-            is Long -> putExtra(k, v)
-            is String -> putExtra(k, v)
-            is Boolean -> putExtra(k, v)
-            is Byte -> putExtra(k, v)
-            is Char -> putExtra(k, v)
-            is Short -> putExtra(k, v)
-            is CharSequence -> putExtra(k, v)
-            is Parcelable -> putExtra(k, v)
-            is Serializable -> putExtra(k, v)
-            is Bundle -> putExtra(k, v)
-            is Array<*> -> putExtra(k, v)
-            is ArrayList<*> -> putExtra(k, v)
-        }
-    }
-    return this
-}
 
 fun Intent.addNewTaskFlag() = addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

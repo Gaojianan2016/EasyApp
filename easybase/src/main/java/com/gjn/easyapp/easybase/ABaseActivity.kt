@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import com.gjn.easyapp.easydialoger.EasyDialogManager
 import com.gjn.easyapp.easydialoger.base.BaseDialogFragment
 import com.gjn.easyapp.easytoaster.ToastUtil
-import com.gjn.easyapp.easyutils.AppManager
 import com.gjn.easyapp.easyutils.createAndroidViewModel
 import com.gjn.easyapp.easyutils.createViewModel
 
@@ -24,7 +23,6 @@ abstract class ABaseActivity : AppCompatActivity(), UIEvent {
         mContext = this
         preCreate(savedInstanceState)
         super.onCreate(savedInstanceState)
-        AppManager.instance.addActivity(this)
         mBundle = intent.extras ?: Bundle()
         mDialogManager = EasyDialogManager(this)
         bindContentView()
@@ -72,7 +70,6 @@ abstract class ABaseActivity : AppCompatActivity(), UIEvent {
     }
 
     override fun onDestroy() {
-        AppManager.instance.removeActivity(this)
         dismissAllEasyDialog()
         super.onDestroy()
     }

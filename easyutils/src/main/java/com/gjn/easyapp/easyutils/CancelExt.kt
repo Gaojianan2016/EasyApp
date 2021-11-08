@@ -7,12 +7,12 @@ import android.os.Environment
 /**
  * SharedPreference路径 /data/data/packageName/shared_prefs
  * */
-fun Context.sharedPreferenceDir() = "/data/data/${packageName}/shared_prefs".file()
+fun Context.sharedPreferenceDir() = "/data/data/${packageName}/shared_prefs".file
 
 /**
  * 数据库路径 /data/data/packageName/databases
  * */
-fun Context.databasesDir() = "/data/data/${packageName}/databases".file()
+fun Context.databasesDir() = "/data/data/${packageName}/databases".file
 
 /**
  * 清除外部缓存 /mnt/sdcard/android/data/packageName/cache
@@ -54,15 +54,15 @@ fun Context.clearAppDatabases() {
 //文件大小
 fun Context.appExternalCacheSize() =
     if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED)
-        externalCacheDir?.fileLength() ?: 0 else 0
+        externalCacheDir?.fileLength ?: 0 else 0
 
-fun Context.appInternalCacheSize() = cacheDir.fileLength()
+fun Context.appInternalCacheSize() = cacheDir.fileLength
 
-fun Context.appFileSize() = filesDir.fileLength()
+fun Context.appFileSize() = filesDir.fileLength
 
-fun Context.appSharedPrefsSize() = sharedPreferenceDir().fileLength()
+fun Context.appSharedPrefsSize() = sharedPreferenceDir().fileLength
 
-fun Context.appDatabasesSize() = databasesDir().fileLength()
+fun Context.appDatabasesSize() = databasesDir().fileLength
 
 object CancelUtils {
 

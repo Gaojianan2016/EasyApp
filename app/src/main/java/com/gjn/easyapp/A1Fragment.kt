@@ -193,9 +193,9 @@ class A1Fragment : BaseLazyFragment() {
 
         btn17.click {
             fileName = mActivity.quickPhotography(
-                "${Environment.getExternalStorageDirectory()}/Test/".file()
+                "${Environment.getExternalStorageDirectory()}/Test/".file
             ) { code, data ->
-                val file = fileName.file()
+                val file = fileName.file
                 if (file.exists()) {
                     println("$fileName 文件存在")
                 } else {
@@ -341,8 +341,8 @@ class A1Fragment : BaseLazyFragment() {
                 btn13 -> {
                     val status = mActivity.statusBarHeight()
                     val navigation = mActivity.navigationBarHeight()
-                    println("状态栏 ${status}px -> ${status.px2dp(mActivity)}dp")
-                    println("底边栏 ${navigation}px -> ${navigation.px2dp(mActivity)}dp")
+                    println("状态栏 ${status}px -> ${status.px2dp()}dp")
+                    println("底边栏 ${navigation}px -> ${navigation.px2dp()}dp")
                 }
                 btn14 -> {
                     val result =

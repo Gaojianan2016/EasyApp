@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import androidx.core.content.pm.PackageInfoCompat
 import java.io.File
 
 /**
@@ -26,14 +27,14 @@ fun Context.packageNameUri(): Uri = packageName.packageNameUri()
  * */
 fun Context.installApp(path: String) {
     if (path.isEmpty()) return
-    installApp(path.file())
+    installApp(path.file)
 }
 
 /**
  * 安装app
  * */
 fun Context.installApp(uri: Uri?) {
-    installApp(uri?.file())
+    installApp(uri?.file)
 }
 
 /**
@@ -124,10 +125,7 @@ fun Context.openAppDetailsSettings(pkgName: String = packageName) {
 fun Context.openUnknownAppSettings() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         startActivity(
-            Intent(
-                Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
-                packageNameUri()
-            )
+            Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageNameUri())
         )
     }
 }
@@ -135,7 +133,7 @@ fun Context.openUnknownAppSettings() {
 /**
  * 获取App PackageInfo
  * */
-fun Context.getAppPackageInfo(pkgName: String = packageName, flag: Int = 0): PackageInfo? =
+fun Context.getAppPackageInfo(pkgName: String = packageName, flag: Int = 0): PackageInfo =
     packageManager.getPackageInfo(pkgName, flag)
 
 /**
@@ -143,9 +141,8 @@ fun Context.getAppPackageInfo(pkgName: String = packageName, flag: Int = 0): Pac
  * */
 fun Context.getAppIcon(pkgName: String = packageName): Drawable? {
     return try {
-        getAppPackageInfo(pkgName)?.applicationInfo?.loadIcon(packageManager)
+        getAppPackageInfo(pkgName).applicationInfo?.loadIcon(packageManager)
     } catch (e: Exception) {
-        e.printStackTrace()
         null
     }
 }
@@ -155,9 +152,8 @@ fun Context.getAppIcon(pkgName: String = packageName): Drawable? {
  * */
 fun Context.getAppIconId(pkgName: String = packageName): Int {
     return try {
-        getAppPackageInfo(pkgName)?.applicationInfo?.icon ?: -1
+        getAppPackageInfo(pkgName).applicationInfo?.icon ?: -1
     } catch (e: Exception) {
-        e.printStackTrace()
         -1
     }
 }
@@ -167,9 +163,8 @@ fun Context.getAppIconId(pkgName: String = packageName): Int {
  * */
 fun Context.getApplicationName(pkgName: String = packageName): String {
     return try {
-        getAppPackageInfo(pkgName)?.applicationInfo?.loadLabel(packageManager).toString()
+        getAppPackageInfo(pkgName).applicationInfo?.loadLabel(packageManager).toString()
     } catch (e: Exception) {
-        e.printStackTrace()
         ""
     }
 }
@@ -179,9 +174,8 @@ fun Context.getApplicationName(pkgName: String = packageName): String {
  * */
 fun Context.getAppPath(pkgName: String = packageName): String {
     return try {
-        getAppPackageInfo(pkgName)?.applicationInfo?.sourceDir ?: ""
+        getAppPackageInfo(pkgName).applicationInfo?.sourceDir ?: ""
     } catch (e: Exception) {
-        e.printStackTrace()
         ""
     }
 }
@@ -191,9 +185,8 @@ fun Context.getAppPath(pkgName: String = packageName): String {
  * */
 fun Context.getAppVersionName(pkgName: String = packageName): String {
     return try {
-        getAppPackageInfo(pkgName)?.versionName ?: ""
+        getAppPackageInfo(pkgName).versionName ?: ""
     } catch (e: Exception) {
-        e.printStackTrace()
         ""
     }
 }
@@ -203,13 +196,8 @@ fun Context.getAppVersionName(pkgName: String = packageName): String {
  * */
 fun Context.getAppVersionCode(pkgName: String = packageName): Long {
     return try {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            getAppPackageInfo(pkgName)?.longVersionCode ?: -1L
-        } else {
-            getAppPackageInfo(pkgName)?.versionCode as Long
-        }
+        PackageInfoCompat.getLongVersionCode(getAppPackageInfo(pkgName))
     } catch (e: Exception) {
-        e.printStackTrace()
         -1L
     }
 }
@@ -256,11 +244,11 @@ fun Context.getAppSignaturesHash(
 fun Context.getAppSignatures(pkgName: String = packageName): Array<Signature>? {
     return try {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            getAppPackageInfo(pkgName, PackageManager.GET_SIGNING_CERTIFICATES)?.signingInfo?.let {
+            getAppPackageInfo(pkgName, PackageManager.GET_SIGNING_CERTIFICATES).signingInfo?.let {
                 if (it.hasMultipleSigners()) it.apkContentsSigners else it.signingCertificateHistory
             }
         } else {
-            getAppPackageInfo(pkgName, PackageManager.GET_SIGNATURES)?.signatures
+            getAppPackageInfo(pkgName, PackageManager.GET_SIGNATURES).signatures
         }
     } catch (e: Exception) {
         null

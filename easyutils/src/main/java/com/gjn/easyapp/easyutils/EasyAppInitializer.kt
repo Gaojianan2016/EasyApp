@@ -6,7 +6,9 @@ import android.content.Context
 import android.os.Bundle
 import androidx.startup.Initializer
 
-
+/**
+ * EasyApp程序初始化器
+ * */
 internal class EasyAppInitializer : Initializer<Unit> {
 
     override fun create(context: Context) {

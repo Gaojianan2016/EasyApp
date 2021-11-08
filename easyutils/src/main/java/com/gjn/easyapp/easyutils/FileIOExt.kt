@@ -16,7 +16,7 @@ fun File.writeString(
 ): Boolean {
     if (content.isEmpty()) return false
     if (!createOrExistsFile()) {
-        println("create ${fileName()} failed.")
+        println("create $fileName failed.")
         return false
     }
     return try {
@@ -36,7 +36,7 @@ fun File.writeString(
 fun File.writeInputStream(stream: InputStream?, append: Boolean = false): Boolean {
     if (stream == null) return false
     if (!createOrExistsFile()) {
-        println("create ${fileName()} failed.")
+        println("create $fileName failed.")
         return false
     }
     return try {

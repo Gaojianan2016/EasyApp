@@ -20,6 +20,13 @@ import java.util.concurrent.TimeUnit
 
 class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener {
 
+    class Test{
+
+        fun test(){
+
+        }
+    }
+
     override fun layoutId() = R.layout.activity_demo
 
     @SuppressLint("MissingPermission")
@@ -272,40 +279,41 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
         btn28_ad.click {
             val file =
-                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".file()
+                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".file
 
             println("file createOrExistsFile ${file.createOrExistsFile()}")
-//            println("file createFile ${file.createFile()}")
+//            println("file createFile ${file.createfile}")
         }
 
         btn29_ad.click {
             val file =
-                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".file()
+                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".file
 
             println("file deleteFile ${file.deleteFile()}")
         }
 
         btn30_ad.click {
             val file =
-                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".file()
+                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".file
 
             println("file rename ${file.rename("text2.txt")}")
         }
 
         btn31_ad.click {
-            val dir = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test".file()
+            val dir = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test".file
             val file =
-                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".file()
+                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".file
             println("dir absolutePath ${dir.absolutePath}")
             println("file absolutePath ${file.absolutePath}")
 
-            println("dir isExistsDir ${dir.isExistsDir()}")
-            println("dir isExistsFile ${dir.isExistsFile()}")
+            println("dir isAvailableDir ${dir.isAvailableDir}")
+            println("dir isAvailableFile ${dir.isAvailableFile}")
 
-            println("file isExistsDir ${file.isExistsDir()}")
-            println("file isExistsFile ${file.isExistsFile()}")
+            println("file isAvailableDir ${file.isAvailableDir}")
+            println("file isAvailableFile ${file.isAvailableFile}")
 
-            println("file MimeType ${file.getMimeTypeFromExtension()}")
+            println("file mimeType ${file.mimeType}")
+            println("file extension ${file.extension}")
 
             dir.findListFiles(FileFilter {
                 return@FileFilter it.isFile
@@ -320,8 +328,8 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             }
 
             val file3 =
-                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text_副本.txt".file()
-            println("${file3.fileName()} fileLength ${file3.fileLength().byteToStr()}")
+                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text_副本.txt".file
+            println("${file3.fileName} fileLength ${file3.fileLength.byteToStr()}")
 
             println(
                 "externalDir getStatFsTotalSize ${
@@ -337,8 +345,8 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
         btn32_ad.click {
             val path = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/"
-            val file = "${path}text.txt".file()
-            val dir = "${path}test1".file()
+            val file = "${path}text.txt".file
+            val dir = "${path}test1".file
 
             println("unzipAssetsFile ${mActivity.unzipAssetsFile("test1.zip", "${path}test1")}")
 
@@ -350,15 +358,15 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 //            println("file writeString ${file.writeString("111")}")
 //            println("file appendString ${file.writeString("\n123", true)}")
 
-//            val file2 = "${path}test1/tt1.txt".file()
+//            val file2 = "${path}test1/tt1.txt".file
 //            println("file writeInputStream ${file.writeInputStream(file2.inputStream())}")
 //            println("file appendInputStream ${file.writeInputStream(file2.inputStream(), true)}")
 
 //            println("file copyToPath ${file.copyToPath("${path}text_副本.txt")}")
 //            println("file moveToPath ${file.moveToPath("${path}text_副本2.txt")}")
 
-//            val dir2 = "${path}test1/t1/t3".file()
-//            val dir3 = "${path}t3_副本".file()
+//            val dir2 = "${path}test1/t1/t3".file
+//            val dir3 = "${path}t3_副本".file
 //            println("dir copyToPath ${dir2.copyToPath(dir3)}")
 
         }
@@ -373,10 +381,10 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn34_ad.click {
-            val dir = "${Environment.getExternalStorageDirectory()}/aA_test".file()
+            val dir = "${Environment.getExternalStorageDirectory()}/aA_test".file
 
-            val file = "${Environment.getExternalStorageDirectory()}/aA_test/2b.jpg".file()
-            val file2 = "${Environment.getExternalStorageDirectory()}/aA_test/e7.jpg".file()
+            val file = "${Environment.getExternalStorageDirectory()}/aA_test/2b.jpg".file
+            val file2 = "${Environment.getExternalStorageDirectory()}/aA_test/e7.jpg".file
 
 //            mActivity.shareText("分享文字")
 //            mActivity.shareTextImage("分享文字图片", file)
@@ -494,8 +502,8 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("get anim_bottom_in ${mActivity.getAppAnimIdentifier("anim_bottom_in")}")
             println("get network_security_config ${mActivity.getAppXmlIdentifier("network_security_config")}")
 
-            val file = "${Environment.getExternalStorageDirectory()}/aA_test/assetsFile.txt".file()
-            val file2 = "${Environment.getExternalStorageDirectory()}/aA_test/rawFile.txt".file()
+            val file = "${Environment.getExternalStorageDirectory()}/aA_test/assetsFile.txt".file
+            val file2 = "${Environment.getExternalStorageDirectory()}/aA_test/rawFile.txt".file
 
             println("assetsStr ${mActivity.assetsStr("test_file.txt")}")
             println("assetsCopyFile ${mActivity.assetsCopyFile("test_file.txt", file)}")
