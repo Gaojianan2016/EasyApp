@@ -50,8 +50,7 @@ inline val File.fileLength: Long
 /**
  * 文件后缀
  * */
-inline val File.suffix: String
-    get() = name.run { return substring(lastIndexOf('.') + 1) }
+inline val File.suffix: String get() = name.run { return substring(lastIndexOf('.') + 1) }
 
 /**
  * mimeType 获取 文件后缀
@@ -81,6 +80,18 @@ inline val File.isAvailableDir: Boolean get() = exists() && isDirectory
  * 是否是可用文件
  * */
 inline val File.isAvailableFile: Boolean get() = exists() && isFile
+
+/**
+ * 获取StatFs总大小
+ * */
+inline val File.statFsTotalSize: Long
+    get() = if (path.isEmpty()) 0L else StatFs(path).run { blockSizeLong * blockCountLong }
+
+/**
+ * 获取StatFs可用大小
+ * */
+inline val File.statFsAvailableSize: Long
+    get() = if (path.isEmpty()) 0L else StatFs(path).run { blockSizeLong * availableBlocksLong }
 
 /**
  * 文件重命名
@@ -316,36 +327,6 @@ fun File.notifyInsertThumbnail(context: Context) {
 }
 
 /**
- * 获取StatFs总大小
- * */
-fun String.getStatFsTotalSize(): Long {
-    if (isEmpty()) return 0L
-    StatFs(this).run {
-        return blockSizeLong * blockCountLong
-    }
-}
-
-/**
- * 获取StatFs可用大小
- * */
-fun String.getStatFsAvailableSize(): Long {
-    if (isEmpty()) return 0L
-    StatFs(this).run {
-        return blockSizeLong * availableBlocksLong
-    }
-}
-
-/**
- * 获取StatFs总大小
- * */
-fun File.getStatFsTotalSize() = path.getStatFsTotalSize()
-
-/**
- * 获取StatFs可用大小
- * */
-fun File.getStatFsAvailableSize() = path.getStatFsAvailableSize()
-
-/**
  * 打开文件
  * */
 fun Context.openFile(file: File) {
@@ -368,23 +349,21 @@ fun Context.openFile(file: File) {
 /**
  * 获取本地文件uri
  * */
-fun Context.getLocalFileUri(file: File): Uri {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+fun Context.getLocalFileUri(file: File): Uri =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         FileProvider.getUriForFile(this, packageName + FILEPROVIDER, file)
     else
         Uri.fromFile(file)
-}
 
 /**
  * 获取本地文件通过uri
  * */
-fun Context.getLocalFileFromUri(uri: Uri): File? {
-    return when (uri.scheme) {
+fun Context.getLocalFileFromUri(uri: Uri): File? =
+    when (uri.scheme) {
         ContentResolver.SCHEME_CONTENT -> getLocalFileFromContentUri(uri)
         ContentResolver.SCHEME_FILE -> uri.file
         else -> null
     }
-}
 
 /**
  * 获取本地文件通过ContentUri
@@ -409,13 +388,14 @@ private fun Context.getLocalFileFromContentUri(uri: Uri): File? {
     return if (filePath.isEmpty()) null else filePath.file
 }
 
-fun Context.unzipAssetsFile(assetName: String, targetPath: String): Boolean {
-    if (assetName.isEmpty() || targetPath.isEmpty()) return false
-    return unzipAssetsFile(assetName, targetPath.file)
-}
+/**
+ * 解压assets文件
+ * */
+fun Context.unzipAssetsFile(assetName: String, targetPath: String) =
+    unzipAssetsFile(assetName, targetPath.file)
 
 /**
- * 解压Assets文件
+ * 解压assets文件
  * @param assetName 文件名
  * @param target    目标文件
  * */

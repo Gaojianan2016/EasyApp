@@ -332,13 +332,13 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("${file3.fileName} fileLength ${file3.fileLength.byteToStr()}")
 
             println(
-                "externalDir getStatFsTotalSize ${
-                    Environment.getExternalStorageDirectory().getStatFsTotalSize().byteToStr()
+                "externalDir statFsTotalSize ${
+                    Environment.getExternalStorageDirectory().statFsTotalSize.byteToStr()
                 }"
             )
             println(
-                "externalDir getStatFsAvailableSize ${
-                    Environment.getExternalStorageDirectory().getStatFsAvailableSize().byteToStr()
+                "externalDir statFsAvailableSize ${
+                    Environment.getExternalStorageDirectory().statFsAvailableSize.byteToStr()
                 }"
             )
         }
