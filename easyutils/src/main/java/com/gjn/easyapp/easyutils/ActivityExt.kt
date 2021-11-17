@@ -46,24 +46,6 @@ inline fun <reified T : Activity> Context.startActivity(
     crossinline block: Intent.() -> Unit = {}
 ) = startActivity(intentOf<T>(*pairs).apply(block), options)
 
-inline fun <reified T : Activity> Fragment.startActivity(
-    @AnimRes enterResId: Int? = null, @AnimRes exitResId: Int? = null,
-    sharedElements: Array<View>? = null,
-    vararg pairs: Pair<String, *>,
-    crossinline block: Intent.() -> Unit = {}
-) = requireActivity().startActivity<T>(enterResId, exitResId, sharedElements, pairs = pairs, block)
-
-inline fun <reified T : Activity> Fragment.startActivity(
-    vararg pairs: Pair<String, *>,
-    crossinline block: Intent.() -> Unit = {}
-) = requireActivity().startActivity<T>(pairs = pairs, block)
-
-inline fun <reified T : Activity> Fragment.startActivity(
-    options: Bundle? = null,
-    vararg pairs: Pair<String, *>,
-    crossinline block: Intent.() -> Unit = {}
-) = requireActivity().startActivity<T>(options, pairs = pairs, block)
-
 //////////////////////////////////
 ///// startActivityForResult
 //////////////////////////////////
@@ -101,32 +83,6 @@ inline fun <reified T : Activity> Activity.startActivityForResult(
     crossinline block: Intent.() -> Unit = {}
 ) = startActivityForResult(intentOf<T>(*pairs).apply(block), requestCode, options)
 
-
-inline fun <reified T : Activity> Fragment.startActivityForResult(
-    requestCode: Int,
-    @AnimRes enterResId: Int? = null, @AnimRes exitResId: Int? = null,
-    sharedElements: Array<View>? = null,
-    vararg pairs: Pair<String, *>,
-    crossinline block: Intent.() -> Unit = {}
-) = requireActivity().startActivityForResult<T>(
-    requestCode,
-    enterResId, exitResId,
-    sharedElements,
-    pairs = pairs, block
-)
-
-inline fun <reified T : Activity> Fragment.startActivityForResult(
-    requestCode: Int,
-    vararg pairs: Pair<String, *>,
-    crossinline block: Intent.() -> Unit = {}
-) = requireActivity().startActivityForResult<T>(requestCode, null, pairs = pairs, block)
-
-inline fun <reified T : Activity> Fragment.startActivityForResult(
-    requestCode: Int,
-    options: Bundle? = null,
-    vararg pairs: Pair<String, *>,
-    crossinline block: Intent.() -> Unit = {}
-) = requireActivity().startActivityForResult<T>(requestCode, options, pairs = pairs, block)
 
 //////////////////////////////////
 ///// finishActivity
@@ -175,7 +131,7 @@ fun finishAllActivitiesByStack(): Boolean =
 
 fun Context.killAppByStack(){
     finishAllActivitiesByStack()
-    activityManager().killBackgroundProcesses(packageName)
+    activityManager.killBackgroundProcesses(packageName)
 }
 
 /**

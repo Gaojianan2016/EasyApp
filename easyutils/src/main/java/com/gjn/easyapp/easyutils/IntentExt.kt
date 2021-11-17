@@ -131,7 +131,7 @@ fun Context.openBrowser(url: String) {
  * 快速摄影
  * */
 fun FragmentActivity.quickPhotography(file: File, block: (Int, Intent?) -> Unit): String {
-    if (!file.createParentDir()) return file.fileName
+    if (!file.createParentDir()) return file.name
     val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
         flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         putExtra(MediaStore.EXTRA_OUTPUT, getLocalFileUri(file))
@@ -140,11 +140,11 @@ fun FragmentActivity.quickPhotography(file: File, block: (Int, Intent?) -> Unit)
         block.invoke(code, data)
         file.notifyMediaFile(this)
     }
-    return file.fileName
+    return file.name
 }
 
 ///////////////////////////////////////
-///    intent 快捷方式
+///    intent便捷生成方式
 ///////////////////////////////////////
 
 inline fun <reified T> Context.intentOf(vararg pairs: Pair<String, *>) =
@@ -153,10 +153,5 @@ inline fun <reified T> Context.intentOf(vararg pairs: Pair<String, *>) =
 inline fun <reified T> Context.intentOf(bundle: Bundle): Intent =
     Intent(this, T::class.java).apply { putExtras(bundle) }
 
-inline fun <reified T> Fragment.intentOf(vararg pairs: Pair<String, *>) =
-    intentOf<T>(bundleOf(*pairs))
-
-inline fun <reified T> Fragment.intentOf(bundle: Bundle): Intent =
-    Intent(this.context, T::class.java).apply { putExtras(bundle) }
 
 fun Intent.addNewTaskFlag() = addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

@@ -5,15 +5,10 @@ import android.content.ClipboardManager
 import android.content.Context
 
 /**
- * 获取剪切板管理器
- * */
-fun Context.getClipboardManager() = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-
-/**
  * 剪切Text
  * */
 fun Context.copyClipboardText(text: CharSequence, label: CharSequence? = packageName) {
-    getClipboardManager().setPrimaryClip(ClipData.newPlainText(label, text))
+    clipboardManager.setPrimaryClip(ClipData.newPlainText(label, text))
 }
 
 /**
@@ -26,13 +21,13 @@ fun Context.clearClipboard() {
 /**
  * 获取剪切板标签
  * */
-fun Context.getClipboardLabel() = getClipboardManager().primaryClipDescription?.label ?: ""
+fun Context.getClipboardLabel() = clipboardManager.primaryClipDescription?.label ?: ""
 
 /**
  * 获取剪切板Text
  * */
 fun Context.getClipboardText(): CharSequence {
-    getClipboardManager().primaryClip?.let {
+    clipboardManager.primaryClip?.let {
         if (it.itemCount > 0) {
             val text = it.getItemAt(0).coerceToText(this)
             if (text != null) {
@@ -47,12 +42,12 @@ fun Context.getClipboardText(): CharSequence {
  * 添加剪切板改变监听
  * */
 fun Context.addClipboardChangedListener(listener: ClipboardManager.OnPrimaryClipChangedListener) {
-    getClipboardManager().addPrimaryClipChangedListener(listener)
+    clipboardManager.addPrimaryClipChangedListener(listener)
 }
 
 /**
  * 移除剪切板改变监听
  * */
 fun Context.removeClipboardChangedListener(listener: ClipboardManager.OnPrimaryClipChangedListener) {
-    getClipboardManager().removePrimaryClipChangedListener(listener)
+    clipboardManager.removePrimaryClipChangedListener(listener)
 }

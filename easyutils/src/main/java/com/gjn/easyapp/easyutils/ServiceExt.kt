@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Build
 
-fun Context.activityManager() = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
 
 /**
  * 获取全部运行的服务
@@ -15,7 +14,7 @@ fun Context.activityManager() = getSystemService(Context.ACTIVITY_SERVICE) as Ac
 @Deprecated("7.0之后只能获取自身app的服务")
 fun Context.getAllRunningServiceNames(): Set<String> {
     val names = mutableSetOf<String>()
-    activityManager().getRunningServices(0x7FFFFFFF).forEach {
+    activityManager.getRunningServices(0x7FFFFFFF).forEach {
         names.add(it.service.className)
     }
     return names

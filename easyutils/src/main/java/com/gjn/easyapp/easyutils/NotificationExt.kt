@@ -15,9 +15,6 @@ import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 
-fun Context.notificationManager() =
-    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
 /**
  * 是否启动通知
  * */
@@ -35,7 +32,7 @@ fun Context.sendNotification(
     block: (NotificationCompat.Builder) -> Unit
 ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        notificationManager().createNotificationChannel(config.notificationCancel)
+        notificationManager.createNotificationChannel(config.notificationCancel)
         println("createNotificationChannel ${config.notificationCancel}")
     }
     val notificationManager = NotificationManagerCompat.from(this)

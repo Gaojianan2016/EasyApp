@@ -2,7 +2,6 @@ package com.gjn.easyapp.easyutils
 
 import android.Manifest.permission.WRITE_SETTINGS
 import android.app.Activity
-import android.app.KeyguardManager
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
@@ -14,10 +13,6 @@ import android.util.DisplayMetrics
 import android.view.Surface
 import android.view.WindowManager
 import androidx.annotation.RequiresPermission
-
-fun Context.windowManager() = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-
-fun Context.keyguardManager() = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
 
 /**
  * 屏幕宽度
@@ -33,14 +28,14 @@ fun Context.screenHeight() = resources.displayMetrics.heightPixels
  * app宽度
  * */
 fun Context.appScreenWidth() = Point().apply {
-    windowManager().defaultDisplay.getSize(this)
+    windowManager.defaultDisplay.getSize(this)
 }.x
 
 /**
  * app高度
  * */
 fun Context.appScreenHeight() = Point().apply {
-    windowManager().defaultDisplay.getSize(this)
+    windowManager.defaultDisplay.getSize(this)
 }.y
 
 /**
@@ -105,7 +100,7 @@ fun Context.isPortrait() =
  * 屏幕旋转度数
  * */
 fun Activity.screenRotation() =
-    when (windowManager().defaultDisplay.rotation) {
+    when (windowManager.defaultDisplay.rotation) {
         Surface.ROTATION_90 -> 90
         Surface.ROTATION_180 -> 180
         Surface.ROTATION_270 -> 270
@@ -118,7 +113,7 @@ fun Activity.screenRotation() =
 fun Activity.screenShot(hasStatusBar: Boolean = true): Bitmap? {
     val bmp = decorViewGroup().toBitmap()
     val dm = DisplayMetrics().apply {
-        windowManager().defaultDisplay.getMetrics(this)
+        windowManager.defaultDisplay.getMetrics(this)
     }
     return if (hasStatusBar) Bitmap.createBitmap(
         bmp,
@@ -138,7 +133,7 @@ fun Activity.screenShot(hasStatusBar: Boolean = true): Bitmap? {
 /**
  * 是否锁屏
  * */
-fun Context.isScreenLock() = keyguardManager().isKeyguardLocked
+fun Context.isScreenLock() = keyguardManager.isKeyguardLocked
 
 /**
  * 设置锁屏时间

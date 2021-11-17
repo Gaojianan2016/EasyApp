@@ -5,8 +5,6 @@ import android.media.AudioManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 
-fun Context.audioManager() = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
 /**
  * 获取声音大小
  * @param streamType [
@@ -20,7 +18,7 @@ fun Context.audioManager() = getSystemService(Context.AUDIO_SERVICE) as AudioMan
  *                    {@link AudioManager#STREAM_ACCESSIBILITY}
  *                  ]
  * */
-fun Context.getVolume(streamType: Int) = audioManager().getStreamVolume(streamType)
+fun Context.getVolume(streamType: Int) = audioManager.getStreamVolume(streamType)
 
 /**
  * 获取最大声音
@@ -35,7 +33,7 @@ fun Context.getVolume(streamType: Int) = audioManager().getStreamVolume(streamTy
  *                    {@link AudioManager#STREAM_ACCESSIBILITY}
  *                  ]
  * */
-fun Context.getMaxVolume(streamType: Int) = audioManager().getStreamMaxVolume(streamType)
+fun Context.getMaxVolume(streamType: Int) = audioManager.getStreamMaxVolume(streamType)
 
 /**
  * 获取最小声音
@@ -51,7 +49,7 @@ fun Context.getMaxVolume(streamType: Int) = audioManager().getStreamMaxVolume(st
  *                  ]
  * */
 @RequiresApi(Build.VERSION_CODES.P)
-fun Context.getMinVolume(streamType: Int) = audioManager().getStreamMinVolume(streamType)
+fun Context.getMinVolume(streamType: Int) = audioManager.getStreamMinVolume(streamType)
 
 /**
  * 设置声音大小
@@ -75,6 +73,6 @@ fun Context.getMinVolume(streamType: Int) = audioManager().getStreamMinVolume(st
  * */
 fun Context.setVolume(volume: Int, streamType: Int, flags:Int){
     try {
-        audioManager().setStreamVolume(streamType, volume, flags)
+        audioManager.setStreamVolume(streamType, volume, flags)
     }catch (e: Exception){}
 }

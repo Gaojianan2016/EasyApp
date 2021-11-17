@@ -7,12 +7,10 @@ import android.os.Build
 import android.telephony.TelephonyManager
 import androidx.annotation.RequiresPermission
 
-fun Context.telephonyManager() = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-
 /**
  * 设备是否是手机
  * */
-fun Context.isPhone() = telephonyManager().phoneType != TelephonyManager.PHONE_TYPE_NONE
+fun Context.isPhone() = telephonyManager.phoneType != TelephonyManager.PHONE_TYPE_NONE
 
 /**
  * 获取设备id
@@ -22,11 +20,11 @@ fun Context.isPhone() = telephonyManager().phoneType != TelephonyManager.PHONE_T
 fun Context.getDeviceId(): String {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) return ""
     try {
-        val deviceId = telephonyManager().deviceId
+        val deviceId = telephonyManager.deviceId
         if (deviceId.isNotEmpty()) return deviceId
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (telephonyManager().imei.isNotEmpty()) return telephonyManager().imei
-            if (telephonyManager().meid.isNotEmpty()) return telephonyManager().meid
+            if (telephonyManager.imei.isNotEmpty()) return telephonyManager.imei
+            if (telephonyManager.meid.isNotEmpty()) return telephonyManager.meid
         }
     } catch (e: Exception) {
         e.printStackTrace()
@@ -59,18 +57,18 @@ fun getSerial(): String {
 /**
  * 是否准备好sim卡
  * */
-fun Context.isSimCardReady() = telephonyManager().simState == TelephonyManager.SIM_STATE_READY
+fun Context.isSimCardReady() = telephonyManager.simState == TelephonyManager.SIM_STATE_READY
 
 /**
  * 获取sim卡运营商名称
  * */
-fun Context.getSimOperatorName(): String = telephonyManager().simOperatorName
+fun Context.getSimOperatorName(): String = telephonyManager.simOperatorName
 
 /**
  * 通过Mnc获取sim卡运营商
  * */
 fun Context.getSimOperatorByMnc(): String {
-    val operator = telephonyManager().simOperator
+    val operator = telephonyManager.simOperator
     if (operator.isNullOrEmpty()) return ""
     return when (operator) {
         "46000", "46002", "46007", "46020" -> "中国移动"

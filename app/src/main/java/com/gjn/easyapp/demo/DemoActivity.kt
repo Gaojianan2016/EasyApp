@@ -329,7 +329,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
             val file3 =
                 "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text_副本.txt".file
-            println("${file3.fileName} fileLength ${file3.fileLength.byteToStr()}")
+            println("${file3.name} fileLength ${file3.fileLength.byteToStr()}")
 
             println(
                 "externalDir statFsTotalSize ${

@@ -27,15 +27,6 @@ inline val fileSeparator: String get() = File.separator
 inline val filePathSeparator: String get() = File.pathSeparator
 
 /**
- * 文件名
- * */
-inline val File.fileName: String
-    get() {
-        val lastSep = absolutePath.lastIndexOf(fileSeparator)
-        return if (lastSep == -1) absolutePath else absolutePath.substring(lastSep + 1)
-    }
-
-/**
  * 文件长度/大小
  * */
 inline val File.fileLength: Long
@@ -50,7 +41,8 @@ inline val File.fileLength: Long
 /**
  * 文件后缀
  * */
-inline val File.suffix: String get() = name.run { return substring(lastIndexOf('.') + 1) }
+inline val File.suffix: String
+    get() = name.run { return substring(lastIndexOf('.') + 1) }
 
 /**
  * mimeType 获取 文件后缀

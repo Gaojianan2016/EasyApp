@@ -10,9 +10,6 @@ import android.provider.Settings
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 
-fun Context.connectivityManager() =
-    applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
 /**
  * 打开无线设置
  * */
@@ -25,7 +22,7 @@ fun Context.openWirelessSettings() {
  * */
 @RequiresPermission(ACCESS_NETWORK_STATE)
 fun Context.isNetworkConnected(): Boolean {
-    val cm = connectivityManager()
+    val cm = connectivityManager
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
         capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) ?: false
@@ -40,7 +37,7 @@ fun Context.isNetworkConnected(): Boolean {
  * */
 @RequiresPermission(ACCESS_NETWORK_STATE)
 fun Context.isWifiConnected(): Boolean {
-    val cm = connectivityManager()
+    val cm = connectivityManager
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
         capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ?: false
@@ -55,7 +52,7 @@ fun Context.isWifiConnected(): Boolean {
  * */
 @RequiresPermission(ACCESS_NETWORK_STATE)
 fun Context.isMobileConnected(): Boolean {
-    val cm = connectivityManager()
+    val cm = connectivityManager
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
         capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ?: false
@@ -70,7 +67,7 @@ fun Context.isMobileConnected(): Boolean {
  * */
 @RequiresPermission(ACCESS_NETWORK_STATE)
 fun Context.isEthernetConnected(): Boolean {
-    val cm = connectivityManager()
+    val cm = connectivityManager
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
         capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) ?: false
@@ -88,7 +85,7 @@ fun Context.registerNetworkCallback(callback: ConnectivityManager.NetworkCallbac
         val request = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .build()
-        connectivityManager().registerNetworkCallback(request, callback)
+        connectivityManager.registerNetworkCallback(request, callback)
         return true
     } catch (e: Exception) {
         e.printStackTrace()
@@ -98,7 +95,7 @@ fun Context.registerNetworkCallback(callback: ConnectivityManager.NetworkCallbac
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 fun Context.unregisterNetworkCallback(callback: ConnectivityManager.NetworkCallback) {
-    connectivityManager().unregisterNetworkCallback(callback)
+    connectivityManager.unregisterNetworkCallback(callback)
 }
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
