@@ -6,6 +6,7 @@ import android.transition.Fade
 import android.transition.Slide
 import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
+import com.gjn.easyapp.easyinitalizer.killAppByStack
 import com.gjn.easyapp.easyutils.*
 import kotlinx.android.synthetic.main.activity_image.*
 

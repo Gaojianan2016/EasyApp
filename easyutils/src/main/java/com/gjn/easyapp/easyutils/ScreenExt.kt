@@ -111,7 +111,7 @@ fun Activity.screenRotation() =
  * 截屏
  * */
 fun Activity.screenShot(hasStatusBar: Boolean = true): Bitmap? {
-    val bmp = decorViewGroup().toBitmap()
+    val bmp = decorViewGroup.toBitmap()
     val dm = DisplayMetrics().apply {
         windowManager.defaultDisplay.getMetrics(this)
     }

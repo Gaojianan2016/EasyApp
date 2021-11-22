@@ -53,13 +53,13 @@ fun Activity.isStatusBarVisible() =
  * */
 fun Activity.setStatusBarLightMode(isLightMode: Boolean) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        var vis = decorViewGroup().systemUiVisibility
+        var vis = decorViewGroup.systemUiVisibility
         vis = if (isLightMode) {
             vis or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         } else {
             vis and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
         }
-        decorViewGroup().systemUiVisibility = vis
+        decorViewGroup.systemUiVisibility = vis
     }
 }
 
@@ -69,7 +69,7 @@ fun Activity.setStatusBarLightMode(isLightMode: Boolean) {
  * */
 fun Activity.isStatusBarLightMode(): Boolean {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        return decorViewGroup().systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR != 0
+        return decorViewGroup.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR != 0
     }
     return false
 }
@@ -125,8 +125,8 @@ fun Activity.transparentStatusBar() {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         val option = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        val vis = decorViewGroup().systemUiVisibility
-        decorViewGroup().systemUiVisibility = option or vis
+        val vis = decorViewGroup.systemUiVisibility
+        decorViewGroup.systemUiVisibility = option or vis
         window.statusBarColor = Color.TRANSPARENT
     } else {
         window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -189,7 +189,7 @@ fun Context.navigationBarHeight(): Int {
  * 设置导航栏是否显示
  * */
 fun Activity.setNavBarVisibility(isVisible: Boolean) {
-    val decorView = decorViewGroup()
+    val decorView = decorViewGroup
     val child = decorView.getChildViewByResourceName("navigationBarBackground")
     if (isVisible) {
         child?.visible()
@@ -212,7 +212,7 @@ fun Activity.setNavBarVisibility(isVisible: Boolean) {
  * */
 fun Activity.isNavBarVisible(): Boolean {
     var isVisible = false
-    val decorView = decorViewGroup()
+    val decorView = decorViewGroup
     val child = decorView.getChildViewByResourceName("navigationBarBackground")
     if (child?.isVisible() == true) {
         isVisible = true
@@ -265,40 +265,40 @@ fun Activity.navigationBarColor() = window.navigationBarColor
  * */
 @RequiresApi(Build.VERSION_CODES.O)
 fun Activity.setNavBarLightMode(isLightMode: Boolean) {
-    var vis = decorViewGroup().systemUiVisibility
+    var vis = decorViewGroup.systemUiVisibility
     vis = if (isLightMode) {
         vis or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
     } else {
         vis and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
     }
-    decorViewGroup().systemUiVisibility = vis
+    decorViewGroup.systemUiVisibility = vis
 }
 
 /**
  * 导航栏是否开启LightMode api26以上
  * */
 fun Activity.isNavBarLightMode() =
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) (decorViewGroup().systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR) != 0
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) (decorViewGroup.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR) != 0
     else false
 
 private fun Activity.showFakeStatusBarView() {
-    decorViewGroup().findViewWithTag<View>(TAG_STATUS_BAR)?.visible()
+    decorViewGroup.findViewWithTag<View>(TAG_STATUS_BAR)?.visible()
 }
 
 private fun Activity.hideFakeStatusBarView() {
-    decorViewGroup().findViewWithTag<View>(TAG_STATUS_BAR)?.gone()
+    decorViewGroup.findViewWithTag<View>(TAG_STATUS_BAR)?.gone()
 }
 
 private fun Activity.addTopOffsetStatusBarHeight() {
-    decorViewGroup().findViewWithTag<View>(TAG_OFFSET)?.addMarginTopEqualStatusBarHeight()
+    decorViewGroup.findViewWithTag<View>(TAG_OFFSET)?.addMarginTopEqualStatusBarHeight()
 }
 
 private fun Activity.subtractTopOffsetStatusBarHeight() {
-    decorViewGroup().findViewWithTag<View>(TAG_OFFSET)?.subtractMarginTopEqualStatusBarHeight()
+    decorViewGroup.findViewWithTag<View>(TAG_OFFSET)?.subtractMarginTopEqualStatusBarHeight()
 }
 
 private fun Activity.applyStatusBarColor(color: Int, isDecor: Boolean): View {
-    val parent: ViewGroup = if (isDecor) decorViewGroup() else contentFrameLayout()
+    val parent: ViewGroup = if (isDecor) decorViewGroup else contentFrameLayout
     var fakeStatusBarView = parent.findViewWithTag<View>(TAG_STATUS_BAR)
     if (fakeStatusBarView != null) {
         if (fakeStatusBarView.visibility == View.GONE) {

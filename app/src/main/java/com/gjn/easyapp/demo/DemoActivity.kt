@@ -11,21 +11,12 @@ import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easyutils.*
 import kotlinx.android.synthetic.main.activity_demo.*
-import kotlinx.android.synthetic.main.fragment_a1.*
 import kotlinx.coroutines.delay
-import java.io.File
 import java.io.FileFilter
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener {
-
-    class Test{
-
-        fun test(){
-
-        }
-    }
 
     override fun layoutId() = R.layout.activity_demo
 
@@ -52,12 +43,15 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         btn3_ad.click {
             mActivity.startActivity<ImageActivity>(
                 sharedElements = arrayOf(btn3_ad),
-                pairs = arrayOf(ImageActivity.DATA to "数据4", ImageActivity.ID to R.mipmap.ic_launcher)
+                pairs = arrayOf(
+                    ImageActivity.DATA to "数据4",
+                    ImageActivity.ID to R.mipmap.ic_launcher
+                )
             )
         }
 
         btn4_ad.click {
-            showToast("是否打开软键盘 ${mActivity.isSoftInputVisible()}")
+            showToast("是否打开软键盘 ${mActivity.isSoftInputVisible}")
         }
 
         btn5_ad.click {
@@ -329,7 +323,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
             val file3 =
                 "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text_副本.txt".file
-            println("${file3.name} fileLength ${file3.fileLength.byteToStr()}")
+            println("${file3.name} fileLength ${file3.fileLength().byteToStr()}")
 
             println(
                 "externalDir statFsTotalSize ${
@@ -385,16 +379,18 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
             val file = "${Environment.getExternalStorageDirectory()}/aA_test/2b.jpg".file
             val file2 = "${Environment.getExternalStorageDirectory()}/aA_test/e7.jpg".file
+            val file3 = "${Environment.getExternalStorageDirectory()}/aA_test/111.png".file
 
 //            mActivity.shareText("分享文字")
 //            mActivity.shareTextImage("分享文字图片", file)
 //            mActivity.shareTextImage("分享文字多图片", file, file2)
 
-//            mActivity.dialPhone("17745645645")
-//            mActivity.sendSms("1774564", "发送内容")
-//            mActivity.openBrowser("https://www.baidu.com")
+//            mActivity.dial("17745645645")
+//            mActivity.sendSMS("1774564", "发送内容")
+//            mActivity.browser("https://www.baidu.com")
+//            mActivity.email("73279625@qq.com", content = "123")
 
-            mActivity.quickPhotography(File(dir, "111.png")) { code, data ->
+            mActivity.quickShoot(file3) { code, data ->
                 println("code $code, data $data")
             }
         }
@@ -432,7 +428,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn38_ad.click {
-            println("areNotificationsEnabled ${mActivity.areNotificationsEnabled()}")
+            println("isNotificationsEnabled ${mActivity.isNotificationsEnabled()}")
 
             mActivity.sendNotification(100) {
                 it.setContentTitle("100通知")
@@ -608,12 +604,17 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("hideSubstring ${"张三丰有限公司".hideSubstring(5, 5)}")
             println("getUrlLastName ${"http://www.baidu.com/xxx.ext".getUrlLastName()}")
 
-            val sp = "StringExt".createImageSpannableStringBuilder(drawable = ActivityCompat.getDrawable(mActivity, R.mipmap.ic_launcher))
+            val sp = "StringExt".createImageSpannableStringBuilder(
+                drawable = ActivityCompat.getDrawable(
+                    mActivity,
+                    R.mipmap.ic_launcher
+                )
+            )
             string_text.text = sp.matcherTextToColor(Color.RED, arrayOf("ext"), true)
         }
 
         btn46_ad.click {
-            mActivity.quickRequestPermissions(arrayOf(Manifest.permission.VIBRATE)){
+            mActivity.quickRequestPermissions(arrayOf(Manifest.permission.VIBRATE)) {
                 mActivity.startVibrate(10_000)
                 launch {
                     delay(5000)

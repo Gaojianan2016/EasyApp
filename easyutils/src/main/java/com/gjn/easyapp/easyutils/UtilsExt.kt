@@ -13,9 +13,16 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
+
+inline val String.uri: Uri get() = Uri.parse(this)
+
+inline val File.uri: Uri get() = Uri.fromFile(this)
+
 fun String.uri(): Uri = Uri.parse(this)
 
 fun File.uri(): Uri = Uri.fromFile(this)
+
+
 
 fun Int.intervalOpen(min: Int, max: Int): Int = min.coerceAtLeast(this.coerceAtMost(max))
 

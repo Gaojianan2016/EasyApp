@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.AnimRes
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
-import java.util.*
 
 //////////////////////
 ///// startActivity
@@ -101,45 +99,21 @@ fun Activity.finishWithResult(resultCode: Int, vararg pairs: Pair<String, *>) {
 }
 
 //////////////////////////////////
-///// ActivityStackManager
+///// 其他常规操作
 //////////////////////////////////
-
-internal val activityStackCache = Stack<Activity>()
-
-val activityListByStack: List<Activity> get() = activityStackCache.toList()
-
-val topActivityByStack: Activity get() = activityStackCache.lastElement()
-
-fun finishActivityByStack(activity: Activity) = finishActivityByStack(activity.javaClass)
-
-fun <T : Activity> finishActivityByStack(clazz: Class<T>): Boolean =
-    activityStackCache.removeAll {
-        if (it.javaClass == clazz) it.finishActivity()
-        it.javaClass == clazz
-    }
-
-fun isActivityExistsByStack(activity: Activity) = isActivityExistsByStack(activity.javaClass)
-
-fun <T : Activity> isActivityExistsByStack(clazz: Class<T>): Boolean =
-    activityStackCache.any { it.javaClass == clazz }
-
-fun finishAllActivitiesByStack(): Boolean =
-    activityStackCache.removeAll {
-        it.finishActivity()
-        true
-    }
-
-fun Context.killAppByStack(){
-    finishAllActivitiesByStack()
-    activityManager.killBackgroundProcesses(packageName)
-}
 
 /**
  * 获取 android.R.id.content 帧布局
  * */
-fun Activity.contentFrameLayout(): FrameLayout = window.findViewById(android.R.id.content)
+inline val Activity.contentFrameLayout: FrameLayout get() = window.findViewById(android.R.id.content)
 
 /**
  * 获取 decorView 布局
  * */
-fun Activity.decorViewGroup(): ViewGroup = window.decorView as ViewGroup
+inline val Activity.decorViewGroup: ViewGroup get() = window.decorView as ViewGroup
+
+inline fun <reified T> Activity.getIntentKey(key: String) =
+    lazy<T?> { intent.extras[key] }
+
+inline fun <reified T> Activity.getIntentKey(key: String, default: T) =
+    lazy { intent.extras[key] ?: default }

@@ -4,12 +4,12 @@ package com.gjn.easyapp.easyutils
 /**
  * 列表需要大于1
  * */
-fun Collection<*>.isList() = isNotEmpty() && size > 1
+inline fun <T> Collection<T>.isList(): Boolean = isNotEmpty() && size > 1
 
 /**
- * 是否小于规定大小
+ * 最多不超过设置数量
  * */
-fun Collection<*>.insufficientSize(size: Int = 10) = isNotEmpty() && this.size < size
+inline fun <T> Collection<T>.insufficientSize(size: Int = 10): Boolean = isNotEmpty() && this.size <= size
 
 /**
  * 分割字符串成列表

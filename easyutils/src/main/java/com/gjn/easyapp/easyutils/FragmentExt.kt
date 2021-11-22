@@ -64,12 +64,11 @@ inline fun <reified T : Activity> Fragment.startActivityForResult(
 /**
  * 快速实例化 带参Fragment
  * */
-fun Fragment.newInstance(vararg pairs: Pair<String, *>) = apply { arguments = bundleOf(*pairs) }
+fun Fragment.newInstance(vararg pairs: Pair<String, *>) =
+    apply { arguments = bundleOf(*pairs) }
 
-inline fun <reified T> Fragment.getArgumentsKey(key: String) = lazy<T?> {
-    arguments[key]
-}
+inline fun <reified T> Fragment.getArgumentsKey(key: String) =
+    lazy<T?> { arguments[key] }
 
-inline fun <reified T> Fragment.getArgumentsKey(key: String, default: T) = lazy {
-    arguments[key] ?: default
-}
+inline fun <reified T> Fragment.getArgumentsKey(key: String, default: T) =
+    lazy { arguments[key] ?: default }

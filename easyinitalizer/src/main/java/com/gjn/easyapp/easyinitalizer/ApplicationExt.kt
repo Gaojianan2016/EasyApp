@@ -8,7 +8,7 @@ import android.content.res.AssetManager
 import android.content.res.Resources
 import android.net.Uri
 import androidx.core.content.pm.PackageInfoCompat
-
+import com.gjn.easyapp.easyinitalizer.EasyAppInitializer
 
 //////////////////////////////////
 ///// ApplicationManager
@@ -27,7 +27,7 @@ inline val applicationInfo: ApplicationInfo get() = application.applicationInfo
 
 inline val packageName: String get() = application.packageName
 
-inline val packageNameUri: Uri get() = packageName.packageNameUri()
+inline val packageNameUri: Uri get() = packageName.packageNameUri
 
 inline val packageManager: PackageManager get() = application.packageManager
 

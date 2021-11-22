@@ -1,7 +1,9 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
+plugins{
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'kotlin-android-extensions'
+}
 
 android {
     compileSdkVersion 29
@@ -89,5 +91,6 @@ dependencies {
     implementation project(path: ':easylogger')
     implementation project(path: ':easytoaster')
     implementation project(path: ':easydialoger')
+    implementation project(path: ':easyinitalizer')
     implementation project(path: ':easyutils')
 }

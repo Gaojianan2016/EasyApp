@@ -27,18 +27,6 @@ inline val fileSeparator: String get() = File.separator
 inline val filePathSeparator: String get() = File.pathSeparator
 
 /**
- * 文件长度/大小
- * */
-inline val File.fileLength: Long
-    get() = if (isDirectory) {
-        var len = 0L
-        listFiles()?.forEach { len += if (it.isDirectory) it.fileLength else it.length() }
-        len
-    } else {
-        length()
-    }
-
-/**
  * 文件后缀
  * */
 inline val File.suffix: String
@@ -84,6 +72,18 @@ inline val File.statFsTotalSize: Long
  * */
 inline val File.statFsAvailableSize: Long
     get() = if (path.isEmpty()) 0L else StatFs(path).run { blockSizeLong * availableBlocksLong }
+
+/**
+ * 文件长度/大小
+ * */
+fun File.fileLength(): Long =
+    if (isDirectory) {
+        var len = 0L
+        listFiles()?.forEach { len += if (it.isDirectory) it.fileLength() else it.length() }
+        len
+    } else {
+        length()
+    }
 
 /**
  * 文件重命名
@@ -290,7 +290,6 @@ fun File.findListFiles(
 /**
  * 更新媒体文件
  * */
-@Deprecated("适用于Android 10 以下的版本")
 fun File.notifyMediaFile(context: Context) {
     notifyScanMediaFile(context)
     notifyInsertThumbnail(context)
@@ -299,12 +298,11 @@ fun File.notifyMediaFile(context: Context) {
 /**
  * 通知文件夹扫描媒体文件
  * */
-@Deprecated("适用于Android 10 以下的版本")
 fun File.notifyScanMediaFile(context: Context) {
     if (!exists()) return
     context.sendBroadcast(
         Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also {
-            it.data = "file://${this.absolutePath}".uri()
+            it.data = "file://${this.absolutePath}".uri
         }
     )
 }
@@ -312,7 +310,6 @@ fun File.notifyScanMediaFile(context: Context) {
 /**
  * 通知文件夹插入缩略图
  * */
-@Deprecated("适用于Android 10 以下的版本")
 fun File.notifyInsertThumbnail(context: Context) {
     if (!exists()) return
     MediaStore.Images.Media.insertImage(context.contentResolver, absolutePath, name, null)

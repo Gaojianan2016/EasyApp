@@ -18,7 +18,7 @@ import androidx.core.app.NotificationManagerCompat
 /**
  * 是否启动通知
  * */
-fun Context.areNotificationsEnabled() =
+fun Context.isNotificationsEnabled() =
     NotificationManagerCompat.from(this).areNotificationsEnabled()
 
 /**

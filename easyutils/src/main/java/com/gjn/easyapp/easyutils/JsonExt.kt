@@ -5,7 +5,7 @@ package com.gjn.easyapp.easyutils
  * */
 fun String?.formatJson(
     tab: String = "",
-    cleanRegex: Regex = "\t|\r|\n".toRegex()
+    cleanRegex: Regex = "[\t\r\n]".toRegex()
 ): String {
     if (isNullOrEmpty()) return ""
     val result = StringBuilder()

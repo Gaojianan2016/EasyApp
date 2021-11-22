@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.telephony.TelephonyManager
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.AnimRes
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
@@ -48,6 +49,8 @@ inline val Context.keyguardManager: KeyguardManager
 inline val Context.audioManager: AudioManager
     get() = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
+inline val Context.inputMethodManager: InputMethodManager
+    get() = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
 /**
  * 制作跳转页面 自定义转场动画
@@ -62,9 +65,9 @@ fun Context.makeCustomAnimationBundle(
  * */
 fun Context.makeSceneTransitionAnimationBundle(
     vararg sharedElements: View
-): Bundle?{
+): Bundle? {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return null
-    val activity = when(this){
+    val activity = when (this) {
         is Activity -> this
         is Fragment -> activity
         else -> null

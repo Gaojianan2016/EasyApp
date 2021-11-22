@@ -15,10 +15,7 @@ fun File.writeString(
     charset: Charset = Charsets.UTF_8
 ): Boolean {
     if (content.isEmpty()) return false
-    if (!createOrExistsFile()) {
-        println("create $fileName failed.")
-        return false
-    }
+    if (!createOrExistsFile()) return false
     return try {
         if (append) appendText(content, charset) else writeText(content, charset)
         true
@@ -35,10 +32,7 @@ fun File.writeString(
  * */
 fun File.writeInputStream(stream: InputStream?, append: Boolean = false): Boolean {
     if (stream == null) return false
-    if (!createOrExistsFile()) {
-        println("create $fileName failed.")
-        return false
-    }
+    if (!createOrExistsFile()) return false
     return try {
         if (append) appendBytes(stream.readBytes()) else writeBytes(stream.readBytes())
         true

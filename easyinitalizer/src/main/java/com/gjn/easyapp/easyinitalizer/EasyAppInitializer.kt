@@ -1,10 +1,11 @@
-package com.gjn.easyapp.easyutils
+package com.gjn.easyapp.easyinitalizer
 
 import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import androidx.startup.Initializer
+import com.gjn.easyapp.easyutils.logI
 
 /**
  * EasyApp程序初始化器

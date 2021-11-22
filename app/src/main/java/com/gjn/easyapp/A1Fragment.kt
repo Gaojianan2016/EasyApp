@@ -4,12 +4,10 @@ import android.Manifest
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.os.Bundle
 import android.os.Environment
 import android.view.View
 import androidx.core.app.ActivityCompat
 import com.gjn.easyapp.databinding.DialogTestBinding
-import com.gjn.easyapp.demo.DemoActivity
 import com.gjn.easyapp.easybase.BaseLazyFragment
 import com.gjn.easyapp.easydialoger.base.simpleDataBindingDialog
 import com.gjn.easyapp.easynetworker.DownLoadManager
@@ -192,9 +190,9 @@ class A1Fragment : BaseLazyFragment() {
         }
 
         btn17.click {
-            fileName = mActivity.quickPhotography(
-                "${Environment.getExternalStorageDirectory()}/Test/".file
-            ) { code, data ->
+            fileName = mActivity.quickShoot(
+                "${Environment.getExternalStorageDirectory()}/Test/11.png".file
+            ) { _, _ ->
                 val file = fileName.file
                 if (file.exists()) {
                     println("$fileName 文件存在")
