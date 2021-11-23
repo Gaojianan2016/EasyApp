@@ -174,7 +174,7 @@ inline val Activity.contentViewInvisibleHeight: Int
         content.getWindowVisibleDisplayFrame(outRect)
         val delta = abs(content.bottom - outRect.bottom)
         //差值超过通知栏+状态栏高度
-        return if (delta > navigationBarHeight() + statusBarHeight()) delta else 0
+        return if (delta > navigationBarHeight + statusBarHeight) delta else 0
     }
 
 /**
@@ -186,5 +186,5 @@ inline val Activity.decorViewInvisibleHeight: Int
         decorViewGroup.getWindowVisibleDisplayFrame(outRect)
         val delta = abs(decorViewGroup.bottom - outRect.bottom)
         //差值超过通知栏+状态栏高度
-        return if (delta > navigationBarHeight() + statusBarHeight()) delta else 0
+        return if (delta > navigationBarHeight + statusBarHeight) delta else 0
     }

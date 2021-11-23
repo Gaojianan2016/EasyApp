@@ -1,18 +1,17 @@
 package com.gjn.easyapp.easyutils
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
 
 /**
  * SharedPreference路径 /data/data/packageName/shared_prefs
  * */
-fun Context.sharedPreferenceDir() = "/data/data/${packageName}/shared_prefs".file
+inline val Context.sharedPreferenceDir get() = "/data/data/${packageName}/shared_prefs".toFile()
 
 /**
  * 数据库路径 /data/data/packageName/databases
  * */
-fun Context.databasesDir() = "/data/data/${packageName}/databases".file
+inline val Context.databasesDir get() = "/data/data/${packageName}/databases".toFile()
 
 /**
  * 清除外部缓存 /mnt/sdcard/android/data/packageName/cache
@@ -41,50 +40,40 @@ fun Context.clearAppFile() {
  * 清除SharedPreference /data/data/packageName/shared_prefs
  */
 fun Context.clearAppSharedPrefs() {
-    sharedPreferenceDir().deleteFile()
+    sharedPreferenceDir.deleteFile()
 }
 
 /**
  * 清除数据库 /data/data/packageName/databases
  */
 fun Context.clearAppDatabases() {
-    databasesDir().deleteFile()
+    databasesDir.deleteFile()
+}
+
+fun Context.clearAppAllData(){
+    clearAppInternalCache()
+    clearAppExternalCache()
+    clearAppFile()
+    clearAppDatabases()
+    clearAppSharedPrefs()
+}
+
+fun Context.clearAppCancel(){
+    clearAppInternalCache()
+    clearAppExternalCache()
 }
 
 //文件大小
 fun Context.appExternalCacheSize() =
     if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED)
-        externalCacheDir?.fileLength() ?: 0 else 0
+        externalCacheDir?.getFileLength() ?: 0 else 0
 
-fun Context.appInternalCacheSize() = cacheDir.fileLength()
+fun Context.appInternalCacheSize() = cacheDir.getFileLength()
 
-fun Context.appFileSize() = filesDir.fileLength()
+fun Context.appFileSize() = filesDir.getFileLength()
 
-fun Context.appSharedPrefsSize() = sharedPreferenceDir().fileLength()
+fun Context.appSharedPrefsSize() = sharedPreferenceDir.getFileLength()
 
-fun Context.appDatabasesSize() = databasesDir().fileLength()
+fun Context.appDatabasesSize() = databasesDir.getFileLength()
 
-object CancelUtils {
-
-    @SuppressLint("SdCardPath")
-    const val DATA = "/data/data/"
-    const val SHARED_PREFERENCE = "/shared_prefs"
-    const val DATABASES = "/databases"
-
-    fun clearAppAllData(context: Context) {
-        context.clearAppInternalCache()
-        context.clearAppFile()
-        context.clearAppExternalCache()
-        context.clearAppDatabases()
-        context.clearAppSharedPrefs()
-    }
-
-    fun clearAppCancel(context: Context) {
-        context.clearAppInternalCache()
-        context.clearAppExternalCache()
-    }
-
-    fun getAppCancelSize(context: Context) =
-        context.appExternalCacheSize() + context.appInternalCacheSize()
-
-}
+fun Context.appCancelSize() = appExternalCacheSize() + appInternalCacheSize()

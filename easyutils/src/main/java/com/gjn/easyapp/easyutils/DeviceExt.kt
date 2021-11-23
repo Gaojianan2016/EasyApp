@@ -18,6 +18,11 @@ import java.net.NetworkInterface
 private const val DEFAULT_MAC_ADDRESS = "02:00:00:00:00:00"
 
 /**
+ * 模拟器默认AndroidID
+ * */
+private const val EMULATOR_ANDROID_ID = "9774d56d682e549c"
+
+/**
  * 设备是否root
  * */
 fun isDeviceRooted(): Boolean {
@@ -45,12 +50,12 @@ fun Context.isAdbEnabled() =
 /**
  * 获取设备版本名称
  * */
-fun sdkVersionName(): String = Build.VERSION.RELEASE
+inline val sdkVersionName: String get() = Build.VERSION.RELEASE
 
 /**
  * 获取设备版本code
  * */
-fun sdkVersionCode(): Int = Build.VERSION.SDK_INT
+inline val sdkVersionCode: Int get() = Build.VERSION.SDK_INT
 
 /**
  * 获取设备AndroidID
@@ -58,8 +63,7 @@ fun sdkVersionCode(): Int = Build.VERSION.SDK_INT
 @SuppressLint("HardwareIds")
 fun Context.androidID(): String {
     val id = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-    //9774d56d682e549c 模拟器生成的固定id
-    if (id == null || id == "9774d56d682e549c") return ""
+    if (id == null || id == EMULATOR_ANDROID_ID) return ""
     return id
 }
 

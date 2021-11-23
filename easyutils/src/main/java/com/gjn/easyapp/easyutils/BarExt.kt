@@ -22,10 +22,11 @@ private const val KEY_OFFSET = -0x539
 /**
  * 获取状态栏高度(px)
  * */
-fun Context.statusBarHeight(): Int {
-    val resId = getSystemDimenIdentifier("status_bar_height")
-    return if (resId > 0) resources.getDimensionPixelSize(resId) else 0
-}
+inline val Context.statusBarHeight: Int
+    get() {
+        val resId = getSystemDimenIdentifier("status_bar_height")
+        return if (resId > 0) resources.getDimensionPixelSize(resId) else 0
+    }
 
 /**
  * 设置是否显示状态栏 全屏相关有FLAG_FULLSCREEN
@@ -45,7 +46,7 @@ fun Activity.setStatusBarVisibility(isVisible: Boolean) {
 /**
  * 状态栏是否可见
  * */
-fun Activity.isStatusBarVisible() =
+fun Activity.isStatusBarVisible(): Boolean =
     window.attributes.flags and WindowManager.LayoutParams.FLAG_FULLSCREEN == 0
 
 /**
@@ -90,7 +91,7 @@ fun View.setStatusBarColor(@ColorInt color: Int) {
     (context as Activity).transparentStatusBar()
     visible()
     layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-    layoutParams.height = context.statusBarHeight()
+    layoutParams.height = context.statusBarHeight
     setBackgroundColor(color)
 }
 
@@ -143,7 +144,7 @@ fun View.addMarginTopEqualStatusBarHeight() {
     if (getTag(KEY_OFFSET) == true) return
     val params = layoutParams as ViewGroup.MarginLayoutParams
     params.setMargins(
-        params.leftMargin, params.topMargin + context.statusBarHeight(),
+        params.leftMargin, params.topMargin + context.statusBarHeight,
         params.rightMargin, params.bottomMargin
     )
     //设置offSet
@@ -158,7 +159,7 @@ fun View.subtractMarginTopEqualStatusBarHeight() {
     if (getTag(KEY_OFFSET) != true) return
     val params = layoutParams as ViewGroup.MarginLayoutParams
     params.setMargins(
-        params.leftMargin, params.topMargin - context.statusBarHeight(),
+        params.leftMargin, params.topMargin - context.statusBarHeight,
         params.rightMargin, params.bottomMargin
     )
     //设置offSet
@@ -168,22 +169,24 @@ fun View.subtractMarginTopEqualStatusBarHeight() {
 /**
  * 获取actionBar高度(px)
  * */
-fun Application.actionBarHeight(): Int {
-    val tValue = TypedValue()
-    return if (theme.resolveAttribute(android.R.attr.actionBarSize, tValue, true)) {
-        TypedValue.complexToDimensionPixelSize(tValue.data, resources.displayMetrics)
-    } else {
-        0
+inline val Application.actionBarHeight: Int
+    get() {
+        val tValue = TypedValue()
+        return if (theme.resolveAttribute(android.R.attr.actionBarSize, tValue, true)) {
+            TypedValue.complexToDimensionPixelSize(tValue.data, resources.displayMetrics)
+        } else {
+            0
+        }
     }
-}
 
 /**
  * 获取导航栏高度(px)
  * */
-fun Context.navigationBarHeight(): Int {
-    val resId = getSystemDimenIdentifier("navigation_bar_height")
-    return if (resId > 0) resources.getDimensionPixelSize(resId) else 0
-}
+inline val Context.navigationBarHeight: Int
+    get() {
+        val resId = getSystemDimenIdentifier("navigation_bar_height")
+        return if (resId > 0) resources.getDimensionPixelSize(resId) else 0
+    }
 
 /**
  * 设置导航栏是否显示
@@ -277,9 +280,12 @@ fun Activity.setNavBarLightMode(isLightMode: Boolean) {
 /**
  * 导航栏是否开启LightMode api26以上
  * */
-fun Activity.isNavBarLightMode() =
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) (decorViewGroup.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR) != 0
-    else false
+fun Activity.isNavBarLightMode(): Boolean =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        (decorViewGroup.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR) != 0
+    } else {
+        false
+    }
 
 private fun Activity.showFakeStatusBarView() {
     decorViewGroup.findViewWithTag<View>(TAG_STATUS_BAR)?.visible()
@@ -310,7 +316,7 @@ private fun Activity.applyStatusBarColor(color: Int, isDecor: Boolean): View {
         fakeStatusBarView = View(this).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                statusBarHeight()
+                statusBarHeight
             )
             setBackgroundColor(color)
             tag = TAG_STATUS_BAR

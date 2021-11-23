@@ -79,7 +79,7 @@ fun Context.shareImage(vararg paths: String) {
     if (paths.isEmpty()) return
     val files = mutableListOf<File>().apply {
         paths.forEach {
-            add(it.file)
+            add(it.toFile())
         }
     }
     shareTextImage(files = files.toTypedArray())

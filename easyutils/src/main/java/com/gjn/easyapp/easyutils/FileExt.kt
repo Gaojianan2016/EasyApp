@@ -18,13 +18,13 @@ private const val FILEPROVIDER = ".fileprovider"
 private const val APP = "/app"
 private const val DATA = "_data"
 
-inline val String.file: File get() = File(this)
-
-inline val Uri.file: File get() = File(path)
-
 inline val fileSeparator: String get() = File.separator
 
 inline val filePathSeparator: String get() = File.pathSeparator
+
+fun String.toFile(): File = File(this)
+
+fun Uri.toFile(): File = File(path)
 
 /**
  * 文件后缀
@@ -49,37 +49,38 @@ inline val File.mimeType: String?
 /**
  * file转换为byte[]
  * */
-inline val File.byteArray: ByteArray get() = inputStream().use { return it.readBytes() }
+fun File.toByteArray(): ByteArray = inputStream().use { return it.readBytes() }
 
 /**
  * 是否是可用文件夹
  * */
-inline val File.isAvailableDir: Boolean get() = exists() && isDirectory
+fun File.isAvailableDir(): Boolean = exists() && isDirectory
 
 /**
  * 是否是可用文件
  * */
-inline val File.isAvailableFile: Boolean get() = exists() && isFile
+fun File.isAvailableFile(): Boolean = exists() && isFile
 
 /**
  * 获取StatFs总大小
  * */
-inline val File.statFsTotalSize: Long
-    get() = if (path.isEmpty()) 0L else StatFs(path).run { blockSizeLong * blockCountLong }
+fun File.getStatFsTotalSize() =
+    if (path.isEmpty()) 0L else StatFs(path).run { blockSizeLong * blockCountLong }
 
 /**
  * 获取StatFs可用大小
  * */
-inline val File.statFsAvailableSize: Long
-    get() = if (path.isEmpty()) 0L else StatFs(path).run { blockSizeLong * availableBlocksLong }
+fun File.getStatFsAvailableSize() =
+    if (path.isEmpty()) 0L else StatFs(path).run { blockSizeLong * availableBlocksLong }
+
 
 /**
  * 文件长度/大小
  * */
-fun File.fileLength(): Long =
+fun File.getFileLength(): Long =
     if (isDirectory) {
         var len = 0L
-        listFiles()?.forEach { len += if (it.isDirectory) it.fileLength() else it.length() }
+        listFiles()?.forEach { len += if (it.isDirectory) it.getFileLength() else it.length() }
         len
     } else {
         length()
@@ -93,7 +94,7 @@ fun File.rename(newName: String): Boolean {
     if (!exists()) return false
     if (newName.isEmpty() || name.isEmpty()) return false
     if (newName == name) return true
-    val newFile = "$parent$fileSeparator$newName".file
+    val newFile = "$parent$fileSeparator$newName".toFile()
     return !newFile.exists() && this.renameTo(newFile)
 }
 
@@ -147,7 +148,7 @@ fun File.createFile(): Boolean {
  * */
 fun File.copyToPath(targetPath: String): Boolean {
     if (targetPath.isEmpty()) return false
-    return copyToPath(targetPath.file)
+    return copyToPath(targetPath.toFile())
 }
 
 /**
@@ -156,7 +157,7 @@ fun File.copyToPath(targetPath: String): Boolean {
  * */
 fun File.moveToPath(targetPath: String): Boolean {
     if (targetPath.isEmpty()) return false
-    return moveToPath(targetPath.file)
+    return moveToPath(targetPath.toFile())
 }
 
 /**
@@ -183,14 +184,14 @@ fun File.copyOrMoveDir(target: File, move: Boolean = false): Boolean {
     if (target.path.contains(path)) return false
 
     //文件夹不可用
-    if (!isAvailableDir) return false
+    if (!isAvailableDir()) return false
 
     //创建文件夹失败
     if (!target.createOrExistsDir()) return false
 
     //遍历
     listFiles()?.forEach {
-        val tempFile = (target.path + fileSeparator + it.name).file
+        val tempFile = (target.path + fileSeparator + it.name).toFile()
         if (it.isFile) {
             if (!it.copyOrMoveFile(tempFile, move)) return false
         } else if (it.isDirectory) {
@@ -211,7 +212,7 @@ fun File.copyOrMoveFile(target: File, move: Boolean = false): Boolean {
     if (this == target) return false
 
     //文件不可用
-    if (!isAvailableFile) return false
+    if (!isAvailableFile()) return false
 
     //文件存在 删除失败
     if (target.exists() && !target.delete()) return false
@@ -350,7 +351,7 @@ fun Context.getLocalFileUri(file: File): Uri =
 fun Context.getLocalFileFromUri(uri: Uri): File? =
     when (uri.scheme) {
         ContentResolver.SCHEME_CONTENT -> getLocalFileFromContentUri(uri)
-        ContentResolver.SCHEME_FILE -> uri.file
+        ContentResolver.SCHEME_FILE -> uri.toFile()
         else -> null
     }
 
@@ -374,14 +375,14 @@ private fun Context.getLocalFileFromContentUri(uri: Uri): File? {
     } catch (e: Exception) {
         e.printStackTrace()
     }
-    return if (filePath.isEmpty()) null else filePath.file
+    return if (filePath.isEmpty()) null else filePath.toFile()
 }
 
 /**
  * 解压assets文件
  * */
 fun Context.unzipAssetsFile(assetName: String, targetPath: String) =
-    unzipAssetsFile(assetName, targetPath.file)
+    unzipAssetsFile(assetName, targetPath.toFile())
 
 /**
  * 解压assets文件

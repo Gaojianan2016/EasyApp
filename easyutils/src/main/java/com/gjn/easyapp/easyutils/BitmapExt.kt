@@ -17,6 +17,7 @@ import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.app.ActivityCompat
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -382,30 +383,6 @@ private fun Canvas.drawStaticLayout(text: CharSequence, textPaint: TextPaint) {
 
 /**
  * 添加图片水印
- * */
-fun Bitmap.addImageWatermark(
-    mark: Bitmap?,
-    left: Float = 0f,
-    top: Float = 0f,
-    degrees: Float = 0f,
-    @IntRange(from = 0, to = 255) alpha: Int = 255,
-    recycle: Boolean = false
-): Bitmap {
-    if (mark == null) return this
-    val bitmap = copy(config, true)
-    val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        this.alpha = alpha
-    }
-    Canvas(bitmap).run {
-        rotate(degrees, left, top)
-        drawBitmap(mark, left, top, paint)
-    }
-    if (recycle && !isRecycled && bitmap != this) recycle()
-    return bitmap
-}
-
-/**
- * 添加图片水印
  * @param gravity [0..9]之间
  * 位置入下
  * 1 2 3
@@ -435,6 +412,30 @@ fun Bitmap.addImageWatermark(
         else -> 0f
     }
     return addImageWatermark(markBitmap, left, top, degrees, alpha, recycle)
+}
+
+/**
+ * 添加图片水印
+ * */
+fun Bitmap.addImageWatermark(
+    mark: Bitmap?,
+    left: Float = 0f,
+    top: Float = 0f,
+    degrees: Float = 0f,
+    @IntRange(from = 0, to = 255) alpha: Int = 255,
+    recycle: Boolean = false
+): Bitmap {
+    if (mark == null) return this
+    val bitmap = copy(config, true)
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        this.alpha = alpha
+    }
+    Canvas(bitmap).run {
+        rotate(degrees, left, top)
+        drawBitmap(mark, left, top, paint)
+    }
+    if (recycle && !isRecycled && bitmap != this) recycle()
+    return bitmap
 }
 
 /**

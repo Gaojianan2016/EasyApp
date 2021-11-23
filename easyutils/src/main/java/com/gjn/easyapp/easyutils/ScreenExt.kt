@@ -124,9 +124,9 @@ fun Activity.screenShot(hasStatusBar: Boolean = true): Bitmap? {
     ) else Bitmap.createBitmap(
         bmp,
         0,
-        statusBarHeight(),
+        statusBarHeight,
         dm.widthPixels,
-        dm.heightPixels - statusBarHeight()
+        dm.heightPixels - statusBarHeight
     )
 }
 

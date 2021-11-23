@@ -32,12 +32,10 @@ class A1Fragment : BaseLazyFragment() {
     override fun lazyData() {
         println("A1Fragment lazyData")
 
-        setOnClickListeners(
-            btn0, btn1, btn2, btn3,
-            btn4, btn6, btn8, btn9,
-            btn10, btn11, btn12, btn13,
-            btn14, listener = Click()
-        )
+        arrayOf(
+            btn0, btn1, btn2, btn3, btn4, btn6, btn8,
+            btn9, btn10, btn11, btn12, btn13, btn14
+        ).setOnClickListeners(Click())
 
         btn5.click {
             println("屏幕宽度 ${mActivity.screenWidth()} 屏幕高度 ${mActivity.screenHeight()}")
@@ -191,9 +189,9 @@ class A1Fragment : BaseLazyFragment() {
 
         btn17.click {
             fileName = mActivity.quickShoot(
-                "${Environment.getExternalStorageDirectory()}/Test/11.png".file
+                "${Environment.getExternalStorageDirectory()}/Test/11.png".toFile()
             ) { _, _ ->
-                val file = fileName.file
+                val file = fileName.toFile()
                 if (file.exists()) {
                     println("$fileName 文件存在")
                 } else {
@@ -337,8 +335,8 @@ class A1Fragment : BaseLazyFragment() {
 //                    })
                 }
                 btn13 -> {
-                    val status = mActivity.statusBarHeight()
-                    val navigation = mActivity.navigationBarHeight()
+                    val status = mActivity.statusBarHeight
+                    val navigation = mActivity.navigationBarHeight
                     println("状态栏 ${status}px -> ${status.px2dp()}dp")
                     println("底边栏 ${navigation}px -> ${navigation.px2dp()}dp")
                 }

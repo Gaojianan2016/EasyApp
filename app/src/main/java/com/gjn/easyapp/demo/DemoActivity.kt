@@ -90,7 +90,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn7_ad.click {
-            val logo = R.drawable.ic_launcher_foreground.vectorToBitmap(mActivity)
+            val logo = R.drawable.ic_launcher_background.vectorToBitmap(mActivity)
             val bmp2 = bmp?.addImageWatermark(logo, 9, 0.5f, 88, -45f)
             iv1_ad.setImageBitmap(bmp2)
 
@@ -126,7 +126,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn10_ad.click {
-            CancelUtils.clearAppAllData(mActivity)
+            mActivity.clearAppAllData()
             showToast("清理成功")
         }
 
@@ -164,13 +164,13 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn16_ad.click {
-            println("statusBarHeight ${mActivity.statusBarHeight()}")
+            println("statusBarHeight ${mActivity.statusBarHeight}")
             println("isStatusBarVisible ${mActivity.isStatusBarVisible()}")
             println("isStatusBarLightMode ${mActivity.isStatusBarLightMode()}")
 
-            println("actionBarHeight ${mActivity.application.actionBarHeight()}")
+            println("actionBarHeight ${mActivity.application.actionBarHeight}")
 
-            println("navigationBarHeight ${mActivity.navigationBarHeight()}")
+            println("navigationBarHeight ${mActivity.navigationBarHeight}")
             println("isNavBarVisible ${mActivity.isNavBarVisible()}")
             println("isNavBarLightMode ${mActivity.isNavBarLightMode()}")
         }
@@ -189,9 +189,9 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
         btn18_ad.click {
             println("isAutoBrightnessEnabled ${mActivity.isAutoBrightnessEnabled()}")
-            println("getMaxBrightness ${mActivity.getMaxBrightness()}")
-            println("getBrightness ${mActivity.getBrightness()}")
-            println("getWindowBrightness ${window.getWindowBrightness()}")
+            println("screenBrightness ${mActivity.screenBrightness}")
+            println("screenMaxBrightness ${mActivity.screenMaxBrightness}")
+            println("windowBrightness ${window.windowBrightness}")
         }
 
         btn19_ad.click {
@@ -243,8 +243,8 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         btn26_ad.click {
             println("isDeviceRooted ${isDeviceRooted()}")
             println("isAdbEnabled ${mActivity.isAdbEnabled()}")
-            println("sdkVersionName ${sdkVersionName()}")
-            println("sdkVersionCode ${sdkVersionCode()}")
+            println("sdkVersionName ${sdkVersionName}")
+            println("sdkVersionCode ${sdkVersionCode}")
             println("androidID ${mActivity.androidID()}")
             println("getMacAddress ${mActivity.getMacAddress()}")
         }
@@ -273,7 +273,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
         btn28_ad.click {
             val file =
-                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".file
+                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".toFile()
 
             println("file createOrExistsFile ${file.createOrExistsFile()}")
 //            println("file createFile ${file.createfile}")
@@ -281,30 +281,30 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
         btn29_ad.click {
             val file =
-                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".file
+                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".toFile()
 
             println("file deleteFile ${file.deleteFile()}")
         }
 
         btn30_ad.click {
             val file =
-                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".file
+                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".toFile()
 
             println("file rename ${file.rename("text2.txt")}")
         }
 
         btn31_ad.click {
-            val dir = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test".file
+            val dir = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test".toFile()
             val file =
-                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".file
+                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".toFile()
             println("dir absolutePath ${dir.absolutePath}")
             println("file absolutePath ${file.absolutePath}")
 
-            println("dir isAvailableDir ${dir.isAvailableDir}")
-            println("dir isAvailableFile ${dir.isAvailableFile}")
+            println("dir isAvailableDir ${dir.isAvailableDir()}")
+            println("dir isAvailableFile ${dir.isAvailableFile()}")
 
-            println("file isAvailableDir ${file.isAvailableDir}")
-            println("file isAvailableFile ${file.isAvailableFile}")
+            println("file isAvailableDir ${file.isAvailableDir()}")
+            println("file isAvailableFile ${file.isAvailableFile()}")
 
             println("file mimeType ${file.mimeType}")
             println("file extension ${file.extension}")
@@ -322,25 +322,25 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             }
 
             val file3 =
-                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text_副本.txt".file
-            println("${file3.name} fileLength ${file3.fileLength().byteToStr()}")
+                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text_副本.txt".toFile()
+            println("${file3.name} fileLength ${file3.getFileLength().byteToStr()}")
 
             println(
                 "externalDir statFsTotalSize ${
-                    Environment.getExternalStorageDirectory().statFsTotalSize.byteToStr()
+                    Environment.getExternalStorageDirectory().getStatFsTotalSize().byteToStr()
                 }"
             )
             println(
                 "externalDir statFsAvailableSize ${
-                    Environment.getExternalStorageDirectory().statFsAvailableSize.byteToStr()
+                    Environment.getExternalStorageDirectory().getStatFsAvailableSize().byteToStr()
                 }"
             )
         }
 
         btn32_ad.click {
             val path = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/"
-            val file = "${path}text.txt".file
-            val dir = "${path}test1".file
+            val file = "${path}text.txt".toFile()
+            val dir = "${path}test1".toFile()
 
             println("unzipAssetsFile ${mActivity.unzipAssetsFile("test1.zip", "${path}test1")}")
 
@@ -352,15 +352,15 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 //            println("file writeString ${file.writeString("111")}")
 //            println("file appendString ${file.writeString("\n123", true)}")
 
-//            val file2 = "${path}test1/tt1.txt".file
+//            val file2 = "${path}test1/tt1.txt".toFile()
 //            println("file writeInputStream ${file.writeInputStream(file2.inputStream())}")
 //            println("file appendInputStream ${file.writeInputStream(file2.inputStream(), true)}")
 
 //            println("file copyToPath ${file.copyToPath("${path}text_副本.txt")}")
 //            println("file moveToPath ${file.moveToPath("${path}text_副本2.txt")}")
 
-//            val dir2 = "${path}test1/t1/t3".file
-//            val dir3 = "${path}t3_副本".file
+//            val dir2 = "${path}test1/t1/t3".toFile()
+//            val dir3 = "${path}t3_副本".toFile()
 //            println("dir copyToPath ${dir2.copyToPath(dir3)}")
 
         }
@@ -375,11 +375,11 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn34_ad.click {
-            val dir = "${Environment.getExternalStorageDirectory()}/aA_test".file
+            val dir = "${Environment.getExternalStorageDirectory()}/aA_test".toFile()
 
-            val file = "${Environment.getExternalStorageDirectory()}/aA_test/2b.jpg".file
-            val file2 = "${Environment.getExternalStorageDirectory()}/aA_test/e7.jpg".file
-            val file3 = "${Environment.getExternalStorageDirectory()}/aA_test/111.png".file
+            val file = "${Environment.getExternalStorageDirectory()}/aA_test/2b.jpg".toFile()
+            val file2 = "${Environment.getExternalStorageDirectory()}/aA_test/e7.jpg".toFile()
+            val file3 = "${Environment.getExternalStorageDirectory()}/aA_test/111.png".toFile()
 
 //            mActivity.shareText("分享文字")
 //            mActivity.shareTextImage("分享文字图片", file)
@@ -498,8 +498,8 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("get anim_bottom_in ${mActivity.getAppAnimIdentifier("anim_bottom_in")}")
             println("get network_security_config ${mActivity.getAppXmlIdentifier("network_security_config")}")
 
-            val file = "${Environment.getExternalStorageDirectory()}/aA_test/assetsFile.txt".file
-            val file2 = "${Environment.getExternalStorageDirectory()}/aA_test/rawFile.txt".file
+            val file = "${Environment.getExternalStorageDirectory()}/aA_test/assetsFile.txt".toFile()
+            val file2 = "${Environment.getExternalStorageDirectory()}/aA_test/rawFile.txt".toFile()
 
             println("assetsStr ${mActivity.assetsStr("test_file.txt")}")
             println("assetsCopyFile ${mActivity.assetsCopyFile("test_file.txt", file)}")

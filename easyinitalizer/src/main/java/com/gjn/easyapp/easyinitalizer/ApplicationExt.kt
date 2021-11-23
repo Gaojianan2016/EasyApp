@@ -27,7 +27,7 @@ inline val applicationInfo: ApplicationInfo get() = application.applicationInfo
 
 inline val packageName: String get() = application.packageName
 
-inline val packageNameUri: Uri get() = packageName.packageNameUri
+inline val packageNameUri: Uri get() = packageName.toPackageNameUri()
 
 inline val packageManager: PackageManager get() = application.packageManager
 

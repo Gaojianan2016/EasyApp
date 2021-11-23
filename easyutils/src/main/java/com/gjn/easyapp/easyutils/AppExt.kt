@@ -15,26 +15,26 @@ import java.io.File
 /**
  * 包名转uri
  * */
-inline val String.packageNameUri: Uri get() = Uri.parse("package:$this")
+inline fun String.toPackageNameUri(): Uri = Uri.parse("package:$this")
 
 /**
  * 获取packageName的Uri
  * */
-inline val Context.packageNameUri: Uri get() = packageName.packageNameUri
+inline fun Context.toPackageNameUri(): Uri = packageName.toPackageNameUri()
 
 /**
  * 安装app
  * */
 fun Context.installApp(path: String) {
     if (path.isEmpty()) return
-    installApp(path.file)
+    installApp(path.toFile())
 }
 
 /**
  * 安装app
  * */
 fun Context.installApp(uri: Uri?) {
-    installApp(uri?.file)
+    installApp(uri?.toFile())
 }
 
 /**
@@ -55,7 +55,7 @@ fun Context.installApp(file: File?) {
  * 卸载app
  * */
 fun Context.uninstallApp(pkgName: String) {
-    startActivity(Intent(Intent.ACTION_DELETE, pkgName.packageNameUri).addNewTaskFlag())
+    startActivity(Intent(Intent.ACTION_DELETE, pkgName.toPackageNameUri()).addNewTaskFlag())
 }
 
 /**
@@ -103,9 +103,7 @@ fun Context.isIntentAvailable(intent: Intent) =
  * 打开app
  * */
 fun Context.openApp(pkgName: String) {
-    if (isInstalled(pkgName)) {
-        startActivity(getAppLauncherIntent(pkgName))
-    }
+    if (isInstalled(pkgName)) startActivity(getAppLauncherIntent(pkgName))
 }
 
 /**
@@ -115,7 +113,7 @@ fun Context.openAppDetailsSettings(pkgName: String = packageName) {
     if (isInstalled(pkgName)) {
         val intent = Intent(
             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-            pkgName.packageNameUri
+            pkgName.toPackageNameUri()
         )
         if (isIntentAvailable(intent)) startActivity(intent)
     }
@@ -126,7 +124,7 @@ fun Context.openAppDetailsSettings(pkgName: String = packageName) {
  * */
 fun Context.openUnknownAppSettings() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        startActivity(Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageNameUri))
+        startActivity(Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, toPackageNameUri()))
     }
 }
 
