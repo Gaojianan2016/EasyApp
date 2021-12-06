@@ -9,7 +9,7 @@ inline fun <T> Collection<T>.isList(): Boolean = isNotEmpty() && size > 1
 /**
  * 最多不超过设置数量
  * */
-inline fun <T> Collection<T>.insufficientSize(size: Int = 10): Boolean = isNotEmpty() && this.size <= size
+inline fun <T> Collection<T>.isLimitSize(size: Int = 10): Boolean = isNotEmpty() && this.size <= size
 
 /**
  * 分割字符串成列表

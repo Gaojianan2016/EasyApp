@@ -43,3 +43,10 @@ private fun StringBuilder.addTab(line: Int) {
         append('\t')
     }
 }
+
+fun String.isJson(): Boolean =
+    try {
+        true
+    } catch (e: Exception) {
+        false
+    }

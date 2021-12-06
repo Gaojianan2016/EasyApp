@@ -158,7 +158,7 @@ class MediaStorageManager(private val context: Context) {
                     thumbCursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA)
                 )
             }
-            thumbCursor.close()
+            thumbCursor.tryClose()
         }
 
         return MediaInfo(name, path, parent, parentPath, mimeType, width, height, size, addData)

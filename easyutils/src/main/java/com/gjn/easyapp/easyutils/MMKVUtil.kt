@@ -6,24 +6,40 @@ import com.tencent.mmkv.MMKV
 
 class MMKVUtil private constructor(private val mmkv: MMKV) {
 
-    fun encode(key: String, value: Any?) {
+    fun encode(pair: Pair<String, Any?>) {
+        val key = pair.first
+        val value = pair.second ?: return
         when (value) {
-            is String -> mmkv.encode(key, value)
+            // Scalars
             is Boolean -> mmkv.encode(key, value)
-            is Int -> mmkv.encode(key, value)
-            is Float -> mmkv.encode(key, value)
             is Double -> mmkv.encode(key, value)
+            is Float -> mmkv.encode(key, value)
+            is Int -> mmkv.encode(key, value)
             is Long -> mmkv.encode(key, value)
-            is ByteArray -> mmkv.encode(key, value)
+
+            // References
             is Parcelable -> mmkv.encode(key, value)
-            else -> {
-                Log.e("MMKVUtil", "$value encode fail.")
+
+            // Scalar arrays
+            is ByteArray -> mmkv.encode(key, value)
+
+            // Reference set
+            is Set<*> -> {
+                val componentType = value.javaClass.componentType!!
+                @Suppress("UNCHECKED_CAST")
+                when {
+                    String::class.java.isAssignableFrom(componentType) ->{
+                        mmkv.encode(key, value as Set<String>)
+                    }
+                    else -> {
+                        val valueType = componentType.canonicalName
+                        throw IllegalArgumentException(
+                            "Illegal value set type $valueType for key \"$key\""
+                        )
+                    }
+                }
             }
         }
-    }
-
-    fun encodeStringSet(key: String, value: Set<String>) {
-        mmkv.encode(key, value)
     }
 
     fun decodeString(key: String, defaultValue: String = ""): String =

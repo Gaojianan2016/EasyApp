@@ -13,40 +13,93 @@ import android.util.DisplayMetrics
 import android.view.Surface
 import android.view.WindowManager
 import androidx.annotation.RequiresPermission
+import androidx.fragment.app.Fragment
 
 /**
  * 屏幕宽度
  * */
-fun Context.screenWidth() = resources.displayMetrics.widthPixels
+inline val Context.screenWidth: Int get() = resources.displayMetrics.widthPixels
 
 /**
  * 屏幕高度
  * */
-fun Context.screenHeight() = resources.displayMetrics.heightPixels
+inline val Context.screenHeight: Int get() = resources.displayMetrics.heightPixels
 
 /**
  * app宽度
  * */
-fun Context.appScreenWidth() = Point().apply {
-    windowManager.defaultDisplay.getSize(this)
-}.x
+inline val Context.appScreenWidth: Int
+    get() = Point().apply {
+        windowManager.defaultDisplay.getSize(this)
+    }.x
 
 /**
  * app高度
  * */
-fun Context.appScreenHeight() = Point().apply {
-    windowManager.defaultDisplay.getSize(this)
-}.y
+inline val Context.appScreenHeight: Int
+    get() = Point().apply {
+        windowManager.defaultDisplay.getSize(this)
+    }.y
 
 /**
- * 获取屏幕density
+ * 屏幕density
  * */
-fun getScreenDensity() = Resources.getSystem().displayMetrics.density
+inline val screenDensity: Float get() = Resources.getSystem().displayMetrics.density
 
 /**
- * 获取屏幕densityDpi
+ * 屏幕densityDpi
  * */
-fun getScreenDensityDpi() = Resources.getSystem().displayMetrics.densityDpi
+inline val screenDensityDpi: Int get() = Resources.getSystem().displayMetrics.densityDpi
+
+/**
+ * 横屏
+ * */
+inline var Fragment.isLandscape: Boolean
+    get() = activity?.isLandscape == true
+    set(value) {
+        activity?.isLandscape = value
+    }
+
+inline var Activity.isLandscape: Boolean
+    get() = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    set(value) {
+        requestedOrientation = if (value) {
+            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+    }
+
+/**
+ * 竖屏
+ * */
+inline var Fragment.isPortrait: Boolean
+    get() = activity?.isPortrait == true
+    set(value) {
+        activity?.isPortrait = value
+    }
+
+inline var Activity.isPortrait: Boolean
+    get() = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    set(value) {
+        requestedOrientation = if (value) {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
+    }
+
+/**
+ * 屏幕旋转度数
+ * */
+inline val Activity.screenRotation: Int
+    get() =
+        when (windowManager.defaultDisplay.rotation) {
+            Surface.ROTATION_90 -> 90
+            Surface.ROTATION_180 -> 180
+            Surface.ROTATION_270 -> 270
+            else -> 0
+        }
 
 /**
  * Activity是否全屏
@@ -71,63 +124,16 @@ fun Activity.clearFullScreen() {
 }
 
 /**
- * Activity横屏
- * */
-fun Activity.landscape() {
-    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-}
-
-/**
- * Activity竖屏
- * */
-fun Activity.portrait() {
-    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-}
-
-/**
- * 是否横屏
- * */
-fun Context.isLandscape() =
-    resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-
-/**
- * 是否竖屏
- * */
-fun Context.isPortrait() =
-    resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-
-/**
- * 屏幕旋转度数
- * */
-fun Activity.screenRotation() =
-    when (windowManager.defaultDisplay.rotation) {
-        Surface.ROTATION_90 -> 90
-        Surface.ROTATION_180 -> 180
-        Surface.ROTATION_270 -> 270
-        else -> 0
-    }
-
-/**
  * 截屏
  * */
 fun Activity.screenShot(hasStatusBar: Boolean = true): Bitmap? {
     val bmp = decorViewGroup.toBitmap()
-    val dm = DisplayMetrics().apply {
-        windowManager.defaultDisplay.getMetrics(this)
-    }
-    return if (hasStatusBar) Bitmap.createBitmap(
-        bmp,
-        0,
-        0,
-        dm.widthPixels,
-        dm.heightPixels
-    ) else Bitmap.createBitmap(
-        bmp,
-        0,
-        statusBarHeight,
-        dm.widthPixels,
-        dm.heightPixels - statusBarHeight
-    )
+    val dm = DisplayMetrics().apply { windowManager.defaultDisplay.getMetrics(this) }
+    val x = 0
+    val y = if (hasStatusBar) 0 else statusBarHeight
+    val width = dm.widthPixels
+    val height = if (hasStatusBar) statusBarHeight else dm.heightPixels - statusBarHeight
+    return Bitmap.createBitmap(bmp, x, y, width, height)
 }
 
 /**
@@ -150,6 +156,5 @@ fun Context.getScreenLockTime() =
     try {
         Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
     } catch (e: Exception) {
-        e.printStackTrace()
         -1
     }

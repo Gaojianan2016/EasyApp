@@ -231,9 +231,9 @@ class EasyDialogManager {
     ): BaseDialogFragment? {
         if (mActivity == null) return null
         val edge = when (size) {
-            LOADING_B -> mActivity!!.screenWidth() / LOADING_B
-            LOADING_N -> mActivity!!.screenWidth() / LOADING_N
-            else -> mActivity!!.screenWidth() / LOADING_S
+            LOADING_B -> mActivity!!.screenWidth / LOADING_B
+            LOADING_N -> mActivity!!.screenWidth / LOADING_N
+            else -> mActivity!!.screenWidth / LOADING_S
         }
         val dialogFragment = EasyDialogFragment.newInstance(R.layout.edf_dialog_loading,
             object : ConvertLayoutDialogFragment {

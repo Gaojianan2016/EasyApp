@@ -1,5 +1,8 @@
 package com.gjn.easyapp.easyutils
 
+/**
+ * 实现单例伴生类
+ * */
 open class SingletonCompanionImpl<out T, in A>(initializer: (A) -> T) {
     private var initializer: ((A) -> T)? = initializer
     @Volatile

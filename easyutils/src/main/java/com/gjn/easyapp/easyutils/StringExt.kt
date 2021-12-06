@@ -1,38 +1,15 @@
 package com.gjn.easyapp.easyutils
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
-import androidx.annotation.ArrayRes
 import androidx.annotation.ColorInt
-import androidx.annotation.StringRes
+import java.util.*
 
-/**
- * 获取字符串
- * */
-fun Context.string(
-    @StringRes resId: Int,
-    vararg formatArgs: Any
-) = try {
-    getString(resId, *formatArgs)
-} catch (e: Exception) {
-    e.printStackTrace()
-    resId.toString()
-}
-
-/**
- * 获取字符串数组
- * */
-fun Context.stringArray(@ArrayRes resId: Int): Array<String> =
-    try {
-        resources.getStringArray(resId)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        arrayOf(resId.toString())
-    }
+inline val randomUUIDString: String
+    get() = UUID.randomUUID().toString()
 
 /**
  * 转为MD5
@@ -97,9 +74,8 @@ fun String.containsEmoji(): Boolean {
 /**
  * 是否是emoji字符
  * */
-fun Char.isEmoji() = !(toInt() == 0x0 || toInt() == 0x9 ||
-        toInt() == 0xA || toInt() == 0xD || toInt() in 0x20..0xD7FF
-        || toInt() in 0xE000..0xFFFD)
+fun Char.isEmoji(): Boolean = !(toInt() == 0x0 || toInt() == 0x9 || toInt() == 0xA
+        || toInt() == 0xD || toInt() in 0x20..0xD7FF || toInt() in 0xE000..0xFFFD)
 
 /**
  * 字节转gb mb kb字符串 0.5Tb 1.20Gb 60.00Mb 798.35Kb 666b
@@ -151,12 +127,12 @@ fun String.hideSubstring(start: Int = 1, end: Int = 1): String {
  * 获取url最后一个/后的名字
  * */
 fun String.getUrlLastName(): String =
-    uri().lastPathSegment ?: substring(lastIndexOf('/') + 1)
+    toUri().lastPathSegment ?: substring(lastIndexOf('/') + 1)
 
 /**
  * 设置省略文本
  * */
-fun String?.setOmittedText(max: Int, suffix: String = "..."): String? =
+fun String.setOmittedText(max: Int, suffix: String = "..."): String =
     if (isNullOrEmpty() || length < max) this else substring(0, max) + suffix
 
 /**

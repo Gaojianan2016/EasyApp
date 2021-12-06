@@ -51,7 +51,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn4_ad.click {
-            showToast("是否打开软键盘 ${mActivity.isSoftInputVisible}")
+            showToast("是否打开软键盘 ${mActivity.isSoftInputVisible()}")
         }
 
         btn5_ad.click {
@@ -485,9 +485,10 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         btn41_ad.click {
             println("17745645645 isMobileNumber ${"17745645645".isMobileNumber()}")
             println("01114556677 isTelNumber ${"01114556677".isTelNumber()}")
-            println("35001119900101237x isTelNumber ${"35001119900101237x".isIdCard()}")
+            println("35001119900101237x isIdCard ${"35001119900101237x".isIdCard()}")
             println("456456@asd.com isEmail ${"456456@asd.com".isEmail()}")
             println("aaa://www.456.net isUrl ${"aaa://www.456.net".isUrl()}")
+            println("http1://www.111.net isWebUrl ${"http1://www.111.net".isWebUrl()}")
             println("127.0.0.01 isIpAddress ${"127.0.0.01".isIpAddress()}")
             println("360000 isZhPostCode ${"360000".isZhPostCode()}")
         }
@@ -509,18 +510,18 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn43_ad.click {
-            println("screenWidth ${mActivity.screenWidth()}")
-            println("screenHeight ${mActivity.screenHeight()}")
-            println("appScreenWidth ${mActivity.appScreenWidth()}")
-            println("appScreenHeight ${mActivity.appScreenHeight()}")
+            println("screenWidth ${mActivity.screenWidth}")
+            println("screenHeight ${mActivity.screenHeight}")
+            println("appScreenWidth ${mActivity.appScreenWidth}")
+            println("appScreenHeight ${mActivity.appScreenHeight}")
 
-            println("getScreenDensity ${getScreenDensity()}")
-            println("getScreenDensityDpi ${getScreenDensityDpi()}")
+            println("screenDensity ${screenDensity}")
+            println("screenDensityDpi ${screenDensityDpi}")
 
             println("isFullScreen ${mActivity.isFullScreen()}")
-            println("isLandscape ${mActivity.isLandscape()}")
-            println("isPortrait ${mActivity.isPortrait()}")
-            println("screenRotation ${mActivity.screenRotation()}")
+            println("isLandscape ${mActivity.isLandscape}")
+            println("isPortrait ${mActivity.isPortrait}")
+            println("screenRotation ${mActivity.screenRotation}")
             println("isScreenLock ${mActivity.isScreenLock()}")
             println("getScreenLockTime ${mActivity.getScreenLockTime()}")
 
@@ -624,8 +625,8 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn47_ad.click {
-            println("viewWidth ${btn47_ad.viewWidth()}")
-            println("viewHeight ${btn47_ad.viewHeight()}")
+            println("viewWidth ${btn47_ad.viewWidth}")
+            println("viewHeight ${btn47_ad.viewHeight}")
             println("isVisible ${btn47_ad.isVisible()}")
             println("isLayoutRtl ${mActivity.isLayoutRtl()}")
         }
@@ -633,7 +634,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
     private fun runService() {
         launch {
-            TestService::class.java.startService(mActivity)
+            mActivity.startService<TestService>()
             println("isServiceRunning1 ${mActivity.isServiceRunning(TestService::class.java)}")
 
             mActivity.getAllRunningServiceNames().forEach {
@@ -641,7 +642,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             }
 
             delay(6000)
-            TestService::class.java.stopService(mActivity)
+            mActivity.stopService<TestService>()
             println("isServiceRunning2 ${mActivity.isServiceRunning(TestService::class.java)}")
         }
     }

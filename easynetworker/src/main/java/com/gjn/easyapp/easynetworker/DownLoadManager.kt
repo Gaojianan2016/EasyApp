@@ -148,12 +148,8 @@ class DownLoadManager(private val activity: FragmentActivity) {
                 onDownLoadListener?.fail(call)
             }
         } finally {
-            try {
-                iStream?.close()
-                fos?.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            iStream?.tryClose()
+            fos?.tryClose()
         }
         launchMain {
             onDownLoadListener?.end(call)

@@ -1,5 +1,6 @@
 package com.gjn.easyapp.easyutils
 
+import androidx.core.util.PatternsCompat
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -28,20 +29,9 @@ object RegexConstants {
         "^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9Xx])$"
 
     /**
-     * E-mail
-     * */
-    const val REGEX_EMAIL = "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$"
-
-    /**
      * url
      * */
     const val REGEX_URL = "[a-zA-z]+://[^\\s]*"
-
-    /**
-     * ip地址
-     * */
-    const val REGEX_IP_ADDRESS =
-        "((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-5]|[01]?\\d\\d?)"
 
     /**
      * 中国邮编号码
@@ -53,7 +43,7 @@ object RegexConstants {
  * 是否是手机号码
  * */
 fun CharSequence.isMobileNumber(): Boolean {
-    if (this.isEmpty()) return false
+    if (isEmpty()) return false
     return Pattern.matches(RegexConstants.REGEX_MOBILE_NUMBER, this)
 }
 
@@ -61,7 +51,7 @@ fun CharSequence.isMobileNumber(): Boolean {
  * 是否是电话号码
  * */
 fun CharSequence.isTelNumber(): Boolean {
-    if (this.isEmpty()) return false
+    if (isEmpty()) return false
     return Pattern.matches(RegexConstants.REGEX_TEL_NUMBER, this)
 }
 
@@ -69,7 +59,7 @@ fun CharSequence.isTelNumber(): Boolean {
  * 是否是身份证
  * */
 fun CharSequence.isIdCard(): Boolean {
-    if (this.isEmpty()) return false
+    if (isEmpty()) return false
     return Pattern.matches(RegexConstants.REGEX_ID_CARD_2, this)
             || Pattern.matches(RegexConstants.REGEX_ID_CARD_1, this)
 }
@@ -78,31 +68,39 @@ fun CharSequence.isIdCard(): Boolean {
  * 是否是E-mail
  * */
 fun CharSequence.isEmail(): Boolean {
-    if (this.isEmpty()) return false
-    return Pattern.matches(RegexConstants.REGEX_EMAIL, this)
+    if (isEmpty()) return false
+    return PatternsCompat.EMAIL_ADDRESS.matcher(this).matches()
 }
 
 /**
  * 是否是url
  * */
 fun CharSequence.isUrl(): Boolean {
-    if (this.isEmpty()) return false
+    if (isEmpty()) return false
     return Pattern.matches(RegexConstants.REGEX_URL, this)
+}
+
+/**
+ * 是否是webUrl
+ * */
+fun CharSequence.isWebUrl(): Boolean {
+    if (isEmpty()) return false
+    return PatternsCompat.WEB_URL.matcher(this).matches()
 }
 
 /**
  * 是否是Ip地址
  * */
 fun CharSequence.isIpAddress(): Boolean {
-    if (this.isEmpty()) return false
-    return Pattern.matches(RegexConstants.REGEX_IP_ADDRESS, this)
+    if (isEmpty()) return false
+    return PatternsCompat.IP_ADDRESS.matcher(this).matches()
 }
 
 /**
  * 是否是中国邮编号码
  * */
 fun CharSequence.isZhPostCode(): Boolean {
-    if (this.isEmpty()) return false
+    if (isEmpty()) return false
     return Pattern.matches(RegexConstants.REGEX_ZH_POST_CODE, this)
 }
 

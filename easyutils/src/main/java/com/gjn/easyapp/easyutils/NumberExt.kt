@@ -44,3 +44,13 @@ fun Double.format(
     }
     return prefix + (df?.format(this) ?: "") + suffix
 }
+
+fun Int.format(
+    prefix: String = "",
+    suffix: String = ""
+): String = prefix + this + suffix
+
+fun Long.format(
+    prefix: String = "",
+    suffix: String = ""
+): String = prefix + this + suffix

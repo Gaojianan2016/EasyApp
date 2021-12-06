@@ -193,7 +193,7 @@ inline val Context.navigationBarHeight: Int
  * */
 fun Activity.setNavBarVisibility(isVisible: Boolean) {
     val decorView = decorViewGroup
-    val child = decorView.getChildViewByResourceName("navigationBarBackground")
+    val child = decorView.findChildViewByResourceName("navigationBarBackground")
     if (isVisible) {
         child?.visible()
     } else {
@@ -216,7 +216,7 @@ fun Activity.setNavBarVisibility(isVisible: Boolean) {
 fun Activity.isNavBarVisible(): Boolean {
     var isVisible = false
     val decorView = decorViewGroup
-    val child = decorView.getChildViewByResourceName("navigationBarBackground")
+    val child = decorView.findChildViewByResourceName("navigationBarBackground")
     if (child?.isVisible() == true) {
         isVisible = true
     }

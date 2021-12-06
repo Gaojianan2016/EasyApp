@@ -3,12 +3,14 @@ package com.gjn.easyapp.easyutils
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.AnimRes
 import androidx.core.os.bundleOf
+import kotlin.math.abs
 
 //////////////////////
 ///// startActivity
@@ -117,3 +119,27 @@ inline fun <reified T> Activity.getIntentKey(key: String) =
 
 inline fun <reified T> Activity.getIntentKey(key: String, default: T) =
     lazy { intent.extras[key] ?: default }
+
+/**
+ * 获取 android.R.id.content 未显示高度
+ * */
+inline val Activity.contentViewInvisibleHeight: Int
+    get() {
+        val content = contentFrameLayout
+        val outRect = Rect().apply { content.getWindowVisibleDisplayFrame(this) }
+        val delta = abs(content.bottom - outRect.bottom)
+        //差值超过通知栏+状态栏高度
+        return if (delta > navigationBarHeight + statusBarHeight) delta else 0
+    }
+
+/**
+ * 获取decorView未显示高度
+ * */
+inline val Activity.decorViewInvisibleHeight: Int
+    get() {
+        val decorView = decorViewGroup
+        val outRect = Rect().apply { decorView.getWindowVisibleDisplayFrame(this) }
+        val delta = abs(decorView.bottom - outRect.bottom)
+        //差值超过通知栏+状态栏高度
+        return if (delta > navigationBarHeight + statusBarHeight) delta else 0
+    }

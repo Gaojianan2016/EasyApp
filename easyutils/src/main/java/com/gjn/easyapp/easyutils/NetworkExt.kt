@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.gjn.easyapp.easyutils
 
 import android.Manifest.permission.ACCESS_NETWORK_STATE
@@ -24,11 +26,11 @@ fun Context.openWirelessSettings() {
 fun Context.isNetworkConnected(): Boolean {
     val cm = connectivityManager
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
-        capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) ?: false
+        cm.getNetworkCapabilities(cm.activeNetwork)?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+            ?: false
     } else {
-        val info = cm.activeNetworkInfo
-        info?.isConnected ?: false
+        cm.activeNetworkInfo?.isConnected
+            ?: false
     }
 }
 
@@ -39,11 +41,11 @@ fun Context.isNetworkConnected(): Boolean {
 fun Context.isWifiConnected(): Boolean {
     val cm = connectivityManager
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
-        capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ?: false
+        cm.getNetworkCapabilities(cm.activeNetwork)?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+            ?: false
     } else {
-        val info = cm.activeNetworkInfo
-        info?.let { it.isConnected && it.type == ConnectivityManager.TYPE_WIFI } ?: false
+        cm.activeNetworkInfo?.let { it.isConnected && it.type == ConnectivityManager.TYPE_WIFI }
+            ?: false
     }
 }
 
@@ -54,11 +56,11 @@ fun Context.isWifiConnected(): Boolean {
 fun Context.isMobileConnected(): Boolean {
     val cm = connectivityManager
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
-        capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ?: false
+        cm.getNetworkCapabilities(cm.activeNetwork)?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+            ?: false
     } else {
-        val info = cm.activeNetworkInfo
-        info?.let { it.isConnected && it.type == ConnectivityManager.TYPE_MOBILE } ?: false
+        cm.activeNetworkInfo?.let { it.isConnected && it.type == ConnectivityManager.TYPE_MOBILE }
+            ?: false
     }
 }
 
@@ -69,11 +71,10 @@ fun Context.isMobileConnected(): Boolean {
 fun Context.isEthernetConnected(): Boolean {
     val cm = connectivityManager
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
-        capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) ?: false
+        cm.getNetworkCapabilities(cm.activeNetwork)?.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+            ?: false
     } else {
-        val info = cm.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET)
-        info?.let { it.state == NetworkInfo.State.CONNECTED || it.state == NetworkInfo.State.CONNECTING }
+        cm.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET)?.let { it.state == NetworkInfo.State.CONNECTED || it.state == NetworkInfo.State.CONNECTING }
             ?: false
     }
 }
@@ -81,16 +82,16 @@ fun Context.isEthernetConnected(): Boolean {
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @RequiresPermission(ACCESS_NETWORK_STATE)
 fun Context.registerNetworkCallback(callback: ConnectivityManager.NetworkCallback): Boolean {
-    try {
+    return try {
         val request = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .build()
         connectivityManager.registerNetworkCallback(request, callback)
-        return true
+        true
     } catch (e: Exception) {
         e.printStackTrace()
+        false
     }
-    return false
 }
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -169,7 +170,7 @@ class NetworkStateManager : ConnectivityManager.NetworkCallback() {
 
     interface OnNetworkStateListener {
         /**
-         * @param type -1 默认连接成功 0 移动网络 1 wifi网络 100其他网络
+         * @param type 默认连接成功 0 移动网络 1 wifi网络 100其他网络
          * */
         fun onConnected(type: Int)
 

@@ -4,8 +4,10 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.ArrayRes
 import androidx.annotation.LayoutRes
 import androidx.annotation.RawRes
+import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import java.io.File
@@ -113,14 +115,14 @@ fun Context.assetsCopyFile(fileName: String, target: File): Boolean {
 /**
  * 获取raw String
  * */
-fun Context.rawStr(@RawRes resId: Int): String {
-    return try {
+fun Context.rawStr(@RawRes resId: Int): String =
+    try {
         String(resources.openRawResource(resId).readBytes())
     } catch (e: Exception) {
         e.printStackTrace()
         ""
     }
-}
+
 
 /**
  * 复制assets file
@@ -157,3 +159,32 @@ fun <T : ViewDataBinding> Context?.inflateDataBindingUtil(
     root: ViewGroup? = null,
     attachToRoot: Boolean = false
 ): T = DataBindingUtil.inflate(LayoutInflater.from(this), resource, root, attachToRoot) as T
+
+
+/////////////////////////////////
+////  string 操作
+/////////////////////////////////
+
+/**
+ * 获取字符串
+ * */
+fun Context.string(
+    @StringRes resId: Int,
+    vararg formatArgs: Any
+) = try {
+    getString(resId, *formatArgs)
+} catch (e: Exception) {
+    e.printStackTrace()
+    resId.toString()
+}
+
+/**
+ * 获取字符串数组
+ * */
+fun Context.stringArray(@ArrayRes resId: Int): Array<String> =
+    try {
+        resources.getStringArray(resId)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        arrayOf(resId.toString())
+    }

@@ -17,6 +17,8 @@ import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.StyleRes
 import androidx.core.app.ActivityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.forEach
 import androidx.core.widget.TextViewCompat
 
@@ -24,21 +26,23 @@ import androidx.core.widget.TextViewCompat
 ///// 基础操作
 ///////////////////////////////////
 
-fun View.viewWidth() =
-    if (width == 0) {
-        measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        measuredWidth
-    } else {
-        width
-    }
+inline val View.viewWidth: Int
+    get() =
+        if (width == 0) {
+            measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+            measuredWidth
+        } else {
+            width
+        }
 
-fun View.viewHeight() =
-    if (height == 0) {
-        measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        measuredHeight
-    } else {
-        height
-    }
+inline val View.viewHeight: Int
+    get() =
+        if (height == 0) {
+            measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+            measuredHeight
+        } else {
+            height
+        }
 
 fun View.isVisible() = visibility == View.VISIBLE
 
@@ -62,25 +66,27 @@ fun View.disable() {
     isEnabled = false
 }
 
+inline val View.rootWindowInsetsCompat: WindowInsetsCompat?
+    get() = ViewCompat.getRootWindowInsets(this)
+
 /**
  * 判断是否是RTL布局
  * */
 fun Context.isLayoutRtl(): Boolean {
-    val local = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-        resources.configuration.locales[0]
-    else
-        resources.configuration.locale
+    val local =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) resources.configuration.locales[0]
+        else resources.configuration.locale
     return TextUtils.getLayoutDirectionFromLocale(local) == View.LAYOUT_DIRECTION_RTL
 }
 
 /**
  * 获取子视图 按资源名称
  * */
-fun ViewGroup.getChildViewByResourceName(resourceEntryName: String): View? {
+fun ViewGroup.findChildViewByResourceName(resourceName: String): View? {
     for (i in 0 until childCount) {
         val child = getChildAt(i)
         if (child.id != View.NO_ID) {
-            if (resources.getResourceEntryName(child.id) == resourceEntryName) {
+            if (resources.getResourceEntryName(child.id) == resourceName) {
                 return child
             }
         }
@@ -93,8 +99,8 @@ fun ViewGroup.getChildViewByResourceName(resourceEntryName: String): View? {
  * */
 fun ViewGroup.removeChildView(cls: Class<out View>) {
     for (i in 0 until this.childCount) {
-        if (this.getChildAt(i)::class.java.name == cls.name) {
-            this.removeViewAt(i)
+        if (getChildAt(i)::class.java.name == cls.name) {
+            removeViewAt(i)
         }
     }
 }
@@ -115,14 +121,14 @@ fun View.fixScrollViewTopping() {
  * 划线
  * */
 fun TextView.strikeLine() {
-    this.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+    paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
 }
 
 /**
  * 下划线
  */
 fun TextView.underline() {
-    this.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+    paintFlags = Paint.UNDERLINE_TEXT_FLAG
 }
 
 /**
@@ -162,7 +168,7 @@ fun TextView.setTextColorResource(@ColorRes id: Int) {
 /**
  * 光标移动到最后
  * */
-fun EditText.toLastSelection() {
+fun EditText.moveLastSelection() {
     setSelection(text.length)
 }
 
@@ -170,11 +176,10 @@ fun EditText.toLastSelection() {
  * 切换密码显示隐藏
  * */
 fun EditText.togglePasswordVisible() {
-    transformationMethod = if (isPasswordVisible())
-        HideReturnsTransformationMethod.getInstance()
-    else
-        PasswordTransformationMethod.getInstance()
-    toLastSelection()
+    transformationMethod =
+        if (isPasswordVisible()) HideReturnsTransformationMethod.getInstance()
+        else PasswordTransformationMethod.getInstance()
+    moveLastSelection()
 }
 
 /**

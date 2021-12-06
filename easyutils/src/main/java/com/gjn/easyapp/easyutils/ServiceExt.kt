@@ -1,6 +1,5 @@
 package com.gjn.easyapp.easyutils
 
-import android.app.ActivityManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -36,26 +35,17 @@ fun Context.isServiceRunning(className: String): Boolean {
 ////////////////////////////
 //// startService
 ////////////////////////////
-
-fun String.startService(context: Context?) {
-    Intent(context, toClass()).startService(context)
-}
-
-fun Class<out Service>.startService(context: Context?) {
-    Intent(context, this).startService(context)
-}
-
-fun Intent.startService(context: Context?) {
-    if (context == null) return
+inline fun <reified T : Service> Context.startService(
+    vararg pairs: Pair<String, *>
+) {
     try {
-        this.flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            println("startForegroundService ")
-            context.startForegroundService(this)
+        val intent = intentOf<T>(*pairs).apply {
+            this.flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
         }
-        else {
-            println("startService ")
-            context.startService(this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
         }
     } catch (e: Exception) {
         e.printStackTrace()
@@ -65,41 +55,23 @@ fun Intent.startService(context: Context?) {
 ////////////////////////////
 //// stopService
 ////////////////////////////
-
-fun String.stopService(context: Context?) {
-    Intent(context, toClass()).stopService(context)
-}
-
-fun Class<out Service>.stopService(context: Context?) {
-    Intent(context, this).stopService(context)
-}
-
-fun Intent.stopService(context: Context?): Boolean {
-    if (context == null) return false
-    return try {
-        context.stopService(this)
+inline fun <reified T : Service> Context.stopService(): Boolean =
+    try {
+        stopService(intentOf<T>())
     } catch (e: Exception) {
         e.printStackTrace()
         false
     }
-}
 
 ////////////////////////////
 //// bindService
 ////////////////////////////
-
-fun String.bindService(context: Context?, connection: ServiceConnection, flags: Int) {
-    Intent(context, toClass()).bindService(context, connection, flags)
-}
-
-fun Class<out Service>.bindService(context: Context?, connection: ServiceConnection, flags: Int) {
-    Intent(context, this).bindService(context, connection, flags)
-}
-
-fun Intent.bindService(context: Context?, connection: ServiceConnection, flags: Int) {
-    if (context == null) return
+inline fun <reified T : Service> Context.bindService(
+    connection: ServiceConnection,
+    flags: Int
+) {
     try {
-        context.bindService(this, connection, flags)
+        bindService(intentOf<T>(), connection, flags)
     } catch (e: Exception) {
         e.printStackTrace()
     }

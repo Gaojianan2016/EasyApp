@@ -85,7 +85,7 @@ fun execCmd(
 /**
  * 尝试关闭流操作
  * */
-fun Closeable.tryClose() {
+inline fun Closeable.tryClose() {
     try {
         close()
     } catch (e: Exception) {

@@ -13,6 +13,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import kotlin.math.abs
 
+private const val KEYBOARD_CODE = -0x456
+
 /**
  * 强制显示软键盘
  * */
@@ -27,7 +29,7 @@ fun Context.showSoftInput() {
  * 强制显示软键盘
  * */
 fun Activity.showSoftInput() {
-    if (!isSoftInputVisible) toggleSoftInput()
+    if (!isSoftInputVisible()) toggleSoftInput()
 }
 
 /**
@@ -82,7 +84,7 @@ fun Context.toggleSoftInput() {
 /**
  * 是否显示软键盘
  * */
-inline val Activity.isSoftInputVisible: Boolean get() = decorViewInvisibleHeight > 0
+fun Activity.isSoftInputVisible(): Boolean = decorViewInvisibleHeight > 0
 
 /**
  * 监听软键盘高度变化
@@ -92,6 +94,8 @@ fun Activity.registerSoftInputChangedListener(block: (Int) -> Unit) {
     if ((flags and WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS) != 0) {
         window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }
+    //注销旧监听
+    unregisterSoftInputChangedListener()
     val content = contentFrameLayout
     val oldInvisibleHeight = arrayOf(decorViewInvisibleHeight)
     val globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
@@ -102,7 +106,7 @@ fun Activity.registerSoftInputChangedListener(block: (Int) -> Unit) {
         }
     }
     content.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
-    content.setTag(-0x456, globalLayoutListener)
+    content.setTag(KEYBOARD_CODE, globalLayoutListener)
 }
 
 /**
@@ -110,7 +114,7 @@ fun Activity.registerSoftInputChangedListener(block: (Int) -> Unit) {
  * */
 fun Activity.unregisterSoftInputChangedListener() {
     val content = contentFrameLayout
-    content.getTag(-0x456)?.let {
+    content.getTag(KEYBOARD_CODE)?.let {
         if (it is ViewTreeObserver.OnGlobalLayoutListener) {
             content.viewTreeObserver.removeOnGlobalLayoutListener(it)
         }
@@ -163,28 +167,3 @@ fun Activity.fixSoftInputLeaks() {
         }
     }
 }
-
-/**
- * 获取 android.R.id.content 未显示高度
- * */
-inline val Activity.contentViewInvisibleHeight: Int
-    get() {
-        val content = contentFrameLayout
-        val outRect = Rect()
-        content.getWindowVisibleDisplayFrame(outRect)
-        val delta = abs(content.bottom - outRect.bottom)
-        //差值超过通知栏+状态栏高度
-        return if (delta > navigationBarHeight + statusBarHeight) delta else 0
-    }
-
-/**
- * 获取decorView未显示高度
- * */
-inline val Activity.decorViewInvisibleHeight: Int
-    get() {
-        val outRect = Rect()
-        decorViewGroup.getWindowVisibleDisplayFrame(outRect)
-        val delta = abs(decorViewGroup.bottom - outRect.bottom)
-        //差值超过通知栏+状态栏高度
-        return if (delta > navigationBarHeight + statusBarHeight) delta else 0
-    }

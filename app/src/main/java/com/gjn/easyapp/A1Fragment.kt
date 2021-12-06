@@ -38,7 +38,7 @@ class A1Fragment : BaseLazyFragment() {
         ).setOnClickListeners(Click())
 
         btn5.click {
-            println("屏幕宽度 ${mActivity.screenWidth()} 屏幕高度 ${mActivity.screenHeight()}")
+            println("屏幕宽度 ${mActivity.screenWidth} 屏幕高度 ${mActivity.screenHeight}")
             val d = 35.7
             println("${d.format()} , ${d.format(prefix = "￥")}, ${d.format(suffix = "MB")}")
             val s = "我是一段中文"
@@ -71,8 +71,8 @@ class A1Fragment : BaseLazyFragment() {
             println("list3 isList ${list3?.isList()}")
             println("list4 isList ${list4?.isList()}")
 
-            println("list insufficientSize 2 ${list.insufficientSize(2)}")
-            println("list2 insufficientSize 10 ${list2.insufficientSize()}")
+            println("list isLimitSize 2 ${list.isLimitSize(2)}")
+            println("list2 isLimitSize 10 ${list2.isLimitSize()}")
 
             println("12,7,8,sad,s4a, splitToList ${"12,7,8,sad,s4a".split2List(",")}")
 

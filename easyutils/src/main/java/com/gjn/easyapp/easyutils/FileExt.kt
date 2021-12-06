@@ -303,7 +303,7 @@ fun File.notifyScanMediaFile(context: Context) {
     if (!exists()) return
     context.sendBroadcast(
         Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also {
-            it.data = "file://${this.absolutePath}".uri
+            it.data = "file://${this.absolutePath}".toUri()
         }
     )
 }

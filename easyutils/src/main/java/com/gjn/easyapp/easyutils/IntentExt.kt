@@ -28,13 +28,13 @@ fun Context.openQQ() {
 
 fun Context.dial(phone: String) {
     if (phone.isEmpty()) return
-    startActivity(Intent(Intent.ACTION_DIAL, "tel:$phone".uri).addNewTaskFlag())
+    startActivity(Intent(Intent.ACTION_DIAL, "tel:$phone".toUri()).addNewTaskFlag())
 }
 
 fun Context.sendSMS(phone: String, content: String) {
     if (phone.isEmpty() || content.isEmpty()) return
     startActivity(
-        Intent(Intent.ACTION_SENDTO, "smsto:$phone".uri)
+        Intent(Intent.ACTION_SENDTO, "smsto:$phone".toUri())
             .apply { putExtra("sms_body", content) }
             .addNewTaskFlag()
     )
@@ -42,7 +42,7 @@ fun Context.sendSMS(phone: String, content: String) {
 
 fun Context.email(email: String, subject: String = "", content: String = "") {
     if (email.isEmpty()) return
-    startActivity(Intent(Intent.ACTION_SENDTO, "mailto:".uri)
+    startActivity(Intent(Intent.ACTION_SENDTO, "mailto:".toUri())
         .apply {
             putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
             if (subject.isNotEmpty()) putExtra(Intent.EXTRA_SUBJECT, subject)
@@ -54,7 +54,7 @@ fun Context.email(email: String, subject: String = "", content: String = "") {
 
 fun Context.browser(url: String) {
     if (url.isEmpty()) return
-    startActivity(Intent(Intent.ACTION_VIEW, url.uri).addNewTaskFlag())
+    startActivity(Intent(Intent.ACTION_VIEW, url.toUri()).addNewTaskFlag())
 }
 
 /**
