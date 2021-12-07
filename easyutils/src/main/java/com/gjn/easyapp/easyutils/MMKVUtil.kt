@@ -1,11 +1,11 @@
 package com.gjn.easyapp.easyutils
 
 import android.os.Parcelable
-import android.util.Log
 import com.tencent.mmkv.MMKV
 
 class MMKVUtil private constructor(private val mmkv: MMKV) {
 
+    @Suppress("UNCHECKED_CAST")
     fun encode(pair: Pair<String, Any?>) {
         val key = pair.first
         val value = pair.second ?: return
@@ -26,9 +26,8 @@ class MMKVUtil private constructor(private val mmkv: MMKV) {
             // Reference set
             is Set<*> -> {
                 val componentType = value.javaClass.componentType!!
-                @Suppress("UNCHECKED_CAST")
                 when {
-                    String::class.java.isAssignableFrom(componentType) ->{
+                    String::class.java.isAssignableFrom(componentType) -> {
                         mmkv.encode(key, value as Set<String>)
                     }
                     else -> {
@@ -42,13 +41,49 @@ class MMKVUtil private constructor(private val mmkv: MMKV) {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
+    fun decode(key: String, defaultValue: Any?): Any? {
+        if (key.isEmpty() || defaultValue == null) return null
+
+        return when (defaultValue) {
+            // Scalars
+            is Boolean -> mmkv.decodeBool(key, defaultValue)
+            is Double -> mmkv.decodeDouble(key, defaultValue)
+            is Float -> mmkv.decodeFloat(key, defaultValue)
+            is Int -> mmkv.decodeInt(key, defaultValue)
+            is Long -> mmkv.decodeLong(key, defaultValue)
+
+            // References
+            is Parcelable -> mmkv.decodeParcelable(key, defaultValue as Class<Parcelable>?)
+
+            // Scalar arrays
+            is ByteArray -> mmkv.decodeBytes(key, defaultValue)
+
+            // Reference set
+            is Set<*> -> {
+                val componentType = defaultValue.javaClass.componentType!!
+                if (String::class.java.isAssignableFrom(componentType)) {
+                    mmkv.decodeStringSet(key, defaultValue as Set<String>)
+                } else {
+                    val valueType = componentType.canonicalName
+                    throw IllegalArgumentException(
+                        "Illegal value get type $valueType for key \"$key\""
+                    )
+                }
+            }
+
+            else -> null
+        }
+    }
+
     fun decodeString(key: String, defaultValue: String = ""): String =
         mmkv.decodeString(key, defaultValue)
 
     fun decodeBool(key: String, defaultValue: Boolean = false): Boolean =
         mmkv.decodeBool(key, defaultValue)
 
-    fun decodeInt(key: String, defaultValue: Int = 0): Int = mmkv.decodeInt(key, defaultValue)
+    fun decodeInt(key: String, defaultValue: Int = 0): Int =
+        mmkv.decodeInt(key, defaultValue)
 
     fun decodeFloat(key: String, defaultValue: Float = 0f): Float =
         mmkv.decodeFloat(key, defaultValue)
@@ -59,7 +94,8 @@ class MMKVUtil private constructor(private val mmkv: MMKV) {
     fun decodeLong(key: String, defaultValue: Long = 0): Long =
         mmkv.decodeLong(key, defaultValue)
 
-    fun decodeBytes(key: String): ByteArray = mmkv.decodeBytes(key)
+    fun decodeBytes(key: String): ByteArray =
+        mmkv.decodeBytes(key)
 
     fun decodeStringSet(key: String, defaultValue: Set<String> = emptySet()): Set<String> =
         mmkv.decodeStringSet(key, defaultValue)
