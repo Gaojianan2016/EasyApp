@@ -165,14 +165,14 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
         btn16_ad.click {
             println("statusBarHeight ${mActivity.statusBarHeight}")
-            println("isStatusBarVisible ${mActivity.isStatusBarVisible()}")
-            println("isStatusBarLightMode ${mActivity.isStatusBarLightMode()}")
+            println("isStatusBarVisible ${mActivity.isStatusBarVisible}")
+            println("isStatusBarLightMode ${mActivity.isStatusBarLightMode}")
 
             println("actionBarHeight ${mActivity.application.actionBarHeight}")
 
             println("navigationBarHeight ${mActivity.navigationBarHeight}")
-            println("isNavBarVisible ${mActivity.isNavBarVisible()}")
-            println("isNavBarLightMode ${mActivity.isNavBarLightMode()}")
+            println("isNavBarVisible ${mActivity.isNavBarVisible}")
+            println("isNavBarLightMode ${mActivity.isNavBarLightMode}")
         }
 
         btn17_ad.click {
@@ -243,8 +243,8 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         btn26_ad.click {
             println("isDeviceRooted ${isDeviceRooted()}")
             println("isAdbEnabled ${mActivity.isAdbEnabled()}")
-            println("sdkVersionName ${sdkVersionName}")
-            println("sdkVersionCode ${sdkVersionCode}")
+            println("sdkVersionName $sdkVersionName")
+            println("sdkVersionCode $sdkVersionCode")
             println("androidID ${mActivity.androidID()}")
             println("getMacAddress ${mActivity.getMacAddress()}")
         }

@@ -70,7 +70,11 @@ fun Context.androidID(): String {
 /**
  * 获取设备Mac地址
  * */
-@RequiresPermission(allOf = [Manifest.permission.INTERNET, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_WIFI_STATE])
+@RequiresPermission(allOf = [
+    Manifest.permission.INTERNET,
+    Manifest.permission.ACCESS_WIFI_STATE,
+    Manifest.permission.CHANGE_WIFI_STATE
+])
 fun Context.getMacAddress(): String {
     val macAddress = getMacAddress(*emptyArray())
     if (macAddress.isNotEmpty() || getWifiEnabled()) return macAddress
@@ -83,7 +87,10 @@ fun Context.getMacAddress(): String {
  * 获取设备Mac地址
  * excepts 例外地址
  * */
-@RequiresPermission(allOf = [Manifest.permission.INTERNET, Manifest.permission.ACCESS_WIFI_STATE])
+@RequiresPermission(allOf = [
+    Manifest.permission.INTERNET,
+    Manifest.permission.ACCESS_WIFI_STATE
+])
 fun Context.getMacAddress(vararg excepts: String): String {
     var address = getMacAddressByNetworkInterface()
     if (isAddressNotInExcepts(address, *excepts)) {
@@ -110,8 +117,8 @@ fun Context.getMacAddress(vararg excepts: String): String {
  * api 29之后应用禁止修改wifi状态
  * */
 @RequiresPermission(Manifest.permission.CHANGE_WIFI_STATE)
+@SuppressLint("WifiManagerLeak")
 fun Context.setWifiEnabled(enabled: Boolean) {
-    @SuppressLint("WifiManagerLeak")
     val manager = getSystemService(Context.WIFI_SERVICE) as WifiManager
     if (manager.isWifiEnabled == enabled) return
     manager.isWifiEnabled = enabled
@@ -120,8 +127,8 @@ fun Context.setWifiEnabled(enabled: Boolean) {
 /**
  * 获取wifi开启状态
  * */
+@SuppressLint("WifiManagerLeak")
 fun Context.getWifiEnabled(): Boolean {
-    @SuppressLint("WifiManagerLeak")
     val manager = getSystemService(Context.WIFI_SERVICE) as WifiManager
     return manager.isWifiEnabled
 }

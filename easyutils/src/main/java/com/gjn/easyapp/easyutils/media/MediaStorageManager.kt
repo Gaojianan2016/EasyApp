@@ -15,8 +15,8 @@ import com.gjn.easyapp.easyutils.*
 
 class MediaStorageManager(private val context: Context) {
 
-    private val photoUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-    private val videoUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+    private val photoUri = EXTERNAL_MEDIA_IMAGE_URI
+    private val videoUri = EXTERNAL_MEDIA_VIDEO_URI
     private val mTask = MediaStorageTask()
 
     private var mConnection: MediaScannerConnection? = null
