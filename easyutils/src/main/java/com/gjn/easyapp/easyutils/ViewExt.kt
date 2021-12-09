@@ -19,6 +19,7 @@ import androidx.annotation.StyleRes
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.forEach
 import androidx.core.widget.TextViewCompat
 
@@ -68,6 +69,9 @@ fun View.disable() {
 
 inline val View.rootWindowInsetsCompat: WindowInsetsCompat?
     get() = ViewCompat.getRootWindowInsets(this)
+
+inline val View.windowInsetsControllerCompat: WindowInsetsControllerCompat?
+    get() = ViewCompat.getWindowInsetsController(this)
 
 /**
  * 判断是否是RTL布局

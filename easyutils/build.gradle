@@ -1,15 +1,15 @@
-plugins{
+plugins {
     id 'com.android.library'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
     id 'com.github.dcendents.android-maven'
 }
-group='com.github.Gaojianan2016'
+group = 'com.github.Gaojianan2016'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion build_versions.compile_sdk
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion build_versions.min_sdk
         consumerProguardFiles "consumer-rules.pro"
     }
     buildTypes {
@@ -31,12 +31,13 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9'
-    implementation 'com.google.android.material:material:1.2.1'
+    implementation "androidx.core:core-ktx:${library_versions.core_ktx}"
+    implementation "androidx.appcompat:appcompat:${library_versions.appcompat}"
+    implementation "com.google.android.material:material:${library_versions.material}"
 
-    compileOnly 'com.google.zxing:core:3.4.0'
-    compileOnly 'com.tencent:mmkv-static:1.2.5'
-    compileOnly 'net.lingala.zip4j:zip4j:2.9.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${library_versions.kotlinx_coroutines}"
+
+    compileOnly "com.google.zxing:core:${library_versions.zxing}"
+    compileOnly "com.tencent:mmkv-static:${library_versions.mmkv}"
+    compileOnly "net.lingala.zip4j:zip4j:${library_versions.mmkv}"
 }

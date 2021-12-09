@@ -2,18 +2,41 @@ package com.gjn.easyapp.easyutils
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.ResultReceiver
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import kotlin.math.abs
+import androidx.annotation.RequiresApi
+import androidx.core.view.WindowInsetsCompat
 
 private const val KEYBOARD_CODE = -0x456
+
+/**
+ * 键盘操作
+ * */
+@get:RequiresApi(Build.VERSION_CODES.M)
+inline val EditText.isShowKeyboard: Boolean
+    get() = rootWindowInsetsCompat?.isVisible(WindowInsets.Type.ime()) == true
+
+@get:RequiresApi(Build.VERSION_CODES.M)
+inline val EditText.keyboardHeight: Int
+    get() = rootWindowInsetsCompat?.getInsets(WindowInsets.Type.ime())?.bottom ?: 0
+
+fun EditText.showKeyboard() =
+    windowInsetsControllerCompat?.show(WindowInsetsCompat.Type.ime())
+
+fun EditText.hideKeyboard() =
+    windowInsetsControllerCompat?.show(WindowInsetsCompat.Type.ime())
+
+@RequiresApi(Build.VERSION_CODES.M)
+fun EditText.toggleKeyboard() =
+    if (isShowKeyboard) hideKeyboard() else showKeyboard()
 
 /**
  * 强制显示软键盘
