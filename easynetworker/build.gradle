@@ -35,8 +35,8 @@ dependencies {
     //fastjson
     compileOnly "com.alibaba:fastjson:${library_versions.fastjson}"
     //okhttp
-    compileOnly "com.squareup.okhttp3:okhttp:${library_versions.okhttp}"
-    compileOnly "com.squareup.okhttp3:logging-interceptor:${library_versions.okhttp}"
+    compileOnly "com.squareup.okhttp3:okhttp:${library_versions.okhttp3}"
+    compileOnly "com.squareup.okhttp3:logging-interceptor:${library_versions.okhttp3}"
     //retrofit
     compileOnly "com.squareup.retrofit2:retrofit:${library_versions.retrofit2}"
     compileOnly "com.squareup.retrofit2:converter-gson:${library_versions.retrofit2}"

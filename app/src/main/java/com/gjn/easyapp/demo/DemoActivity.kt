@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Environment
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easyutils.*
@@ -164,26 +165,30 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn16_ad.click {
-            println("statusBarHeight ${mActivity.statusBarHeight}")
+            println("statusBarHeight ${mActivity.statusBarHeight}px")
             println("isStatusBarVisible ${mActivity.isStatusBarVisible}")
             println("isStatusBarLightMode ${mActivity.isStatusBarLightMode}")
 
-            println("actionBarHeight ${mActivity.application.actionBarHeight}")
-
-            println("navigationBarHeight ${mActivity.navigationBarHeight}")
+            println("actionBarHeight ${mActivity.application.actionBarHeight}px")
+            println("navigationBarHeight ${mActivity.navigationBarHeight}px")
             println("isNavBarVisible ${mActivity.isNavBarVisible}")
             println("isNavBarLightMode ${mActivity.isNavBarLightMode}")
         }
 
         btn17_ad.click {
-//            //设置状态栏
+//            //设置状态栏颜色
 //            mActivity.setStatusBarColor(Color.TRANSPARENT, true)
+
 //            //沉浸式状态栏
 //            mActivity.setStatusBarColor(Color.TRANSPARENT)
 //            //添加状态栏高度margin
 //            nsv_ad.addMarginTopEqualStatusBarHeight()
-//            //设置Light模式
-//            mActivity.setStatusBarLightMode(true)
+
+//            //设置状态栏显示
+//            mActivity.isStatusBarVisible = !mActivity.isStatusBarVisible
+//            //设置状态栏模式
+//            mActivity.isStatusBarLightMode = !mActivity.isStatusBarLightMode
+
             mActivity.startActivity<DrawerActivity>()
         }
 
@@ -499,7 +504,8 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("get anim_bottom_in ${mActivity.getAppAnimIdentifier("anim_bottom_in")}")
             println("get network_security_config ${mActivity.getAppXmlIdentifier("network_security_config")}")
 
-            val file = "${Environment.getExternalStorageDirectory()}/aA_test/assetsFile.txt".toFile()
+            val file =
+                "${Environment.getExternalStorageDirectory()}/aA_test/assetsFile.txt".toFile()
             val file2 = "${Environment.getExternalStorageDirectory()}/aA_test/rawFile.txt".toFile()
 
             println("assetsStr ${mActivity.assetsStr("test_file.txt")}")
@@ -518,7 +524,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("screenDensity ${screenDensity}")
             println("screenDensityDpi ${screenDensityDpi}")
 
-            println("isFullScreen ${mActivity.isFullScreen()}")
+            println("isFullScreen ${mActivity.isFullScreen}")
             println("isLandscape ${mActivity.isLandscape}")
             println("isPortrait ${mActivity.isPortrait}")
             println("screenRotation ${mActivity.screenRotation}")
@@ -627,7 +633,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         btn47_ad.click {
             println("viewWidth ${btn47_ad.viewWidth}")
             println("viewHeight ${btn47_ad.viewHeight}")
-            println("isVisible ${btn47_ad.isVisible()}")
+            println("isVisible ${btn47_ad.isVisible}")
             println("isLayoutRtl ${mActivity.isLayoutRtl()}")
         }
     }

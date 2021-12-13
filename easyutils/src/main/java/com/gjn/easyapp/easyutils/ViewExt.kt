@@ -17,10 +17,7 @@ import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.StyleRes
 import androidx.core.app.ActivityCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
-import androidx.core.view.forEach
+import androidx.core.view.*
 import androidx.core.widget.TextViewCompat
 
 ///////////////////////////////////
@@ -45,18 +42,16 @@ inline val View.viewHeight: Int
             height
         }
 
-fun View.isVisible() = visibility == View.VISIBLE
-
-fun View.visible() {
-    visibility = View.VISIBLE
+inline fun View.visible() {
+    isVisible = true
 }
 
-fun View.gone() {
-    visibility = View.GONE
+inline fun View.invisible() {
+    isInvisible = true
 }
 
-fun View.invisible() {
-    visibility = View.INVISIBLE
+inline fun View.gone() {
+    isGone = true
 }
 
 fun View.enabled() {

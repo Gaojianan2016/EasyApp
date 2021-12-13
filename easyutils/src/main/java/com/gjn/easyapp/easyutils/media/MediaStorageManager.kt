@@ -133,7 +133,7 @@ class MediaStorageManager(private val context: Context) {
         val rotation = try {
             val mmr = MediaMetadataRetriever()
             mmr.setDataSource(path)
-            mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION).toInt()
+            mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)?.toInt() ?: 0
         } catch (e: Exception) {
             logW("获取视频rotation失败", TAG)
             0

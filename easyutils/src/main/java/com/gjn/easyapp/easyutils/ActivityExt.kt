@@ -10,6 +10,9 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.AnimRes
 import androidx.core.os.bundleOf
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import kotlin.math.abs
 
 //////////////////////
@@ -83,7 +86,6 @@ inline fun <reified T : Activity> Activity.startActivityForResult(
     crossinline block: Intent.() -> Unit = {}
 ) = startActivityForResult(intentOf<T>(*pairs).apply(block), requestCode, options)
 
-
 //////////////////////////////////
 ///// finishActivity
 //////////////////////////////////
@@ -113,6 +115,18 @@ inline val Activity.contentFrameLayout: FrameLayout get() = window.findViewById(
  * 获取 decorView 布局
  * */
 inline val Activity.decorViewGroup: ViewGroup get() = window.decorView as ViewGroup
+
+/**
+ * 根布局插入兼容
+ * */
+inline val Activity.rootWindowInsetsCompat: WindowInsetsCompat?
+    get() = window.decorView.rootWindowInsetsCompat
+
+/**
+ * 窗口插入控制兼容
+ * */
+inline val Activity.windowInsetsControllerCompat: WindowInsetsControllerCompat?
+    get() = WindowCompat.getInsetsController(window, window.decorView)
 
 inline fun <reified T> Activity.getIntentKey(key: String) =
     lazy<T?> { intent.extras[key] }

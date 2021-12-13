@@ -29,7 +29,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.core:core-ktx:${library_versions.core_ktx}"
     implementation "androidx.appcompat:appcompat:${library_versions.appcompat}"
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_ext_version"
 
     compileOnly project(path: ':easylogger')
     compileOnly project(path: ':easytoaster')

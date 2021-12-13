@@ -33,11 +33,11 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.core:core-ktx:${library_versions.core_ktx}"
     implementation "androidx.appcompat:appcompat:${library_versions.appcompat}"
-    implementation "com.google.android.material:material:${library_versions.material}"
 
+    implementation "com.google.android.material:material:${library_versions.material}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${library_versions.kotlinx_coroutines}"
 
     compileOnly "com.google.zxing:core:${library_versions.zxing}"
     compileOnly "com.tencent:mmkv-static:${library_versions.mmkv}"
-    compileOnly "net.lingala.zip4j:zip4j:${library_versions.mmkv}"
+    compileOnly "net.lingala.zip4j:zip4j:${library_versions.zip4j}"
 }

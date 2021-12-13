@@ -11,7 +11,7 @@ import android.graphics.Point
 import android.provider.Settings
 import android.util.DisplayMetrics
 import android.view.Surface
-import android.view.WindowManager
+import android.view.WindowInsets
 import androidx.annotation.RequiresPermission
 import androidx.fragment.app.Fragment
 
@@ -104,24 +104,14 @@ inline val Activity.screenRotation: Int
 /**
  * Activity是否全屏
  * */
-fun Activity.isFullScreen() =
-    (window.attributes.flags and WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN
-
-/**
- * Activity全屏
- * 只能在创建视图之前完成
- * */
-fun Activity.fullScreen() {
-    window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-}
-
-/**
- * Activity清除全屏
- * 只能在创建视图之前完成
- * */
-fun Activity.clearFullScreen() {
-    window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-}
+inline var Activity.isFullScreen: Boolean
+    get() = rootWindowInsetsCompat?.isVisible(WindowInsets.Type.systemBars()) == true
+    set(value) {
+        windowInsetsControllerCompat?.run {
+            val systemBars = WindowInsets.Type.systemBars()
+            if (value) show(systemBars) else hide(systemBars)
+        }
+    }
 
 /**
  * 截屏

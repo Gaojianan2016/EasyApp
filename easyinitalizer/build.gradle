@@ -29,8 +29,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.core:core-ktx:${library_versions.core_ktx}"
     implementation "androidx.appcompat:appcompat:${library_versions.appcompat}"
-    implementation "androidx.startup:startup-runtime:${library_versions.startup_runtime}"
 
+    implementation "androidx.startup:startup-runtime:${library_versions.startup_runtime}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${library_versions.kotlinx_coroutines}"
 
     compileOnly project(path: ':easyutils')
