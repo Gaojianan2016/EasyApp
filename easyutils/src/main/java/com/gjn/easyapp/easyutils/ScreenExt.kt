@@ -8,11 +8,11 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Point
+import android.os.Build
 import android.provider.Settings
-import android.util.DisplayMetrics
 import android.view.Surface
-import android.view.WindowInsets
 import androidx.annotation.RequiresPermission
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 
 /**
@@ -29,17 +29,27 @@ inline val Context.screenHeight: Int get() = resources.displayMetrics.heightPixe
  * app宽度
  * */
 inline val Context.appScreenWidth: Int
-    get() = Point().apply {
-        windowManager.defaultDisplay.getSize(this)
-    }.x
+    get() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            windowManager.currentWindowMetrics.bounds.width()
+        } else {
+            Point().apply {
+                windowManager.defaultDisplay.getSize(this)
+            }.x
+        }
 
 /**
  * app高度
  * */
 inline val Context.appScreenHeight: Int
-    get() = Point().apply {
-        windowManager.defaultDisplay.getSize(this)
-    }.y
+    get() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            windowManager.currentWindowMetrics.bounds.height()
+        } else {
+            Point().apply {
+                windowManager.defaultDisplay.getSize(this)
+            }.y
+        }
 
 /**
  * 屏幕density
@@ -94,7 +104,7 @@ inline var Activity.isPortrait: Boolean
  * */
 inline val Activity.screenRotation: Int
     get() =
-        when (windowManager.defaultDisplay.rotation) {
+        when (display?.rotation) {
             Surface.ROTATION_90 -> 90
             Surface.ROTATION_180 -> 180
             Surface.ROTATION_270 -> 270
@@ -105,10 +115,10 @@ inline val Activity.screenRotation: Int
  * Activity是否全屏
  * */
 inline var Activity.isFullScreen: Boolean
-    get() = rootWindowInsetsCompat?.isVisible(WindowInsets.Type.systemBars()) == true
+    get() = rootWindowInsetsCompat?.isVisible(WindowInsetsCompat.Type.systemBars()) == true
     set(value) {
         windowInsetsControllerCompat?.run {
-            val systemBars = WindowInsets.Type.systemBars()
+            val systemBars = WindowInsetsCompat.Type.systemBars()
             if (value) show(systemBars) else hide(systemBars)
         }
     }
@@ -118,11 +128,10 @@ inline var Activity.isFullScreen: Boolean
  * */
 fun Activity.screenShot(hasStatusBar: Boolean = true): Bitmap? {
     val bmp = decorViewGroup.toBitmap()
-    val dm = DisplayMetrics().apply { windowManager.defaultDisplay.getMetrics(this) }
     val x = 0
     val y = if (hasStatusBar) 0 else statusBarHeight
-    val width = dm.widthPixels
-    val height = if (hasStatusBar) statusBarHeight else dm.heightPixels - statusBarHeight
+    val width = screenWidth
+    val height = if (hasStatusBar) statusBarHeight else screenHeight - statusBarHeight
     return Bitmap.createBitmap(bmp, x, y, width, height)
 }
 

@@ -106,6 +106,7 @@ fun ViewGroup.removeChildView(cls: Class<out View>) {
 
 /**
  * 修复滑动view顶部 内嵌焦点问题 e.g [ListView, GridView, WebView, RecyclerView]
+ * 原理：设置可焦点为false
  * */
 fun View.fixScrollViewTopping() {
     isFocusable = false

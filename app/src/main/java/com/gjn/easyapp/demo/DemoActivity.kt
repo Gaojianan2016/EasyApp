@@ -12,6 +12,7 @@ import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easyutils.*
 import kotlinx.android.synthetic.main.activity_demo.*
+import kotlinx.android.synthetic.main.fragment_a1.view.*
 import kotlinx.coroutines.delay
 import java.io.FileFilter
 import java.util.*
@@ -401,15 +402,21 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn35_ad.click {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+                println("isShowKeyboard-> ${soft_input.isShowKeyboard}")
+                println("keyboardShowHeight-> ${soft_input.keyboardShowHeight}")
+
+//                soft_input.toggleKeyboard()
+
+            }
+
             mActivity.toggleSoftInput()
 //            mActivity.showSoftInput()
 //            mActivity.hideSoftInput()
 
 //            soft_input.showSoftInput()
 //            soft_input.hideSoftInput()
-//            mActivity.registerSoftInputChangedListener {
-//                println("变化高度 $it")
-//            }
         }
 
         btn36_ad.click {
@@ -521,8 +528,8 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("appScreenWidth ${mActivity.appScreenWidth}")
             println("appScreenHeight ${mActivity.appScreenHeight}")
 
-            println("screenDensity ${screenDensity}")
-            println("screenDensityDpi ${screenDensityDpi}")
+            println("screenDensity $screenDensity")
+            println("screenDensityDpi $screenDensityDpi")
 
             println("isFullScreen ${mActivity.isFullScreen}")
             println("isLandscape ${mActivity.isLandscape}")
