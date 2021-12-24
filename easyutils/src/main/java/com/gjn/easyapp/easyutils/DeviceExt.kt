@@ -23,16 +23,20 @@ private const val DEFAULT_MAC_ADDRESS = "02:00:00:00:00:00"
 private const val EMULATOR_ANDROID_ID = "9774d56d682e549c"
 
 /**
+ * root后新增的路径
+ * */
+private val rootLocations = arrayOf(
+    "/system/bin/", "/system/xbin/", "/sbin/", "/system/sd/xbin/",
+    "/system/bin/failsafe/", "/data/local/xbin/", "/data/local/bin/", "/data/local/",
+    "/system/sbin/", "/usr/bin/", "/vendor/bin/"
+)
+
+/**
  * 设备是否root
  * */
 fun isDeviceRooted(): Boolean {
     val su = "su"
-    val locations = arrayOf(
-        "/system/bin/", "/system/xbin/", "/sbin/", "/system/sd/xbin/",
-        "/system/bin/failsafe/", "/data/local/xbin/", "/data/local/bin/", "/data/local/",
-        "/system/sbin/", "/usr/bin/", "/vendor/bin/"
-    )
-    for (location in locations) {
+    for (location in rootLocations) {
         if (File(location + su).exists()) {
             return true
         }

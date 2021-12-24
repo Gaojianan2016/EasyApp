@@ -138,22 +138,17 @@ inline fun <reified T> Activity.getIntentKey(key: String, default: T) =
  * 获取 android.R.id.content 未显示高度
  * */
 inline val Activity.contentViewInvisibleHeight: Int
-    get() {
-        val content = contentFrameLayout
-        val outRect = Rect().apply { content.getWindowVisibleDisplayFrame(this) }
-        val delta = abs(content.bottom - outRect.bottom)
-        //差值超过通知栏+状态栏高度
-        return if (delta > navigationBarHeight + statusBarHeight) delta else 0
-    }
+    get() = getViewInvisibleHeight(contentFrameLayout)
 
 /**
  * 获取decorView未显示高度
  * */
 inline val Activity.decorViewInvisibleHeight: Int
-    get() {
-        val decorView = decorViewGroup
-        val outRect = Rect().apply { decorView.getWindowVisibleDisplayFrame(this) }
-        val delta = abs(decorView.bottom - outRect.bottom)
-        //差值超过通知栏+状态栏高度
-        return if (delta > navigationBarHeight + statusBarHeight) delta else 0
-    }
+    get() = getViewInvisibleHeight(decorViewGroup)
+
+fun Activity.getViewInvisibleHeight(view: View): Int {
+    val outRect = Rect().apply { view.getWindowVisibleDisplayFrame(this) }
+    val delta = abs(view.bottom - outRect.bottom)
+    //差值超过通知栏+状态栏高度
+    return if (delta > navigationBarHeight + statusBarHeight) delta else 0
+}

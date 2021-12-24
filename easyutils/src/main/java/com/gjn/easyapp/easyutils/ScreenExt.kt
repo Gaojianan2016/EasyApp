@@ -8,8 +8,12 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Point
+import android.graphics.Rect
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
+import android.view.PixelCopy
 import android.view.Surface
 import androidx.annotation.RequiresPermission
 import androidx.core.view.WindowInsetsCompat
@@ -126,13 +130,27 @@ inline var Activity.isFullScreen: Boolean
 /**
  * 截屏
  * */
-fun Activity.screenShot(hasStatusBar: Boolean = true): Bitmap? {
-    val bmp = decorViewGroup.toBitmap()
+fun Activity.screenShot(hasStatusBar: Boolean = true, block: (Bitmap?) -> Unit) {
     val x = 0
     val y = if (hasStatusBar) 0 else statusBarHeight
     val width = screenWidth
-    val height = if (hasStatusBar) statusBarHeight else screenHeight - statusBarHeight
-    return Bitmap.createBitmap(bmp, x, y, width, height)
+    val height = if (hasStatusBar) screenHeight else screenHeight - statusBarHeight
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        PixelCopy.request(
+            window,
+            Rect(x, y, width, height),
+            bitmap,
+            {
+                if (it == PixelCopy.SUCCESS) {
+                    block.invoke(bitmap)
+                }
+            },
+            Handler(Looper.getMainLooper())
+        )
+    } else {
+        block.invoke(Bitmap.createBitmap(decorViewGroup.toBitmap(), x, y, width, height))
+    }
 }
 
 /**

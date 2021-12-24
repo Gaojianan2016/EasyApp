@@ -17,7 +17,6 @@ import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
-import androidx.appcompat.widget.SwitchCompat
 import androidx.core.app.ActivityCompat
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -71,12 +70,9 @@ fun Int.toBitmap(
 
 fun Drawable.toBitmap(): Bitmap? {
     if (this is BitmapDrawable) return bitmap ?: null
-
     val w = if (intrinsicWidth <= 0) 1 else intrinsicWidth
     val h = if (intrinsicHeight <= 0) 1 else intrinsicHeight
-    val config =
-        if (opacity != PixelFormat.OPAQUE) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565
-
+    val config = Bitmap.Config.ARGB_8888
     return Bitmap.createBitmap(w, h, config).apply {
         Canvas(this).let { canvas ->
             setBounds(0, 0, canvas.width, canvas.height)
@@ -99,26 +95,23 @@ fun File.toBitmap(quality: Int = 90, opts: BitmapFactory.Options? = null): Bitma
 /**
  * 向量图转bitmap
  * */
-fun Int.vectorToBitmap(context: Context): Bitmap? {
-    val bitmap: Bitmap?
+fun Int.vectorToBitmap(context: Context): Bitmap? =
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
         val drawable = ActivityCompat.getDrawable(context, this)
         if (drawable == null) {
-            bitmap = null
+            null
         } else {
-            bitmap = Bitmap.createBitmap(
-                drawable.intrinsicWidth, drawable.intrinsicHeight,
-                Bitmap.Config.ARGB_8888
-            )
-            val canvas = Canvas(bitmap)
-            drawable.setBounds(0, 0, canvas.width, canvas.height)
-            drawable.draw(canvas)
+            Bitmap.createBitmap(
+                drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888
+            ).apply {
+                val canvas = Canvas(this)
+                drawable.setBounds(0, 0, canvas.width, canvas.height)
+                drawable.draw(canvas)
+            }
         }
     } else {
-        bitmap = toBitmap(context)
+        toBitmap(context)
     }
-    return bitmap
-}
 
 fun File.toRectBitmap(
     quality: Int = 90,
@@ -458,12 +451,11 @@ fun Bitmap.fastBlur(
     // 创建RenderScript内核对象
     // 创建一个模糊效果的RenderScript的工具对象
     val rs = RenderScript.create(context)
-    val blurScript = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs))
     // 由于RenderScript并没有使用VM来分配内存,所以需要使用Allocation类来创建和分配内存空间
     // 创建Allocation对象的时候其实内存是空的,需要使用copyTo()将数据填充进去
     val tmpIn = Allocation.createFromBitmap(rs, inputBitmap)
     val tmpOut = Allocation.createFromBitmap(rs, outputBitmap)
-    blurScript.run {
+    ScriptIntrinsicBlur.create(rs, Element.U8_4(rs)).run {
         // 设置渲染的模糊程度, 0.1f - 25f
         setRadius(blurRadius.intervalOpen(0.1f, 25f))
         // 设置blurScript对象的输入内存

@@ -538,7 +538,9 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("isScreenLock ${mActivity.isScreenLock()}")
             println("getScreenLockTime ${mActivity.getScreenLockTime()}")
 
-            iv_screen.setImageBitmap(mActivity.screenShot(false))
+            mActivity.screenShot(false) {
+                iv_screen.setImageBitmap(it)
+            }
         }
 
         btn44_ad.click {

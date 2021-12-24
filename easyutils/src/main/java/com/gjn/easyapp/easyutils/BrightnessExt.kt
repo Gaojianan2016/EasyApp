@@ -52,8 +52,7 @@ fun Window.setWindowBrightnessRatio(@FloatRange(from = 0.0, to = 1.0) ratio: Flo
 fun Context.setAutoBrightnessEnabled(enabled: Boolean) =
     try {
         putInt(
-            contentResolver,
-            SCREEN_BRIGHTNESS_MODE,
+            contentResolver, SCREEN_BRIGHTNESS_MODE,
             if (enabled) SCREEN_BRIGHTNESS_MODE_AUTOMATIC else SCREEN_BRIGHTNESS_MODE_MANUAL
         )
     } catch (e: Exception) {

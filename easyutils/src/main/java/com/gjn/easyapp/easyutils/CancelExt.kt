@@ -1,17 +1,23 @@
 package com.gjn.easyapp.easyutils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
+
+@SuppressLint("SdCardPath")
+const val DATA_DATA_PATH = "/data/data/"
+const val SHARED_PREFS_PATH = "/shared_prefs"
+const val DATABASES_PATH = "/databases"
 
 /**
  * SharedPreference路径 /data/data/packageName/shared_prefs
  * */
-inline val Context.sharedPreferenceDir get() = "/data/data/${packageName}/shared_prefs".toFile()
+inline val Context.sharedPreferenceDir get() = (DATA_DATA_PATH + packageName + SHARED_PREFS_PATH).toFile()
 
 /**
  * 数据库路径 /data/data/packageName/databases
  * */
-inline val Context.databasesDir get() = "/data/data/${packageName}/databases".toFile()
+inline val Context.databasesDir get() = (DATA_DATA_PATH + packageName + DATABASES_PATH).toFile()
 
 /**
  * 清除外部缓存 /mnt/sdcard/android/data/packageName/cache
