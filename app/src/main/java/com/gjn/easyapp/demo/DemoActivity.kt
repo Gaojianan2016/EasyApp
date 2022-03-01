@@ -24,7 +24,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
     @SuppressLint("MissingPermission")
     override fun initView() {
-        val bmp = R.mipmap.test_img.toBitmap(mActivity)
+        val bmp = mActivity.toBitmap(R.mipmap.test_img)
 
         btn1_ad.click {
             //id动画
@@ -32,9 +32,9 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
             //特殊动画
             mActivity.startActivity<ImageActivity>(options = makeSceneTransitionAnimationBundle()) {
-//                putExtra(ImageActivity.DATA, "Explode")
-//                putExtra(ImageActivity.DATA, "Slide")
-                putExtra(ImageActivity.DATA, "Fade")
+//                putExtra(ImageActivity.DATA, DEFAULT_SCENE_TRANSITION_EXPLODE)
+//                putExtra(ImageActivity.DATA, DEFAULT_SCENE_TRANSITION_SLIDE)
+                putExtra(ImageActivity.DATA, DEFAULT_SCENE_TRANSITION_FADE)
             }
         }
 
@@ -92,7 +92,8 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn7_ad.click {
-            val logo = R.drawable.ic_launcher_background.vectorToBitmap(mActivity)
+
+            val logo = mActivity.vectorToBitmap(R.drawable.ic_launcher_background)
             val bmp2 = bmp?.addImageWatermark(logo, 9, 0.5f, 88, -45f)
             iv1_ad.setImageBitmap(bmp2)
 
@@ -170,7 +171,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("isStatusBarVisible ${mActivity.isStatusBarVisible}")
             println("isStatusBarLightMode ${mActivity.isStatusBarLightMode}")
 
-            println("actionBarHeight ${mActivity.application.actionBarHeight}px")
+            println("actionBarHeight ${mActivity.actionBarHeight}px")
             println("navigationBarHeight ${mActivity.navigationBarHeight}px")
             println("isNavBarVisible ${mActivity.isNavBarVisible}")
             println("isNavBarLightMode ${mActivity.isNavBarLightMode}")

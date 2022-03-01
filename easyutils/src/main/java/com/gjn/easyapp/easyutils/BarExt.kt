@@ -53,23 +53,28 @@ inline var Activity.isStatusBarLightMode: Boolean
     }
 
 /**
+ * 透明状态栏
+ * */
+fun Activity.transparentStatusBar() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        val option = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        val vis = decorViewGroup.systemUiVisibility
+        decorViewGroup.systemUiVisibility = option or vis
+        window.statusBarColor = Color.TRANSPARENT
+    } else {
+        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+    }
+}
+
+/**
  * 设置状态栏颜色
  * isDecor true - 添加到 DecorView(有状态栏高度), false - 添加到 ContentView(无状态栏高度)
  * */
 fun Activity.setStatusBarColor(@ColorInt color: Int, isDecor: Boolean = false): View {
     transparentStatusBar()
     return applyStatusBarColor(color, isDecor)
-}
-
-/**
- * 设置(fakeStatusBar)状态栏颜色
- * */
-fun View.setStatusBarColor(@ColorInt color: Int) {
-    (context as Activity).transparentStatusBar()
-    visible()
-    layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-    layoutParams.height = context.statusBarHeight
-    setBackgroundColor(color)
 }
 
 /**
@@ -96,21 +101,15 @@ fun Activity.setStatusBarColor4Drawer(
 }
 
 /**
- * 透明状态栏
+ * 设置(fakeStatusBar)状态栏颜色
  * */
-fun Activity.transparentStatusBar() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        val option = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        val vis = decorViewGroup.systemUiVisibility
-        decorViewGroup.systemUiVisibility = option or vis
-        window.statusBarColor = Color.TRANSPARENT
-    } else {
-        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-    }
+fun View.setStatusBarColor(@ColorInt color: Int) {
+    (context as Activity).transparentStatusBar()
+    visible()
+    layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+    layoutParams.height = context.statusBarHeight
+    setBackgroundColor(color)
 }
-
 
 /**
  * 给view添加状态栏高度的TopMargin
@@ -142,10 +141,10 @@ fun View.subtractMarginTopEqualStatusBarHeight() {
 /**
  * actionBar高度(px)
  * */
-inline val Application.actionBarHeight: Int
+inline val Activity.actionBarHeight: Int
     get() {
         val tValue = TypedValue()
-        return if (theme.resolveAttribute(android.R.attr.actionBarSize, tValue, true)) {
+        return if (application.theme.resolveAttribute(android.R.attr.actionBarSize, tValue, true)) {
             TypedValue.complexToDimensionPixelSize(tValue.data, resources.displayMetrics)
         } else {
             0
@@ -175,10 +174,10 @@ inline var Activity.isNavBarVisible: Boolean
 /**
  * 是否支持导航栏
  * */
-fun Application.isSupportNavBar(): Boolean {
+fun Activity.isSupportNavBar(): Boolean {
     val size = Point()
     val realSize = Point()
-    windowManager.run {
+    application.windowManager.run {
         defaultDisplay.getSize(size)
         defaultDisplay.getRealSize(realSize)
     }

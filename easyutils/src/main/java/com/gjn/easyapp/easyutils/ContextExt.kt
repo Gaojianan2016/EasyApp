@@ -20,6 +20,9 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 
+const val DEFAULT_SCENE_TRANSITION_EXPLODE = "Explode"
+const val DEFAULT_SCENE_TRANSITION_SLIDE = "Slide"
+const val DEFAULT_SCENE_TRANSITION_FADE = "Fade"
 
 //////////////////////////////////
 ///// Fast ContextManager
@@ -78,26 +81,6 @@ fun Context.makeSceneTransitionAnimationBundle(
     }
     return ActivityOptionsCompat.makeSceneTransitionAnimation(activity, *pairs).toBundle()
 }
-
-//fun Context.hasNavigationBar(): Boolean {
-//    var result = false
-//    val resId = getSystemBoolIdentifier("config_showNavigationBar")
-//    if (resId > 0) result = resources.getBoolean(resId)
-//    try {
-//        //判断是否修改过底边栏
-//        when ("android.os.SystemProperties".toClass().invokeMethod(
-//            "get",
-//            parameterTypes = arrayOf(String::class.java),
-//            args = arrayOf("qemu.hw.mainkeys")
-//        ) as String) {
-//            "0" -> result = true
-//            "1" -> result = false
-//        }
-//    } catch (e: Exception) {
-//        e.printStackTrace()
-//    }
-//    return result
-//}
 
 /**
  * 判断权限

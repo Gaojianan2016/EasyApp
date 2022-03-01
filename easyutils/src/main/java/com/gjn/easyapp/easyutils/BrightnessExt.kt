@@ -35,16 +35,23 @@ inline val Context.screenMaxBrightness: Int
  * */
 inline val Window.windowBrightness: Float get() = attributes.screenBrightness * 255
 
+/**
+ * 设置window亮度
+ * */
 fun Window.setWindowBrightness(@IntRange(from = 0, to = 255) brightness: Int) {
     setWindowBrightnessRatio(brightness / 255f)
 }
 
+/**
+ * 设置window亮度比例
+ * */
 fun Window.setWindowBrightnessRatio(@FloatRange(from = 0.0, to = 1.0) ratio: Float) {
     val params = attributes
     attributes = params.apply { screenBrightness = ratio }
 }
 
 /**
+ * 设置屏幕自动亮度开关
  * 该权限系统app级别才可以使用
  * 需要权限 <uses-permission android:name="android.permission.WRITE_SETTINGS" />
  * */
@@ -60,6 +67,7 @@ fun Context.setAutoBrightnessEnabled(enabled: Boolean) =
     }
 
 /**
+ * 设置亮度
  * 该权限系统app级别才可以使用
  * 需要权限 <uses-permission android:name="android.permission.WRITE_SETTINGS" />
  * */

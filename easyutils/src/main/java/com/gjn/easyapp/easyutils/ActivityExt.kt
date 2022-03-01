@@ -107,12 +107,12 @@ fun Activity.finishWithResult(resultCode: Int, vararg pairs: Pair<String, *>) {
 //////////////////////////////////
 
 /**
- * 获取 android.R.id.content 帧布局
+ * 获取android.R.id.content帧布局
  * */
 inline val Activity.contentFrameLayout: FrameLayout get() = window.findViewById(android.R.id.content)
 
 /**
- * 获取 decorView 布局
+ * 获取decorView布局
  * */
 inline val Activity.decorViewGroup: ViewGroup get() = window.decorView as ViewGroup
 
@@ -129,13 +129,23 @@ inline val Activity.windowInsetsControllerCompat: WindowInsetsControllerCompat?
     get() = WindowCompat.getInsetsController(window, window.decorView)
 
 inline fun <reified T> Activity.getIntentKey(key: String) =
-    lazy<T?> { intent.extras[key] }
+    lazy<T?> { intent.extras[key] }.value
 
 inline fun <reified T> Activity.getIntentKey(key: String, default: T) =
-    lazy { intent.extras[key] ?: default }
+    lazy { intent.extras[key] ?: default }.value
 
 /**
- * 获取 android.R.id.content 未显示高度
+ * 获取Activity中子view未显示高度
+ * */
+fun Activity.getViewInvisibleHeight(view: View): Int {
+    val outRect = Rect().apply { view.getWindowVisibleDisplayFrame(this) }
+    val delta = abs(view.bottom - outRect.bottom)
+    //差值超过通知栏+状态栏高度
+    return if (delta > navigationBarHeight + statusBarHeight) delta else 0
+}
+
+/**
+ * 获取android.R.id.content未显示高度
  * */
 inline val Activity.contentViewInvisibleHeight: Int
     get() = getViewInvisibleHeight(contentFrameLayout)
@@ -145,10 +155,3 @@ inline val Activity.contentViewInvisibleHeight: Int
  * */
 inline val Activity.decorViewInvisibleHeight: Int
     get() = getViewInvisibleHeight(decorViewGroup)
-
-fun Activity.getViewInvisibleHeight(view: View): Int {
-    val outRect = Rect().apply { view.getWindowVisibleDisplayFrame(this) }
-    val delta = abs(view.bottom - outRect.bottom)
-    //差值超过通知栏+状态栏高度
-    return if (delta > navigationBarHeight + statusBarHeight) delta else 0
-}

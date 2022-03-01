@@ -2,25 +2,30 @@
 
 ## ActivityExt
 ```
-cls.startActivity 启动Activity
 Context.startActivity 启动Activity
-Intent.startActivity 启动Activity
-
-cls.startActivityForResult 启动Activity有返回结果
 Context.startActivityForResult 启动Activity有返回结果
-Intent.startActivityForResult 启动Activity有返回结果
 
-Activity.isKeyboardShowing 判断是否开启软键盘
-createOptionsBundle 带跳转动画Bundle创建
+Activity.finishActivity 关闭Activity
+Activity.finishWithResult 关闭Activity并返回数据
+
+Activity.contentFrameLayout 获取android.R.id.content帧布局对象
+Activity.decorViewGroup 获取decorView布局对象
+
+Activity.rootWindowInsetsCompat 根布局插入兼容
+Activity.windowInsetsControllerCompat 窗口插入控制兼容
+
+Activity.getIntentKey 获取Activity Intent对象key值
+
+Activity.contentViewInvisibleHeight 获取android.R.id.content未显示高度
+Activity.decorViewInvisibleHeight 获取decorView未显示高度
+Activity.getViewInvisibleHeight 获取Activity中子view未显示高度
+
 ```
 
 ## ActivityResultExt
 ```
-internal class ActivityResultFragment 生成随机数并且直接监听结果的透明Fragment
-class ActivityResultHelper 实现功能的帮助类
-
-FragmentActivity.simpleActivityResult 打开Activity并且直接执行结果
-Fragment.simpleActivityResult 打开Activity并且直接执行结果
+FragmentActivity.quickActivityResult 打开Activity并且直接执行结果
+Fragment.quickActivityResult 打开Activity并且直接执行结果
 ```
 
 ## AnnotationsExt
@@ -34,19 +39,24 @@ Any.getField 获取注解的成员变量
 ## AppExt
 ```
 String.toPackageNameUri 包名转换为uri
-Context.packageNameUri 获取包名
+Context.toPackageNameUri 包名转换为uri
+
 Context.installApp 安装app
 Context.uninstallApp 卸载app
 Context.isInstalled 判断app是否安装
-Context.getAppLauncher 获取app启动页字符串
+
+Context.getAppLauncherClassName 获取app的启动页className
+Context.getAppLauncherIntent 获取app的启动页Intent
 Context.isIntentAvailable 判断Intent是否可用
+
 Context.openApp 打开app
 Context.openAppDetailsSettings 打开app设置页
 Context.openUnknownAppSettings 打开app未知来源设置页
-Context.getAppPackageInfo 获取app包信息
+
+Context.getAppPackageInfo 获取App PackageInfo
 Context.getAppIcon 获取app图标
 Context.getAppIconId 获取app图标id
-Context.getApplicationName 获取app应用名称
+Context.getApplicationName 获取App ApplicationName
 Context.getAppPath 获取app安装路径
 Context.getAppVersionName 获取app版本名称
 Context.getAppVersionCode 获取app版本代码
@@ -58,41 +68,39 @@ Context.getAppSignaturesHash 获取app签名哈希
 Context.getAppSignatures 获取app签名
 ```
 
-## AppManager App管理工具
-```
-addActivity 添加Activity
-removeActivity 移除Activity
-finishActivity 关闭Activity
-isActivityExists 是否存在Activity
-clearActivity 清空Activity
-killApp 杀死app进程
-```
-
 ## AutoScreenExt 今日头条适配方案
 ```
 AutoScreenUtil 主类
     init 初始化
-    setCustomDensity 设置视频
+    setCustomDensity 设置适配
 IAutoCancel 取消适配
 IAutoChange 修改适配
 ```
 
 ## BarExt
 ```
-Context.statusBarHeight 获取状态栏高度
-Activity.setStatusBarVisibility 设置状态栏可见
-Activity.isStatusBarVisible 状态栏是否可见
-Activity.setStatusBarLightMode 设置状态栏模式
-Activity.isStatusBarLightMode 状态栏是否开启light模式
+Context.statusBarHeight 状态栏高度(px)
+Activity.isStatusBarVisible 状态栏是否显示
+Activity.isStatusBarLightMode 状态栏Light模式
+Activity.transparentStatusBar 透明状态栏
+
+//通过透明状态栏 添加一个fakeStatusBar设置背景颜色实现
 Activity.setStatusBarColor 设置状态栏颜色
-Activity.setStatusBarColor4Drawer 设置DrawerLayout下状态栏颜色
-Activity.transparentStatusBar 状态栏透明
-View.addMarginTopEqualStatusBarHeight 为view增加状态栏高度MarginTop
-View.subtractMarginTopEqualStatusBarHeight 为view减少状态栏高度MarginTop
 
-Application.actionBarHeight 获取动作栏高度
+//需要设置一个fakeStatusBar占位
+Activity.setStatusBarColor4Drawer DrawerLayout 设置状态栏颜色
+View.setStatusBarColor 设置(fakeStatusBar)状态栏颜色
+View.addMarginTopEqualStatusBarHeight 给view添加状态栏高度的TopMargin
+View.subtractMarginTopEqualStatusBarHeight 给view减去状态栏高度的TopMargin
 
-Application.setNotificationBarVisibility 设置通知栏是否可见
+Activity.actionBarHeight actionBar高度(px)
+
+Context.navigationBarHeight 导航栏高度(px)
+Activity.isNavBarVisible 导航栏显示
+Activity.isSupportNavBar 是否支持导航栏
+Activity.setNavBarColor 设置导航栏颜色 api21以上
+Activity.navigationBarColor 获取导航栏颜色 api21以上
+Activity.isNavBarLightMode 导航栏LightMode
 
 Context.navigationBarHeight 获取导航栏高度
 Activity.setNavBarVisibility 设置导航栏可见
@@ -102,48 +110,85 @@ Activity.setNavBarColor 设置导航栏颜色
 Activity.navigationBarColor 获取导航栏颜色
 Activity.setNavBarLightMode 设置导航栏模式
 Activity.isNavBarLightMode 获取导航栏是否开启light模式
+
+//对FakeStatusBar进行操作
+Activity.showFakeStatusBarView
+Activity.hideFakeStatusBarView
+Activity.addTopOffsetStatusBarHeight
+Activity.subtractTopOffsetStatusBarHeight
 ```
 
 ## BitmapExt
 ```
 Bitmap.compress 压缩bitmap
-*.toByte Bitmap、File、Int（Resource）、InputStream转字节
-*.toBitmap 字节、File、Int（Resource）、InputStream转Bitmap
-Int.vectorToBitmap 向量图转Bitmap
+*.toDrawable Bitmap、ByteArray转Drawable
+*.toByte Bitmap、File、InputStream转Byte
+*.toBitmap 字节、File、InputStream转Bitmap
 
-Bitmap.scale 缩放bitmap
-Bitmap?.drawBitmap 在bitmap上面绘制一个bitmap
-Bitmap?.drawMiniBitmap 在bitmap上面指定的9个位置绘制一个miniBitmap
-Bitmap.blurBitmap 高斯模糊bitmap
+Context.toByte Int（Resource）转Bitmap
+Context.toBitmap Int（Resource）转Bitmap
+Context.vectorToBitmap 向量图转Bitmap
+
+File.toRectBitmap 文件转设定矩形Bitmap
+View.toBitmap view转Bitmap 可以当成截图view
+
+Bitmap.scale 缩放
+Bitmap.clip 修剪
+Bitmap.skew 偏斜
+Bitmap.rotate 旋转
+Bitmap.alpha 透明
+Bitmap.gray 灰色
+
+Bitmap.toCircle 切圆
+Bitmap.toRoundCorner 切圆角
+Bitmap.addTextWatermark 添加文字水印
+Bitmap.addImageWatermark 添加图片水印
+Bitmap.fastBlur 快速模糊
+
+File.getRotateDegree 获取图片文件旋转角度
 ```
 
 ## BrightnessExt
 ```
 Context.isAutoBrightnessEnabled 是否开启自动亮度
-Context.setAutoBrightnessEnabled 设置自动亮度
-Context.getBrightness 获取屏幕亮度
-Context.getMaxBrightness 获取屏幕最大亮度
-Context.setBrightness 设置屏幕亮度
+Context.screenBrightness 屏幕亮度 0-255
+Context.screenMaxBrightness 获取屏幕最大亮度
 
-Window.getWindowBrightness 获取窗口屏幕亮度
-Window.setWindowBrightness 设置窗口屏幕亮度（0-255）
-Window.setWindowBrightnessRatio 设置窗口屏幕亮度（0.0-1.0）
+Context.windowBrightness 获取window亮度
+Context.setWindowBrightness 设置window亮度
+Context.setWindowBrightnessRatio 设置window亮度比例
+
+//需要系统权限才可以修改
+Context.setAutoBrightnessEnabled 设置屏幕自动亮度开关
+Context.setBrightness 设置亮度
+```
+
+## BundleExt
+```
+Bundle?.get 将 Bundle.get(key) 转换为 Bundle[key]
 ```
 
 ## CancelExt
 ```
-clearAppExternalCache 清除外部缓存 /mnt/sdcard/android/data/packageName/cache
-clearAppInternalCache 清除内部缓存 /data/data/packageName/cache
-clearAppFile 清除File文件 /data/data/packageName/files
-clearAppSharedPrefs 清除SharedPreference /data/data/packageName/shared_prefs
-clearAppDatabases 清除数据库 /data/data/packageName/databases
-appExternalCacheSize 获取外部缓存文件大小
-appInternalCacheSize 获取内部缓存文件大小
-appFileSize 获取File文件文件大小
-CancelUtils 缓存工具类
-    clearAppAllData 清除全部缓存数据
-    clearAppCancel 清除app内部和外部缓存数据
-    getAppCancelSize 获取app内部和外部缓存文件大小
+//externalCacheDir cacheDir filesDir sharedPreferenceDir databasesDir 这几个路径为官方自带路径
+Context.sharedPreferenceDir SharedPreference路径
+Context.databasesDir 数据库路径
+
+Context.clearAppExternalCache 清除外部缓存
+Context.clearAppInternalCache 清除内部缓存
+Context.clearAppFile 清除File文件
+Context.clearAppSharedPrefs 清除SharedPreference
+Context.clearAppDatabases 清除数据库
+
+Context.clearAppAllData 清除App全部数据
+Context.clearAppCancel 清除App缓存
+
+Context.appExternalCacheSize 应用外部缓存文件大小
+Context.appInternalCacheSize 应用内部缓存文件大小
+Context.appFileSize file文件大小
+Context.appSharedPrefsSize SharedPrefs文件大小
+Context.appDatabasesSize 数据库文件大小
+Context.appCancelSize app缓存文件大小
 ```
 
 ## ClickExt
@@ -159,11 +204,11 @@ setOnDebouncingClickListeners 批量设置防抖点击
 
 ## ClipboardExt
 ```
-Context.getClipboardManager 获取剪切板管理器
 Context.copyClipboardText 剪切Text
 Context.clearClipboard 清空剪切板
 Context.getClipboardLabel 获取剪切板标签
 Context.getClipboardText 获取剪切板Text
+
 Context.addClipboardChangedListener 添加剪切板改变监听
 Context.removeClipboardChangedListener 移除剪切板改变监听
 ```
@@ -171,6 +216,7 @@ Context.removeClipboardChangedListener 移除剪切板改变监听
 ## ColorExt
 ```
 Context.getColorRes 通过resource获取color
+
 Int.changeColorAlpha 改变color的透明度
 Int.changeRedColorAlpha 改变color的红色透明度
 Int.changeGreenColorAlpha 改变color的绿色透明度
@@ -181,6 +227,40 @@ Int.parseArgbColor color转字符串（有透明度）
 
 randomColor 随即颜色
 Int.isLightColor 是否为浅色
+```
+
+## ContextExt
+```
+//常用Manager
+Context.activityManager
+Context.clipboardManager
+Context.connectivityManager
+Context.notificationManager
+Context.telephonyManager
+Context.windowManager
+Context.keyguardManager
+Context.audioManager
+Context.inputMethodManager
+
+Context.makeCustomAnimationBundle 制作跳转页面 自定义转场动画
+Context.makeSceneTransitionAnimationBundle 制作跳转页面 View过渡动画
+Context.checkPermission 判断权限
+
+```
+
+## ConvertExt
+```
+Int.toHexString 10进制转16进制
+String.hexString2Int 16进制转10进制
+
+ByteArray?.toHexString byte转16进制
+String?.hexString2Bytes 16进制转byte
+
+ByteArray?.toParcelable Bytes to Parcelable
+Parcelable?.toBytes Parcelable to Bytes
+
+ByteArray.splice 拼接Byte
+
 ```
 
 ## CoroutineExt
@@ -207,44 +287,60 @@ Context.setWifiEnabled 修改wifi状态
 Context.getWifiEnabled 获取wifi状态
 ```
 
+## DisplayExt
+```
+Float.px2Dimension
+
+*.dp
+*.sp
+*.pt
+
+*.px2dp
+*.px2sp
+*.px2pt
+```
+
 ## EncodeExt
 ```
-String.urlEncode
-String.urlDecode
+String.urlEncode url加密
+String.urlDecode url解密
 
-base64Encode
-base64Encode2String
-base64Decode
+*.base64Encode base64加密
+*.base64Encode2String base64加密成String
+*.base64Decode base64解密
 
-String.binaryEncode
-String.binaryDecode
+String.binaryEncode 二进制加密
+String.binaryDecode 二进制解密
 ```
 
 ## EncryptExt
 ```
-encryptMD5ToString  MD5哈希加密
-encryptHash2String 哈希加密
+*.encryptMD5ToString  MD5哈希加密
+*.encryptHash2String 哈希加密
 
-encryptHmacMD5ToString HmacMD5加密
-encryptHmac2String Hmac加密
+*.encryptHmacMD5ToString HmacMD5加密
+*.encryptHmac2String Hmac加密
 
-encryptDES DES加密
-decryptDES DES解密
+*.encryptDES DES加密
+*.decryptDES DES解密
 
-encrypt3DES 3DES加密
-decrypt3DES 3DES解密
+*.encrypt3DES 3DES加密
+*.decrypt3DES 3DES解密
 
-encryptAES AES加密
-decryptAES AES解密
+*.encryptAES AES加密
+*.decryptAES AES解密
 
-encryptRSA RSA加密
-decryptRSA RSA解密
+*.encryptRSA RSA加密
+*.decryptRSA RSA解密
 
-hashTemplate 哈希模板
-hmacTemplate Hmac模板
-symmetricTemplate 对称模板
-rsaTemplate 非对称模板
-rc4 rc4加密
+*.hashTemplate 哈希模板
+*.hmacTemplate Hmac模板
+*.symmetricTemplate 对称模板
+*.rsaTemplate 非对称模板
+*.rc4 rc4加密
+```
 
-ByteArray.splice 拼接Bytes
+## FileExt
+```
+
 ```

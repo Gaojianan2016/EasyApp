@@ -69,17 +69,34 @@ fun Context.clearAppCancel(){
     clearAppExternalCache()
 }
 
-//文件大小
+/**
+ * 应用外部缓存文件大小
+ * */
 fun Context.appExternalCacheSize() =
     if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED)
         externalCacheDir?.getFileLength() ?: 0 else 0
 
+/**
+ * 应用内部缓存文件大小
+ * */
 fun Context.appInternalCacheSize() = cacheDir.getFileLength()
 
+/**
+ * file文件大小
+ * */
 fun Context.appFileSize() = filesDir.getFileLength()
 
+/**
+ *  SharedPrefs文件大小
+ * */
 fun Context.appSharedPrefsSize() = sharedPreferenceDir.getFileLength()
 
+/**
+ * 数据库文件大小
+ * */
 fun Context.appDatabasesSize() = databasesDir.getFileLength()
 
+/**
+ * app缓存文件大小
+ * */
 fun Context.appCancelSize() = appExternalCacheSize() + appInternalCacheSize()

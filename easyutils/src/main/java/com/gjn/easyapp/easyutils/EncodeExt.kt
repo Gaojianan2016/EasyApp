@@ -30,7 +30,7 @@ fun String.urlDecode(charsetName: String = "UTF-8"): String {
 fun ByteArray.base64Encode(flags: Int = Base64.NO_WRAP) = Base64.encode(this, flags)
 
 /**
- * base64加密
+ * base64加密成String
  * */
 fun ByteArray.base64Encode2String(flags: Int = Base64.NO_WRAP) = Base64.encodeToString(this, flags)
 

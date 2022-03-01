@@ -8,12 +8,12 @@ private val HEX_DIGITS_UPPER = "0123456789ABCDEF".toCharArray()
 private val HEX_DIGITS_LOWER = "0123456789abcdef".toCharArray()
 
 /**
- * int 转字符串
+ * 10进制转16进制
  * */
 fun Int.toHexString() = Integer.toHexString(this)
 
 /**
- * 字符串转int
+ * 16进制转10进制
  * */
 fun String.hexString2Int() = Integer.parseInt(this, 16)
 

@@ -15,20 +15,21 @@ class ImageActivity: ABaseActivity() {
     override fun layoutId() = R.layout.activity_image
 
     override fun onBundle() {
-        val data = mBundle.getString(DATA, "空数据")
-        val id = mBundle.getInt(ID, -1)
-        val id2 = mBundle.getInt(ID2, -1)
+
+        val data = getIntentKey(DATA, "空数据")
+        val id = getIntentKey(ID, -1)
+        val id2 = getIntentKey(ID2, -2)
         println("data = $data, id = $id, id2 = $id2")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             when (data) {
-                "Explode" -> {
+                DEFAULT_SCENE_TRANSITION_EXPLODE -> {
                     window.enterTransition = Explode()
                 }
-                "Slide" -> {
+                DEFAULT_SCENE_TRANSITION_SLIDE -> {
                     window.enterTransition = Slide()
                 }
-                "Fade" -> {
+                DEFAULT_SCENE_TRANSITION_FADE -> {
                     window.enterTransition = Fade()
                 }
             }
@@ -44,16 +45,13 @@ class ImageActivity: ABaseActivity() {
 
     override fun initData() {
         img1_ai.click {
-
 //            finishActivityByStack(this@ImageActivity)
 //            finishAllActivitiesByStack()
             mActivity.killAppByStack()
-
 //            finishWithResult(777, "data" to "img1数据")
         }
         img2_ai.click {
             finishWithResult("data" to "img2数据")
-
         }
     }
 

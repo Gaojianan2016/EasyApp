@@ -34,7 +34,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="UnusedAttribute">
-<!--        <activity android:name=".MainActivity"-->
+<!--        <activity
+                android:name=".MainActivity"-->
         <activity
             android:name=".demo.DemoActivity"
             android:configChanges="orientation|screenSize|keyboardHidden">

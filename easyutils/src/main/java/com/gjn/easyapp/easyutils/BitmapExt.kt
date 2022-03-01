@@ -15,6 +15,7 @@ import android.text.StaticLayout
 import android.text.TextPaint
 import android.view.View
 import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
 import androidx.core.app.ActivityCompat
@@ -49,24 +50,18 @@ fun File.toByte(quality: Int = 90, opts: BitmapFactory.Options? = null): ByteArr
     return toBitmap(opts = opts)?.toByte(quality = quality)
 }
 
-fun Int.toByte(context: Context, quality: Int = 90, opts: BitmapFactory.Options? = null) =
-    toBitmap(context, opts = opts)?.toByte(quality = quality)
-
 fun InputStream.toByte(
     quality: Int = 90,
     outPadding: Rect? = null,
     opts: BitmapFactory.Options? = null
 ) = toBitmap(outPadding = outPadding, opts = opts)?.toByte(quality = quality)
 
+fun Context.toByte(id: Int, quality: Int = 90, opts: BitmapFactory.Options? = null) =
+    toBitmap(id, opts = opts)?.toByte(quality = quality)
+
 //toBitmap
 fun ByteArray.toBitmap(quality: Int = 90, opts: BitmapFactory.Options? = null) =
     BitmapFactory.decodeByteArray(this, 0, size, opts).compress(quality = quality)
-
-fun Int.toBitmap(
-    context: Context,
-    quality: Int = 90,
-    opts: BitmapFactory.Options? = null
-) = BitmapFactory.decodeResource(context.resources, this, opts).compress(quality = quality)
 
 fun Drawable.toBitmap(): Bitmap? {
     if (this is BitmapDrawable) return bitmap ?: null
@@ -92,12 +87,19 @@ fun File.toBitmap(quality: Int = 90, opts: BitmapFactory.Options? = null): Bitma
     return BitmapFactory.decodeFile(path, opts).compress(quality = quality)
 }
 
+fun Context.toBitmap(
+    id: Int,
+    quality: Int = 90,
+    opts: BitmapFactory.Options? = null
+) = BitmapFactory.decodeResource(resources, id, opts).compress(quality = quality)
+
 /**
- * 向量图转bitmap
+ * DrawableRes id 向量图转bitmap
  * */
-fun Int.vectorToBitmap(context: Context): Bitmap? =
+
+fun Context.vectorToBitmap(@DrawableRes id: Int): Bitmap? =
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-        val drawable = ActivityCompat.getDrawable(context, this)
+        val drawable = ActivityCompat.getDrawable(this, id)
         if (drawable == null) {
             null
         } else {
@@ -110,7 +112,7 @@ fun Int.vectorToBitmap(context: Context): Bitmap? =
             }
         }
     } else {
-        toBitmap(context)
+        toBitmap(id)
     }
 
 fun File.toRectBitmap(
@@ -124,6 +126,9 @@ fun File.toRectBitmap(
     return toBitmap(quality)?.scale(newWidth!!, newHeight!!, recycle)
 }
 
+/**
+ * view转Bitmap 可以当成截图view
+ * */
 fun View.toBitmap(): Bitmap {
     val enabled = isDrawingCacheEnabled
     val drawing = willNotCacheDrawing()
@@ -474,12 +479,12 @@ fun Bitmap.fastBlur(
  * */
 fun File.getRotateDegree(): Int {
     if (!exists()) return -1
-    try {
+    return try {
         val orientation = ExifInterface(path).getAttributeInt(
             ExifInterface.TAG_ORIENTATION,
             ExifInterface.ORIENTATION_NORMAL
         )
-        return when (orientation) {
+        when (orientation) {
             ExifInterface.ORIENTATION_ROTATE_90 -> 90
             ExifInterface.ORIENTATION_ROTATE_180 -> 180
             ExifInterface.ORIENTATION_ROTATE_270 -> 270
@@ -487,6 +492,6 @@ fun File.getRotateDegree(): Int {
         }
     } catch (e: Exception) {
         e.printStackTrace()
+        -1
     }
-    return -1
 }
