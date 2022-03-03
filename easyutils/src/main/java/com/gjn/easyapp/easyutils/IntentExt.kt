@@ -14,11 +14,11 @@ import java.util.ArrayList as JList
 const val QQ_PACKAGE_NAME = "com.tencent.mobileqq"
 const val WECHAT_PACKAGE_NAME = "com.tencent.mm"
 
-fun Context.openWeChat() {
+inline fun Context.openWeChat() {
     openApp(WECHAT_PACKAGE_NAME)
 }
 
-fun Context.openQQ() {
+inline fun Context.openQQ() {
     openApp(QQ_PACKAGE_NAME)
 }
 
@@ -127,7 +127,6 @@ fun FragmentActivity.quickShoot(file: File, block: (Int, Intent?) -> Unit = { _,
     }
     return file.name
 }
-
 
 ///////////////////////////////////////
 ///    intent便捷生成方式

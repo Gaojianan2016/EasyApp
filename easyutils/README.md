@@ -342,5 +342,263 @@ String.binaryDecode 二进制解密
 
 ## FileExt
 ```
+*.toFile 转为file
+File.toByteArray 转为字节
+
+File.suffix 直接最后一个.获取文件后缀
+File.extension 通过mimeType获取文件后缀
+File.mimeType 通过后缀获取文件类型
+
+File.isAvailableDir 是否存在文件夹
+File.isAvailableFile 是否存在文件
+
+File.getStatFsTotalSize 获取StatFs总大小
+File.getStatFsAvailableSize 获取StatFs可用大小
+File.getFileLength 获取文件大小（包含内部所有文件总和）
+
+File.rename 文件重命名
+File.createParentDir 创建父目录
+File.createOrExistsDir 创建文件夹
+File.createOrExistsFile 创建文件
+File.createDir 创建新文件夹
+File.createFile 创建新文件
+File.copyToPath 复制文件
+File.moveToPath 移动文件
+File.copyOrMoveDir 复制或者移动文件夹
+File.deleteDir 删除文件夹
+File.deleteFile 删除文件
+File.findListFiles 查找文件
+
+File.notifyMediaFile 更新媒体文件
+File.notifyScanMediaFile 通知文件夹扫描媒体文件
+File.notifyInsertThumbnail 通知文件夹插入缩略图
+
+Context.openFile 打开文件
+Context.getLocalFileUri 获取本地文件uri
+Context.getLocalFileFromUri 获取本地文件通过uri
+Context.getLocalFileFromContentUri 获取本地文件通过ContentUri
+
+Context.unzipAssetsFile 解压assets文件
+Context.unzipFileUseZip4j zip4j解压文件
+```
+
+## FileIOExt
+```
+File.writeString file写入字符串
+File.writeInputStream file写入输入流
+```
+
+## FragmentExt
+```
+Fragment.startActivity 打开Activity
+Fragment.startActivityForResult 打开Activity等待结果
+
+Fragment.newInstance 实例化Fragment
+Fragment.getArgumentsKey 获取Fragment的Argument值
+
+```
+
+## IntentExt
+```
+Context.dial 拨号
+Context.sendSMS 发短信
+Context.email 发邮件
+Context.browser 浏览网址
+
+Context.shareText 分享文字
+Context.shareImage 分享图片
+Context.shareTextImage 分享图文
+
+FragmentActivity.quickShoot 快速拍照
+
+Context.intentOf 生成带参Intent
+Intent.addNewTaskFlag 添加newTaskFlag
+Intent.addSingleTopFlag 添加singleTopFlag
+
+Intent.intentIsAvailable Intent 是否可用
+String.getComponentIntent 包名获取组件 Intent
+```
+
+## JsonExt
+```
+String?.formatJson json 格式化
+```
+
+## KeyboardExt
+```
+View.isShowKeyboard 是否显示软键盘
+View.keyboardShowHeight 软键盘高度
+View.showKeyboard 显示软键盘
+View.hideKeyboard 隐藏软键盘
+View.toggleKeyboard 切换软键盘
+
+Context.toggleSoftInput 切换软键盘
+View.hideSoftInputFromWindow 隐藏软键盘
+Activity.isSoftInputVisible 是否显示软键盘
+Activity.showSoftInput 隐藏软键盘
+Activity.hideSoftInput 隐藏软键盘
+
+Activity.fixAndroidBug5497 修复软键盘bug
+```
+
+## ListExt
+```
+*.isList 列表需要大于1
+*.isLimitSize 最多不超过设置数量
+String.split2List 分割字符串成列表
+```
+
+## LogExt
+```
+logV
+logD
+logI
+logW
+logE
+logWTF
+```
+
+## MetaDataExt
+```
+Context.getAppMetaData 获取App meta-data
+
+Activity.getAppMetaData 获取Activity meta-data
+Context.getActivityMetaData 获取Activity meta-data
+
+Service.getMetaData 获取Service meta-data
+Context.getServiceMetaData 获取Service meta-data
+
+BroadcastReceiver.getMetaData 获取BroadcastReceiver meta-data
+Context.getReceiverMetaData 获取BroadcastReceiver meta-data
+```
+
+## NetworkExt
+```
+Context.openWirelessSettings 打开无线设置
+
+Context.isNetworkConnected 是否连接网络
+Context.isWifiConnected 是否连接wifi
+Context.isMobileConnected 是否连接移动网络
+Context.isEthernetConnected 是否连接以太网
+
+Context.registerNetworkCallback 监听网络状态变化
+Context.unregisterNetworkCallback 取消监听网络状态变化
+```
+
+## NotificationExt
+```
+Context.isNotificationsEnabled 是否启动通知
+
+Context.sendNotification 发送通知
+Service.sendForegroundNotification 发送前台通知
+
+Context.cancelNotification 取消通知
+Context.cancelAllNotification 取消全部通知
+Context.setNotificationBarExpand 是否展开通知
+
+```
+
+## NumberExt
+```
+
+```
+
+## PermissionExt
+```
+
+```
+
+## PhoneInfoExt
+```
+
+```
+
+## QRCodeExt
+```
+
+```
+
+## ReflexExt
+```
+
+```
+
+## RegexExt
+```
+
+```
+
+## ResourcesExt
+```
+
+```
+
+## ScreenExt
+```
+
+```
+
+## ServiceExt
+```
+
+```
+
+## ShellExt
+```
+
+```
+
+## ShellExt
+```
+
+```
+
+## SingletonExt
+```
+
+```
+
+## StringExt
+```
+
+```
+
+## TabLayoutExt
+```
+
+```
+
+## TimeExt
+```
+
+```
+
+## ToastExt
+```
+
+```
+
+## UnitExt
+```
+
+```
+
+## UriExt
+```
+
+```
+
+## VibrateExt
+```
+
+```
+
+## ViewExt
+```
+
+```
+
+## VolumeExt
+```
 
 ```

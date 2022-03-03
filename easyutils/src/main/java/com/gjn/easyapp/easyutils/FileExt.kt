@@ -27,6 +27,11 @@ fun String.toFile(): File = File(this)
 fun Uri.toFile(): File = File(path)
 
 /**
+ * file转换为byte[]
+ * */
+fun File.toByteArray(): ByteArray = inputStream().use { return it.readBytes() }
+
+/**
  * 文件后缀
  * */
 inline val File.suffix: String
@@ -45,11 +50,6 @@ inline val File.extension: String?
  * */
 inline val File.mimeType: String?
     get() = MimeTypeMap.getSingleton().getMimeTypeFromExtension(suffix)
-
-/**
- * file转换为byte[]
- * */
-fun File.toByteArray(): ByteArray = inputStream().use { return it.readBytes() }
 
 /**
  * 是否是可用文件夹

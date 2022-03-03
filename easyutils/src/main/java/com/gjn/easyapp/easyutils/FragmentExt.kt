@@ -68,7 +68,7 @@ fun Fragment.newInstance(vararg pairs: Pair<String, *>) =
     apply { arguments = bundleOf(*pairs) }
 
 inline fun <reified T> Fragment.getArgumentsKey(key: String) =
-    lazy<T?> { arguments[key] }
+    lazy<T?> { arguments[key] }.value
 
 inline fun <reified T> Fragment.getArgumentsKey(key: String, default: T) =
-    lazy { arguments[key] ?: default }
+    lazy { arguments[key] ?: default }.value

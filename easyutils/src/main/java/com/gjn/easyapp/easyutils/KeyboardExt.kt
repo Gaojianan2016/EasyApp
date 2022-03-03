@@ -12,9 +12,11 @@ import androidx.core.view.updatePadding
 
 private const val KEYBOARD_TAG = "keyboardTagView"
 
-/**
- * 键盘操作
- * */
+
+//////////////////////
+/// 键盘操作
+//////////////////////
+
 inline val View.isShowKeyboard: Boolean
     get() = rootWindowInsetsCompat?.isVisible(WindowInsetsCompat.Type.ime()) == true
 
@@ -31,7 +33,7 @@ fun View.hideKeyboard() = windowInsetsControllerCompat?.hide(WindowInsetsCompat.
 fun View.toggleKeyboard() = if (isShowKeyboard) hideKeyboard() else showKeyboard()
 
 //////////////////////
-/// 原来的方法
+/// 旧的方法
 //////////////////////
 
 /**
