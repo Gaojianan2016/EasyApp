@@ -495,32 +495,70 @@ Service.sendForegroundNotification 发送前台通知
 Context.cancelNotification 取消通知
 Context.cancelAllNotification 取消全部通知
 Context.setNotificationBarExpand 是否展开通知
-
 ```
 
 ## NumberExt
 ```
-
+*.format 格式化小数点
 ```
 
 ## PermissionExt
 ```
+Context.checkPermissionExistManifest 检查是否存在权限
 
+//Android新版本发布了新的权限获取 这些是旧的实现方法
+FragmentActivity.quickRequestPermissions 快速权限获取
+Fragment.quickRequestPermissions 快速权限获取
+
+//常用权限
+FragmentActivity.requestWRPermission 读写权限
+FragmentActivity.requestCameraPermission 相机权限
 ```
 
 ## PhoneInfoExt
 ```
+Context.isDevicePhone 设备是否是手机
+Context.getDeviceId 获取设备id
+Context.isSimCardReady 是否准备好sim卡
+Context.getSimOperatorName 获取sim卡运营商名称
+Context.getSimOperatorByMnc 通过Mnc获取sim卡运营商
 
+getSerial 获取序列号
+
+isPhoneRom 是否是特定品牌的手机
+phoneBrand 手机品牌
+phoneModel 手机型号
 ```
 
 ## QRCodeExt
 ```
+String.encodeQrCode 字符串加密成二维码bitmap
+Bitmap.decodeQrCode 二维码bitmap解密成字符串
 
+ImageView.setQrCodeImageBitmap ImageView设置二维码ImageBitmap
+ImageView.getQrCodeByBitmap 获取ImageView二维码解析字符串
+File.getQrCode 获取文件二维码解析字符串
 ```
 
 ## ReflexExt
 ```
+String.toClazz 完整类名转Class对象
+String.toClass 完整类名转Class
 
+*.newInstanceClazz 创建一个无参对象
+
+Any.getDeclaredFields 获取当前类的参数
+Any.invokeMethod 执行方法
+Any.invokeDeclaredMethod 执行声明方法
+
+Class<*>.setField 设置成员参数
+Class<*>.getField 获取成员参数
+Class<*>.setDeclaredField 设置声明类成员参数
+Class<*>.getDeclaredField 获取声明类成员参数
+
+Class<*>.isStaticPublic 判断类是否是静态公共类
+Int.isPublic 判断Modifier对象是否是公开的
+Int.isStaticPublic 判断Modifier对象是否是静态公开的
 ```
 
 ## RegexExt

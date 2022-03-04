@@ -477,7 +477,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn39_ad.click {
-            println("isPhone ${mActivity.isPhone()}")
+            println("isDevicePhone ${mActivity.isDevicePhone()}")
             println("isSimCardReady ${mActivity.isSimCardReady()}")
             println("getSimOperatorName ${mActivity.getSimOperatorName()}")
             println("getSimOperatorByMnc ${mActivity.getSimOperatorByMnc()}")

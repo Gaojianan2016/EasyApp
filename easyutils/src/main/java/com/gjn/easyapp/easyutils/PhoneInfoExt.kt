@@ -10,7 +10,7 @@ import androidx.annotation.RequiresPermission
 /**
  * 设备是否是手机
  * */
-fun Context.isPhone() = telephonyManager.phoneType != TelephonyManager.PHONE_TYPE_NONE
+fun Context.isDevicePhone() = telephonyManager.phoneType != TelephonyManager.PHONE_TYPE_NONE
 
 /**
  * 获取设备id

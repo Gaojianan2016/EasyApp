@@ -54,7 +54,7 @@ fun <T> Class<T>.newInstanceClazz(
 fun Any.getDeclaredFields(): Array<Field> = javaClass.declaredFields
 
 /**
- * 执行父类方法
+ * 执行方法
  * */
 fun Any.invokeMethod(
     methodName: String,
@@ -79,7 +79,7 @@ fun Any.invokeMethod(
     }
 
 /**
- * 执行父类方法
+ * 执行声明方法
  * */
 fun Any.invokeDeclaredMethod(
     methodName: String,
@@ -104,7 +104,7 @@ fun Any.invokeDeclaredMethod(
     }
 
 /**
- * 设置父类成员参数
+ * 设置成员参数
  * */
 fun Class<*>.setField(fieldName: String, any: Any?) {
     try {
@@ -119,7 +119,7 @@ fun Class<*>.setField(fieldName: String, any: Any?) {
 }
 
 /**
- * 获取父类成员对象
+ * 获取成员对象
  * */
 fun Class<*>.getField(fieldName: String, any: Any?): Any? {
     try {
@@ -135,7 +135,7 @@ fun Class<*>.getField(fieldName: String, any: Any?): Any? {
 }
 
 /**
- * 设置当前类成员参数
+ * 设置声明类成员参数
  * */
 fun Class<*>.setDeclaredField(fieldName: String, any: Any?) {
     try {
@@ -150,7 +150,7 @@ fun Class<*>.setDeclaredField(fieldName: String, any: Any?) {
 }
 
 /**
- * 获取当前类成员对象
+ * 获取声明类成员对象
  * */
 fun Class<*>.getDeclaredField(fieldName: String, any: Any?): Any? {
     try {
