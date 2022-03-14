@@ -88,7 +88,6 @@ fun Context.assetsStr(fileName: String): String {
     return try {
         String(assets.open(fileName).readBytes())
     } catch (e: Exception) {
-        e.printStackTrace()
         ""
     }
 }
@@ -103,7 +102,6 @@ fun Context.assetsCopyFile(fileName: String, target: File): Boolean {
         assets.open(fileName).copyTo(target.outputStream())
         true
     } catch (e: Exception) {
-        e.printStackTrace()
         false
     }
 }
@@ -119,13 +117,12 @@ fun Context.rawStr(@RawRes resId: Int): String =
     try {
         String(resources.openRawResource(resId).readBytes())
     } catch (e: Exception) {
-        e.printStackTrace()
         ""
     }
 
 
 /**
- * 复制assets file
+ * 复制raw file
  * */
 fun Context.rawCopyFile(@RawRes resId: Int, target: File): Boolean {
     if (!target.createNewFile()) return false
@@ -133,7 +130,6 @@ fun Context.rawCopyFile(@RawRes resId: Int, target: File): Boolean {
         resources.openRawResource(resId).copyTo(target.outputStream())
         true
     } catch (e: Exception) {
-        e.printStackTrace()
         false
     }
 }
@@ -168,15 +164,12 @@ fun <T : ViewDataBinding> Context?.inflateDataBindingUtil(
 /**
  * 获取字符串
  * */
-fun Context.string(
-    @StringRes resId: Int,
-    vararg formatArgs: Any
-) = try {
-    getString(resId, *formatArgs)
-} catch (e: Exception) {
-    e.printStackTrace()
-    resId.toString()
-}
+fun Context.string(@StringRes resId: Int, vararg formatArgs: Any) =
+    try {
+        getString(resId, *formatArgs)
+    } catch (e: Exception) {
+        resId.toString()
+    }
 
 /**
  * 获取字符串数组
@@ -185,6 +178,5 @@ fun Context.stringArray(@ArrayRes resId: Int): Array<String> =
     try {
         resources.getStringArray(resId)
     } catch (e: Exception) {
-        e.printStackTrace()
         arrayOf(resId.toString())
     }

@@ -9,15 +9,15 @@ open class SingletonCompanionImpl<out T, in A>(initializer: (A) -> T) {
     private var instance: T? = null
 
     fun getInstance(arg: A): T {
-        val i1 = instance
-        if (i1 != null) {
-            return i1
+        val instance1 = instance
+        if (instance1 != null) {
+            return instance1
         }
 
         return synchronized(this) {
-            val i2 = instance
-            if (i2 != null) {
-                i2
+            val instance2 = instance
+            if (instance2 != null) {
+                instance2
             } else {
                 val typedInstance = initializer!!(arg)
                 instance = typedInstance

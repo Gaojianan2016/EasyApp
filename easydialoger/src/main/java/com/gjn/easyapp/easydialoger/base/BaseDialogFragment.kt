@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.gjn.easyapp.easyutils.logE
+import com.gjn.easyapp.easyutils.setDeclaredField
 
 abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragment,
     ConvertDataBindingDialogFragment {
@@ -96,7 +97,12 @@ abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragmen
 
     override fun show(manager: FragmentManager, tag: String?) {
         try {
-            super.show(manager, tag)
+            this.setDeclaredField("mDismissed", false)
+            this.setDeclaredField("mShownByMe", true)
+            manager.beginTransaction().apply {
+                add(this@BaseDialogFragment, tag)
+            }.commitAllowingStateLoss()
+//            super.show(manager, tag)
         } catch (e: Exception) {
         }
     }

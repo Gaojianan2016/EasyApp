@@ -19,7 +19,6 @@ Activity.getIntentKey 获取Activity Intent对象key值
 Activity.contentViewInvisibleHeight 获取android.R.id.content未显示高度
 Activity.decorViewInvisibleHeight 获取decorView未显示高度
 Activity.getViewInvisibleHeight 获取Activity中子view未显示高度
-
 ```
 
 ## ActivityResultExt
@@ -563,80 +562,215 @@ Int.isStaticPublic 判断Modifier对象是否是静态公开的
 
 ## RegexExt
 ```
+CharSequence.isMobileNumber 是否是手机号码
+CharSequence.isTelNumber 是否是电话号码
+CharSequence.isIdCard 是否是身份证
+CharSequence.isEmail 是否是E-mail
+CharSequence.isUrl 是否是url
+CharSequence.isWebUrl 是否是webUrl
+CharSequence.isIpAddress 是否是Ip地址
+CharSequence.isZhPostCode 是否是中国邮编号码
 
+CharSequence.findRegex 查找正则表达式
 ```
 
 ## ResourcesExt
 ```
+Context.getSystem...Identifier 获取系统包内数据
 
+Context.getApp...Identifier 获取App包内数据
+
+Context.assetsStr 获取assets String
+Context.assetsCopyFile 复制assets file
+
+Context.rawStr 获取raw String
+Context.rawCopyFile 复制raw file
+
+Context?.inflate 布局设置
+Context?.inflateDataBindingUtil DataBindingUtil 布局设置
+
+Context.string 获取字符串
+Context.stringArray 获取字符串数组
 ```
 
 ## ScreenExt
 ```
+//屏幕宽高
+Context.screenWidth
+Context.screenHeight
 
+//app屏幕宽高
+Context.appScreenWidth
+Context.appScreenHeight
+
+screenDensity 屏幕density
+screenDensityDpi 屏幕densityDpi
+
+*.isLandscape 横屏
+*.isPortrait 竖屏
+
+Activity.screenRotation 屏幕旋转度数
+Activity.isFullScreen 是否全屏
+
+Activity.screenShot 截屏
+
+Context.isScreenLock 是否锁屏
+Context.setScreenLockTime 设置锁屏时间
+Context.getScreenLockTime 获取锁屏时间
 ```
 
 ## ServiceExt
 ```
+Context.getAllRunningServiceNames 获取全部运行的服务
+Context.isServiceRunning 服务是否在运行
 
+//服务操作
+Context.startService
+Context.stopService
+Context.bindService
 ```
 
 ## ShellExt
 ```
-
-```
-
-## ShellExt
-```
-
+execCmd 执行命令
+Closeable.tryClose 尝试关闭流操作
 ```
 
 ## SingletonExt
 ```
-
+SingletonCompanionImpl 实现单例伴生类
 ```
 
 ## StringExt
 ```
+randomUUIDString 生成UUID随机数字符串
 
+String.toMd5 转为MD5
+
+String.escapeSpecialWord 转义特殊词
+
+String.containsChinese 是否包含中文字符串
+String.isChinese 是否全是中文字符串
+Char.isChinese 是否是中文字符
+
+String.containsEmoji 是否包含emoji字符
+Char.isEmoji 是否是emoji字符
+
+Long.byteToStr 字节转gb mb kb字符串
+
+String.hidePhone 隐藏手机号码
+String.hideName 隐藏姓名
+String.hideSubstring 隐藏中间字段
+
+String.getUrlLastName 获取url最后一个/后的名字
+String.setOmittedText 设置省略文本
+
+//匹配文本 改变颜色
+SpannableStringBuilder.matcherTextToColor
+CharSequence.matcherTextToColor
+
+CharSequence.createImageSpannableStringBuilder 创建带图的SpannableStringBuilder
 ```
 
 ## TabLayoutExt
 ```
+TabScrollBar 快速创建TabLayout
 
+TabLayout.setSelectedTabIndicatorFixWidth 强制固定TabLayout宽度 兼容5.0 5.1
 ```
 
 ## TimeExt
 ```
+Long.toDateFormat 时间戳转日期格式
+Long.toDate 时间戳转日期
 
+String.toTimeMillis 日期格式转时间戳
+String.toDate 日期格式转日期
+
+Date.toDateFormat 日期转日期格式
+
+timeDifferenceMillis 时间差
+timeDifferenceString 时间差字符串 xx天xx时xx分xx秒
+
+Long.toTimeString 时间戳转时间字符串 xx天xx时xx分xx秒
+
+Long.nowTimeDifference 时间戳跟当前时差
+Long.isToday 是否是当天
+
+getNowTimeString 获取当前时间字符串
+getTodayMillis 获取当天0:0:0时间戳
+createGregorianCalendar 创建阳历
 ```
 
 ## ToastExt
 ```
-
+*.toast 正常吐司
+*.longToast 长吐司
 ```
 
 ## UnitExt
 ```
-
+UnitObj 一些常用单位对象
 ```
 
 ## UriExt
 ```
+//媒体uri地址
+EXTERNAL_MEDIA_IMAGE_URI
+EXTERNAL_MEDIA_VIDEO_URI
+EXTERNAL_MEDIA_AUDIO_URI
 
+String.toUri 字符串转uri
 ```
 
 ## VibrateExt
 ```
-
+Context.startVibrate 设备开始震动
+Context.cancelVibrate 设备取消震动
 ```
 
 ## ViewExt
 ```
+//宽高
+View.viewWidth
+View.viewHeight
 
+//显示相关
+View.visible
+View.invisible
+View.gone
+
+//可用相关
+View.enabled
+View.disable
+
+Context.isLayoutRtl 是否是RTL布局
+ViewGroup.findChildViewByResourceName 获取子视图 按资源名称
+ViewGroup.removeChildView 移除对应类的子视图
+
+View.fixScrollViewTopping 修复滑动view顶部 内嵌焦点问题
+
+TextView.strikeLine 划线
+TextView.underline 下划线
+TextView.trimText 获取修整Text
+TextView.trimHint 获取修整Hint
+TextView.getTrimTextOrHint 获取Text或者Hint
+TextView.setTextAppearanceResource 设置TextAppearance
+TextView.setTextColorResource 设置TextColor
+
+EditText.moveLastSelection 光标移动到最后
+EditText.togglePasswordVisible 切换密码显示隐藏
+EditText.isPasswordVisible 是否显示密码
+EditText.monitorTextChange 监听输入框文本变化
+
+View.monitorClickInOrOutView 监听点击在指定view内外
+Activity.monitorClickInOrOutEditText 监听Activity中点击是否在EditText内外
 ```
 
 ## VolumeExt
 ```
-
+Context.getVolume 获取声音大小
+Context.setVolume 设置声音大小
+Context.getMaxVolume 获取最大声音
+Context.getMinVolume 获取最小声音
 ```

@@ -37,7 +37,7 @@ fun Context.isServiceRunning(className: String): Boolean {
 ////////////////////////////
 inline fun <reified T : Service> Context.startService(
     vararg pairs: Pair<String, *>
-) {
+):Boolean =
     try {
         val intent = intentOf<T>(*pairs).apply {
             this.flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
@@ -47,10 +47,10 @@ inline fun <reified T : Service> Context.startService(
         } else {
             startService(intent)
         }
+        true
     } catch (e: Exception) {
-        e.printStackTrace()
+        false
     }
-}
 
 ////////////////////////////
 //// stopService
@@ -59,7 +59,6 @@ inline fun <reified T : Service> Context.stopService(): Boolean =
     try {
         stopService(intentOf<T>())
     } catch (e: Exception) {
-        e.printStackTrace()
         false
     }
 
@@ -69,10 +68,10 @@ inline fun <reified T : Service> Context.stopService(): Boolean =
 inline fun <reified T : Service> Context.bindService(
     connection: ServiceConnection,
     flags: Int
-) {
+):Boolean =
     try {
         bindService(intentOf<T>(), connection, flags)
+        true
     } catch (e: Exception) {
-        e.printStackTrace()
+        false
     }
-}

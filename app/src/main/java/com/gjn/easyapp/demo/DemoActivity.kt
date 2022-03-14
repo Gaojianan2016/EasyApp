@@ -646,6 +646,54 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("isVisible ${btn47_ad.isVisible}")
             println("isLayoutRtl ${mActivity.isLayoutRtl()}")
         }
+
+        btn48_ad.click {
+
+//            try {
+//                val clz = this@DemoActivity.javaClass
+//                val method = clz.getDeclaredMethod("m1")
+//                method.isAccessible = true
+//                method.invoke(this@DemoActivity)
+//
+//                val field = clz.getDeclaredField("f1")
+//                field.isAccessible = true
+//                val df1 = field.get(this@DemoActivity)
+//                println("field.get f1 $df1")
+//
+//                field.set(this@DemoActivity, "777")
+//                val df2 = field.get(this@DemoActivity)
+//                println("field.get new f1 $df2")
+//
+//            }catch (e: Exception){
+//                e.printStackTrace()
+//            }
+
+            this@DemoActivity.setDeclaredField("f1", "777")
+            this@DemoActivity.setDeclaredField("f2", "999")
+
+            val tmp = this@DemoActivity.getDeclaredField("f1")
+            println("=======> getDeclaredField f1 -> $tmp")
+
+            val tmp2 = this@DemoActivity.getDeclaredField("f2")
+            println("=======> getDeclaredField f2 -> $tmp2")
+
+            println("=======> invokeDeclaredMethod m1")
+            this@DemoActivity.invokeDeclaredMethod("m1")
+
+            println("=======> invokeDeclaredMethod m2")
+            this@DemoActivity.invokeDeclaredMethod("m2", args = arrayOf("1111"))
+        }
+    }
+
+    private var f1 = "123"
+    var f2 = "456"
+
+    private fun m1(){
+        println("我是 private fun m1")
+    }
+
+    fun m2(str: String){
+        println("我是 m2  参数 -> $str")
     }
 
     private fun runService() {

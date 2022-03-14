@@ -1,6 +1,8 @@
 package com.gjn.easyapp.easyutils
 
+import org.jetbrains.annotations.TestOnly
 import java.lang.reflect.Field
+import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 
 /**
@@ -10,7 +12,6 @@ fun <T> String.toClazz(): Class<T>? =
     try {
         toClass() as Class<T>
     } catch (e: ClassNotFoundException) {
-        e.printStackTrace()
         null
     }
 
@@ -54,6 +55,11 @@ fun <T> Class<T>.newInstanceClazz(
 fun Any.getDeclaredFields(): Array<Field> = javaClass.declaredFields
 
 /**
+ * 获取当前类的方法
+ * */
+fun Any.getDeclaredMethods(): Array<Method> = javaClass.declaredMethods
+
+/**
  * 执行方法
  * */
 fun Any.invokeMethod(
@@ -63,7 +69,7 @@ fun Any.invokeMethod(
     vararg args: Any?
 ): Any? =
     try {
-        val clazz = if (className.isNullOrEmpty()) this as Class<*> else className.toClass()
+        val clazz = if (className.isNullOrEmpty()) javaClass else className.toClass()
         val method = if (parameterTypes == null) {
             clazz.getMethod(methodName)
         } else {
@@ -88,7 +94,7 @@ fun Any.invokeDeclaredMethod(
     vararg args: Any?
 ): Any? =
     try {
-        val clazz = if (className.isNullOrEmpty()) this as Class<*> else className.toClass()
+        val clazz = if (className.isNullOrEmpty()) javaClass else className.toClass()
         val method = if (parameterTypes == null) {
             clazz.getDeclaredMethod(methodName)
         } else {
@@ -106,13 +112,13 @@ fun Any.invokeDeclaredMethod(
 /**
  * 设置成员参数
  * */
-fun Class<*>.setField(fieldName: String, any: Any?) {
+fun Any.setField(fieldName: String, value: Any?) {
     try {
-        val field = getField(fieldName)
+        val field = javaClass.getField(fieldName)
         if (!field.modifiers.isPublic()) {
             field.isAccessible = true
         }
-        field.set(this, any)
+        field.set(this, value)
     } catch (e: Exception) {
         e.printStackTrace()
     }
@@ -121,29 +127,28 @@ fun Class<*>.setField(fieldName: String, any: Any?) {
 /**
  * 获取成员对象
  * */
-fun Class<*>.getField(fieldName: String, any: Any?): Any? {
+fun Any.getField(fieldName: String): Any? =
     try {
-        val field = getField(fieldName)
+        val field = javaClass.getField(fieldName)
         if (!field.modifiers.isPublic()) {
             field.isAccessible = true
         }
-        return field.get(any)
+        field.get(this)
     } catch (e: Exception) {
         e.printStackTrace()
+        null
     }
-    return null
-}
 
 /**
  * 设置声明类成员参数
  * */
-fun Class<*>.setDeclaredField(fieldName: String, any: Any?) {
+fun Any.setDeclaredField(fieldName: String, value: Any?) {
     try {
-        val field = getDeclaredField(fieldName)
+        val field = javaClass.getDeclaredField(fieldName)
         if (!field.modifiers.isPublic()) {
             field.isAccessible = true
         }
-        field.set(this, any)
+        field.set(this, value)
     } catch (e: Exception) {
         e.printStackTrace()
     }
@@ -152,18 +157,17 @@ fun Class<*>.setDeclaredField(fieldName: String, any: Any?) {
 /**
  * 获取声明类成员对象
  * */
-fun Class<*>.getDeclaredField(fieldName: String, any: Any?): Any? {
+fun Any.getDeclaredField(fieldName: String): Any? =
     try {
-        val field = getDeclaredField(fieldName)
+        val field = javaClass.getDeclaredField(fieldName)
         if (!field.modifiers.isPublic()) {
             field.isAccessible = true
         }
-        return field.get(any)
+        field.get(this)
     } catch (e: Exception) {
         e.printStackTrace()
+        null
     }
-    return null
-}
 
 /**
  * 判断类是否是静态公共类
@@ -186,47 +190,49 @@ fun Int.isPublic(): Boolean = Modifier.toString(this).contains("public")
  * */
 fun Int.isStaticPublic(): Boolean = Modifier.toString(this).contains("public static")
 
-fun Class<*>.printInfo() {
+@TestOnly
+fun Any.printInfo() {
+    val clazz = javaClass
     println("--------基础属性--------")
-    println("name $name")
-    println("simpleName $simpleName")
-    println("canonicalName $canonicalName")
-    println("modifiers ${Modifier.toString(modifiers)}")
-    println("superclass $superclass")
+    println("name ${clazz.name}")
+    println("simpleName ${clazz.simpleName}")
+    println("canonicalName ${clazz.canonicalName}")
+    println("modifiers ${Modifier.toString(clazz.modifiers)}")
+    println("superclass ${clazz.superclass}")
     println("--------接口属性--------")
-    for (item in interfaces) {
+    for (item in clazz.interfaces) {
         println("-> $item")
     }
     println("--------注解(继承)--------")
-    for (item in annotations) {
+    for (item in clazz.annotations) {
         println("--> $item")
     }
     println("--------注解(当前)--------")
-    for (item in declaredAnnotations) {
+    for (item in clazz.declaredAnnotations) {
         println("--> $item")
     }
     println("--------构造函数(继承)--------")
-    for (item in constructors) {
+    for (item in clazz.constructors) {
         println("---> $item")
     }
     println("--------构造函数(当前)--------")
-    for (item in declaredConstructors) {
+    for (item in clazz.declaredConstructors) {
         println("---> $item")
     }
     println("--------方法(继承)--------")
-    for (item in methods) {
+    for (item in clazz.methods) {
         println("----> $item")
     }
     println("--------方法(当前)--------")
-    for (item in declaredMethods) {
+    for (item in clazz.declaredMethods) {
         println("----> $item")
     }
     println("--------参数(继承)--------")
-    for (item in fields) {
+    for (item in clazz.fields) {
         println("-----> $item")
     }
     println("--------参数(当前)--------")
-    for (item in declaredFields) {
+    for (item in clazz.declaredFields) {
         println("-----> $item")
     }
 }

@@ -69,7 +69,7 @@ inline val View.windowInsetsControllerCompat: WindowInsetsControllerCompat?
     get() = ViewCompat.getWindowInsetsController(this)
 
 /**
- * 判断是否是RTL布局
+ * 是否是RTL布局
  * */
 fun Context.isLayoutRtl(): Boolean {
     val local =
@@ -97,7 +97,7 @@ fun ViewGroup.findChildViewByResourceName(resourceName: String): View? {
  * 移除对应类的子视图
  * */
 fun ViewGroup.removeChildView(cls: Class<out View>) {
-    for (i in 0 until this.childCount) {
+    for (i in 0 until childCount) {
         if (getChildAt(i)::class.java.name == cls.name) {
             removeViewAt(i)
         }
@@ -132,12 +132,12 @@ fun TextView.underline() {
 }
 
 /**
- * 获取修剪Text
+ * 获取修整Text
  * */
 fun TextView.trimText() = text.toString().trim()
 
 /**
- * 获取修剪Hint
+ * 获取修整Hint
  * */
 fun TextView.trimHint() = hint.toString().trim()
 

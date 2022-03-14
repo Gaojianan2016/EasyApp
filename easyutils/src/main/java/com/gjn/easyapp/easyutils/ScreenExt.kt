@@ -116,7 +116,7 @@ inline val Activity.screenRotation: Int
         }
 
 /**
- * Activity是否全屏
+ * 是否全屏
  * */
 inline var Activity.isFullScreen: Boolean
     get() = rootWindowInsetsCompat?.isVisible(WindowInsetsCompat.Type.systemBars()) == true
@@ -136,6 +136,7 @@ fun Activity.screenShot(hasStatusBar: Boolean = true, block: (Bitmap?) -> Unit) 
     val width = screenWidth
     val height = if (hasStatusBar) screenHeight else screenHeight - statusBarHeight
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+        //新版本截屏
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         PixelCopy.request(
             window,

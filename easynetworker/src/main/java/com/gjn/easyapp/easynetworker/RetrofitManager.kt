@@ -50,7 +50,7 @@ object RetrofitManager {
         .build()
         .create(clazz)
 
-    fun isPlaintext(buffer: Buffer): Boolean {
+    private fun isPlaintext(buffer: Buffer): Boolean {
         return try {
             val prefix = Buffer()
             val byteCount = if (buffer.size < 64) buffer.size else 64

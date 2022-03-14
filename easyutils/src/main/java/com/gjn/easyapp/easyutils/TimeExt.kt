@@ -124,7 +124,7 @@ fun timeDifferenceString(
 ) = timeDifferenceMillis(time1, time2).toTimeString(true)
 
 /**
- * 时间差字符串 xx天xx时xx分xx秒
+ * 时间戳转时间字符串 xx天xx时xx分xx秒
  * */
 fun Long.toTimeString(
     isChinese: Boolean = false
@@ -147,7 +147,7 @@ fun Long.toTimeString(
 }
 
 /**
- * 当前时差
+ * 时间戳跟当前时差
  * */
 fun Long.nowTimeDifference(): String {
     val now = System.currentTimeMillis()
@@ -173,7 +173,7 @@ fun Long.nowTimeDifference(): String {
 }
 
 /**
- * 是否是当天时间
+ * 是否是当天
  * */
 fun Long.isToday(): Boolean {
     val todayMillis = getTodayMillis()

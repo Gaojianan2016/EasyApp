@@ -8,6 +8,9 @@ import android.text.style.ImageSpan
 import androidx.annotation.ColorInt
 import java.util.*
 
+/**
+ * 生成UUID随机数字符串
+ * */
 inline val randomUUIDString: String
     get() = UUID.randomUUID().toString()
 
@@ -89,17 +92,17 @@ fun Long.byteToStr(): String = when {
 }
 
 /**
- * 隐藏手机号码
+ * 隐藏手机号码 177****1234
  * */
 fun String.hidePhone(): String = hideSubstring(3, 4)
 
 /**
- * 隐藏姓名
+ * 隐藏姓名 张*良 张*
  * */
 fun String.hideName(): String = hideSubstring()
 
 /**
- * 隐藏中间字段 177****1234  张*良 张*
+ * 隐藏中间字段
  * */
 fun String.hideSubstring(start: Int = 1, end: Int = 1): String {
     if (isEmpty() || length < 2) return this
