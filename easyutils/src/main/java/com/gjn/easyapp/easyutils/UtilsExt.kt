@@ -13,14 +13,17 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-fun Int.intervalOpen(min: Int, max: Int): Int = min.coerceAtLeast(this.coerceAtMost(max))
+// (x, y)
+fun Int.intervalOpen(min: Int, max: Int) = min.coerceAtLeast(this.coerceAtMost(max))
 
-fun Float.intervalOpen(min: Float, max: Float): Float = min.coerceAtLeast(this.coerceAtMost(max))
+// (x, y)
+fun Float.intervalOpen(min: Float, max: Float) = min.coerceAtLeast(this.coerceAtMost(max))
 
-fun Double.intervalOpen(min: Double, max: Double): Double =
-    min.coerceAtLeast(this.coerceAtMost(max))
+// (x, y)
+fun Double.intervalOpen(min: Double, max: Double) = min.coerceAtLeast(this.coerceAtMost(max))
 
-fun Long.intervalOpen(min: Long, max: Long): Long = min.coerceAtLeast(this.coerceAtMost(max))
+// (x, y)
+fun Long.intervalOpen(min: Long, max: Long) = min.coerceAtLeast(this.coerceAtMost(max))
 
 fun Int?.isNotNullOrZero() = !isNullOrZero()
 

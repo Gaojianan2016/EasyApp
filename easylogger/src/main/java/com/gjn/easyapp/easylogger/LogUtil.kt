@@ -15,7 +15,10 @@ object LogUtil {
     private const val LEVEL_E = 6
     private const val LEVEL_WTF = 7
 
+    var isShowLogLevel = 1
+
     private fun println(level: Int, tag: String = LOG_TAG, msg: String?, tr: Throwable? = null) {
+        if (isShowLogLevel > level) return
         when (level) {
             LEVEL_D -> logD(msg, tag, tr)
             LEVEL_I -> logI(msg, tag, tr)

@@ -649,25 +649,6 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
         btn48_ad.click {
 
-//            try {
-//                val clz = this@DemoActivity.javaClass
-//                val method = clz.getDeclaredMethod("m1")
-//                method.isAccessible = true
-//                method.invoke(this@DemoActivity)
-//
-//                val field = clz.getDeclaredField("f1")
-//                field.isAccessible = true
-//                val df1 = field.get(this@DemoActivity)
-//                println("field.get f1 $df1")
-//
-//                field.set(this@DemoActivity, "777")
-//                val df2 = field.get(this@DemoActivity)
-//                println("field.get new f1 $df2")
-//
-//            }catch (e: Exception){
-//                e.printStackTrace()
-//            }
-
             this@DemoActivity.setDeclaredField("f1", "777")
             this@DemoActivity.setDeclaredField("f2", "999")
 

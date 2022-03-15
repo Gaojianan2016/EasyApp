@@ -102,7 +102,7 @@ abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragmen
             manager.beginTransaction().apply {
                 add(this@BaseDialogFragment, tag)
             }.commitAllowingStateLoss()
-//            super.show(manager, tag)
+            //super.show(manager, tag)
         } catch (e: Exception) {
         }
     }

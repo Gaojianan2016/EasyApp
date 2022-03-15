@@ -45,6 +45,6 @@ internal class EasyAppInitializer : Initializer<Unit> {
     companion object {
         internal lateinit var application: Application private set
 
-        const val debug = true
+        const val debug = false
     }
 }

@@ -18,12 +18,12 @@ fun <T> String.toClazz(): Class<T>? =
 /**
  * 完整类名转Class com.gjn.easyapp.easyutils.ReflexExt -> Class
  * */
-fun String.toClass(initialize: Boolean? = null, loader: ClassLoader? = null): Class<*> {
+fun String.toClass(initialize: Boolean? = null, loader: ClassLoader? = null): Class<*> =
     if (initialize == null || loader == null) {
-        return Class.forName(this)
+        Class.forName(this)
+    } else {
+        Class.forName(this, initialize, loader)
     }
-    return Class.forName(this, initialize, loader)
-}
 
 /**
  * 创建一个无参对象
@@ -39,15 +39,13 @@ fun <T> String.newInstanceClazz(
 fun <T> Class<T>.newInstanceClazz(
     parameterTypes: Array<Class<*>> = arrayOf(),
     vararg initArgs: Any?
-): T? {
-    if (!isStaticPublic()) return null
-    return try {
-        getConstructor(*parameterTypes).newInstance(initArgs)
+): T? =
+    try {
+        if (isStaticPublic()) getConstructor(*parameterTypes).newInstance(initArgs) else null
     } catch (e: Exception) {
         e.printStackTrace()
         null
     }
-}
 
 /**
  * 获取当前类的参数
@@ -172,13 +170,13 @@ fun Any.getDeclaredField(fieldName: String): Any? =
 /**
  * 判断类是否是静态公共类
  * */
-fun Class<*>.isStaticPublic(): Boolean {
-    return if (javaClass.name.contains("$")) {
-        javaClass.modifiers.isStaticPublic()
+fun Class<*>.isStaticPublic(): Boolean =
+    if (name.contains("$")) {
+        modifiers.isStaticPublic()
     } else {
-        javaClass.modifiers.isPublic()
+        modifiers.isPublic()
     }
-}
+
 
 /**
  * 判断Modifier对象是否是公开的
