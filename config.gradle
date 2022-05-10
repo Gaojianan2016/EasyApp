@@ -1,4 +1,4 @@
-/*
+/**
  * buildScript 版本
  * */
 ext.build_gradle_version = "4.0.2"
@@ -6,7 +6,7 @@ ext.kotlin_version = "1.5.10"
 ext.lifecycle_version = "2.3.1"
 ext.lifecycle_ext_version = "2.2.0"
 
-/*
+/**
  * Build 版本
  * */
 def build_versions = [:]
@@ -21,7 +21,7 @@ build_versions.app_version_name = "1.0.0"
 
 ext.build_versions = build_versions
 
-/*
+/**
  * 仓库管理
  * */
 def addRepositories(RepositoryHandler handler) {
@@ -41,7 +41,7 @@ def addRepositories(RepositoryHandler handler) {
 }
 ext.addRepositories = this.&addRepositories
 
-/*
+/**
  * 仓库 版本
  * */
 def library_versions = [:]

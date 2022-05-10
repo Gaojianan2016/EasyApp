@@ -32,6 +32,8 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${library_versions.kotlinx_coroutines}"
 
+    //gson
+    compileOnly "com.google.code.gson:gson:${library_versions.gson}"
     //fastjson
     compileOnly "com.alibaba:fastjson:${library_versions.fastjson}"
     //okhttp

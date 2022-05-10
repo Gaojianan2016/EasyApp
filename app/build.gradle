@@ -74,6 +74,8 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:${library_versions.glide}"
     kapt "com.github.bumptech.glide:compiler:${library_versions.glide}"
 
+    //gson
+    implementation "com.google.code.gson:gson:${library_versions.gson}"
     //Zxing
     implementation "com.google.zxing:core:${library_versions.zxing}"
     //fastjson
