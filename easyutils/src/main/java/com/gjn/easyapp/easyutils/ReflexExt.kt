@@ -110,9 +110,9 @@ fun Any.invokeDeclaredMethod(
 /**
  * 设置成员参数
  * */
-fun Any.setField(fieldName: String, value: Any?) {
+fun Any.setField(clz: Class<*>, fieldName: String, value: Any?) {
     try {
-        val field = javaClass.getField(fieldName)
+        val field = clz.getField(fieldName)
         if (!field.modifiers.isPublic()) {
             field.isAccessible = true
         }
@@ -125,9 +125,9 @@ fun Any.setField(fieldName: String, value: Any?) {
 /**
  * 获取成员对象
  * */
-fun Any.getField(fieldName: String): Any? =
+fun Any.getField(clz: Class<*>, fieldName: String): Any? =
     try {
-        val field = javaClass.getField(fieldName)
+        val field = clz.getField(fieldName)
         if (!field.modifiers.isPublic()) {
             field.isAccessible = true
         }
@@ -140,9 +140,9 @@ fun Any.getField(fieldName: String): Any? =
 /**
  * 设置声明类成员参数
  * */
-fun Any.setDeclaredField(fieldName: String, value: Any?) {
+fun Any.setDeclaredField(clz: Class<*>, fieldName: String, value: Any?) {
     try {
-        val field = javaClass.getDeclaredField(fieldName)
+        val field = clz.getDeclaredField(fieldName)
         if (!field.modifiers.isPublic()) {
             field.isAccessible = true
         }
@@ -155,9 +155,9 @@ fun Any.setDeclaredField(fieldName: String, value: Any?) {
 /**
  * 获取声明类成员对象
  * */
-fun Any.getDeclaredField(fieldName: String): Any? =
+fun Any.getDeclaredField(clz: Class<*>, fieldName: String): Any? =
     try {
-        val field = javaClass.getDeclaredField(fieldName)
+        val field = clz.getDeclaredField(fieldName)
         if (!field.modifiers.isPublic()) {
             field.isAccessible = true
         }

@@ -271,6 +271,9 @@ launchIO io线程协程launch
 async 协程async
 asyncMain 主线程协程async
 asyncIO io线程协程async
+
+withContextMain 主线程协程withContext
+withContextIO io线程协程withContext
 ```
 
 ## DeviceExt
@@ -550,10 +553,10 @@ Any.getDeclaredFields 获取当前类的参数
 Any.invokeMethod 执行方法
 Any.invokeDeclaredMethod 执行声明方法
 
-Class<*>.setField 设置成员参数
-Class<*>.getField 获取成员参数
-Class<*>.setDeclaredField 设置声明类成员参数
-Class<*>.getDeclaredField 获取声明类成员参数
+Any.setField 设置成员参数
+Any.getField 获取成员参数
+Any.setDeclaredField 设置声明类成员参数
+Any.getDeclaredField 获取声明类成员参数
 
 Class<*>.isStaticPublic 判断类是否是静态公共类
 Int.isPublic 判断Modifier对象是否是公开的
@@ -683,6 +686,7 @@ TabLayout.setSelectedTabIndicatorFixWidth 强制固定TabLayout宽度 兼容5.0 
 ```
 Long.toDateFormat 时间戳转日期格式
 Long.toDate 时间戳转日期
+Long.toWeek 时间戳转周
 
 String.toTimeMillis 日期格式转时间戳
 String.toDate 日期格式转日期
@@ -757,11 +761,11 @@ TextView.trimHint 获取修整Hint
 TextView.getTrimTextOrHint 获取Text或者Hint
 TextView.setTextAppearanceResource 设置TextAppearance
 TextView.setTextColorResource 设置TextColor
+TextView.setHintTextColorResource 设置HintTextColor
 
 EditText.moveLastSelection 光标移动到最后
 EditText.togglePasswordVisible 切换密码显示隐藏
 EditText.isPasswordVisible 是否显示密码
-EditText.monitorTextChange 监听输入框文本变化
 
 View.monitorClickInOrOutView 监听点击在指定view内外
 Activity.monitorClickInOrOutEditText 监听Activity中点击是否在EditText内外

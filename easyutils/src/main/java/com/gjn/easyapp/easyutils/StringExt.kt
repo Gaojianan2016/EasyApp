@@ -77,8 +77,8 @@ fun String.containsEmoji(): Boolean {
 /**
  * 是否是emoji字符
  * */
-fun Char.isEmoji(): Boolean = !(toInt() == 0x0 || toInt() == 0x9 || toInt() == 0xA
-        || toInt() == 0xD || toInt() in 0x20..0xD7FF || toInt() in 0xE000..0xFFFD)
+fun Char.isEmoji(): Boolean = !(code == 0x0 || code == 0x9 || code == 0xA
+        || code == 0xD || code in 0x20..0xD7FF || code in 0xE000..0xFFFD)
 
 /**
  * 字节转gb mb kb字符串 0.5Tb 1.20Gb 60.00Mb 798.35Kb 666b

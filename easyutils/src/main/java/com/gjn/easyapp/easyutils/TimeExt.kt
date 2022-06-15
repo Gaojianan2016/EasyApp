@@ -36,6 +36,12 @@ fun Long.toDateFormat(pattern: String = "yyyy-MM-dd HH:mm:ss"): String =
 fun Long.toDate() = Date(this)
 
 /**
+ * 时间戳转周
+ * */
+fun Long.toWeek(pattern: String = "EEEE", locale: Locale = Locale.getDefault()): String =
+    SimpleDateFormat(pattern, locale).format(this)
+
+/**
  * 日期格式转时间戳
  * */
 fun String.toTimeMillis(pattern: String = "yyyy-MM-dd HH:mm:ss"): Long =

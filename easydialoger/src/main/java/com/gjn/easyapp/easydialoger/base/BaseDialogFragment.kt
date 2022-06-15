@@ -97,8 +97,9 @@ abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragmen
 
     override fun show(manager: FragmentManager, tag: String?) {
         try {
-            this.setDeclaredField("mDismissed", false)
-            this.setDeclaredField("mShownByMe", true)
+            val clz = Class.forName("androidx.fragment.app.DialogFragment")
+            this.setDeclaredField(clz, "mDismissed", false)
+            this.setDeclaredField(clz, "mShownByMe", true)
             manager.beginTransaction().apply {
                 add(this@BaseDialogFragment, tag)
             }.commitAllowingStateLoss()

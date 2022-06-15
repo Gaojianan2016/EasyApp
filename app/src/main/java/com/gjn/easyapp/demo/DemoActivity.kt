@@ -649,31 +649,35 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
         btn48_ad.click {
 
-            this@DemoActivity.setDeclaredField("f1", "777")
-            this@DemoActivity.setDeclaredField("f2", "999")
+            this@DemoActivity.setDeclaredField(this@DemoActivity.javaClass, "f1", "777")
+            this@DemoActivity.setDeclaredField(this@DemoActivity.javaClass, "f2", "999")
 
-            val tmp = this@DemoActivity.getDeclaredField("f1")
+            val tmp = this@DemoActivity.getDeclaredField(this@DemoActivity.javaClass, "f1")
             println("=======> getDeclaredField f1 -> $tmp")
 
-            val tmp2 = this@DemoActivity.getDeclaredField("f2")
+            val tmp2 = this@DemoActivity.getDeclaredField(this@DemoActivity.javaClass, "f2")
             println("=======> getDeclaredField f2 -> $tmp2")
 
             println("=======> invokeDeclaredMethod m1")
             this@DemoActivity.invokeDeclaredMethod("m1")
 
             println("=======> invokeDeclaredMethod m2")
-            this@DemoActivity.invokeDeclaredMethod("m2", args = arrayOf("1111"))
+            this@DemoActivity.invokeDeclaredMethod(
+                "m2",
+                parameterTypes = arrayOf(String::class.java),
+                args = arrayOf("1111")
+            )
         }
     }
 
     private var f1 = "123"
     var f2 = "456"
 
-    private fun m1(){
+    private fun m1() {
         println("我是 private fun m1")
     }
 
-    fun m2(str: String){
+    fun m2(str: String) {
         println("我是 m2  参数 -> $str")
     }
 

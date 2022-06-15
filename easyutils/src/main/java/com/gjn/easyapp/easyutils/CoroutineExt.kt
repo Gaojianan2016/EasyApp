@@ -35,3 +35,11 @@ fun <T> asyncIO(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> T
 ) = async(Dispatchers.IO, start, block)
+
+suspend fun <T> withContextMain(
+    block: suspend CoroutineScope.() -> T
+) = withContext(Dispatchers.Main, block)
+
+suspend fun <T> withContextIO(
+    block: suspend CoroutineScope.() -> T
+) = withContext(Dispatchers.IO, block)

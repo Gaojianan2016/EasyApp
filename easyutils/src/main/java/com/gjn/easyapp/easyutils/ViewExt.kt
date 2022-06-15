@@ -166,6 +166,13 @@ fun TextView.setTextColorResource(@ColorRes id: Int) {
 }
 
 /**
+ * 设置HintTextColor
+ * */
+fun TextView.setHintTextColorResource(@ColorRes id: Int) {
+    setHintTextColor(ActivityCompat.getColor(context, id))
+}
+
+/**
  * 光标移动到最后
  * */
 fun EditText.moveLastSelection() {
@@ -187,29 +194,6 @@ fun EditText.togglePasswordVisible() {
  * */
 fun EditText.isPasswordVisible() =
     transformationMethod === PasswordTransformationMethod.getInstance()
-
-/**
- * 监听输入框文本变化
- * */
-fun EditText.monitorTextChange(
-    beforeTextChangedBlock: ((CharSequence?, Int, Int, Int) -> Unit)? = null,
-    onTextChangedBlock: ((CharSequence?, Int, Int, Int) -> Unit)? = null,
-    afterTextChangedBlock: ((Editable?) -> Unit)
-) {
-    addTextChangedListener(object : TextWatcher {
-        override fun beforeTextChanged(text: CharSequence?, start: Int, count: Int, after: Int) {
-            beforeTextChangedBlock?.invoke(text, start, count, after)
-        }
-
-        override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
-            onTextChangedBlock?.invoke(text, start, before, count)
-        }
-
-        override fun afterTextChanged(editable: Editable?) {
-            afterTextChangedBlock.invoke(editable)
-        }
-    })
-}
 
 /**
  * 监听点击在指定view内外

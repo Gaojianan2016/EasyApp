@@ -2,7 +2,7 @@
  * buildScript 版本
  * */
 ext.build_gradle_version = "4.0.2"
-ext.kotlin_version = "1.5.10"
+ext.kotlin_version = "1.6.10"
 ext.lifecycle_version = "2.3.1"
 ext.lifecycle_ext_version = "2.2.0"
 
