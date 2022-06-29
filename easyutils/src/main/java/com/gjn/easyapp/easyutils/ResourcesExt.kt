@@ -144,7 +144,7 @@ fun Context.rawCopyFile(@RawRes resId: Int, target: File): Boolean {
 fun Context?.inflate(
     @LayoutRes resource: Int,
     root: ViewGroup? = null,
-    attachToRoot: Boolean = false
+    attachToRoot: Boolean = root != null
 ): View? = LayoutInflater.from(this).inflate(resource, root, attachToRoot)
 
 /**
@@ -153,30 +153,5 @@ fun Context?.inflate(
 fun <T : ViewDataBinding> Context?.inflateDataBindingUtil(
     @LayoutRes resource: Int,
     root: ViewGroup? = null,
-    attachToRoot: Boolean = false
+    attachToRoot: Boolean = root != null
 ): T = DataBindingUtil.inflate(LayoutInflater.from(this), resource, root, attachToRoot) as T
-
-
-/////////////////////////////////
-////  string 操作
-/////////////////////////////////
-
-/**
- * 获取字符串
- * */
-fun Context.string(@StringRes resId: Int, vararg formatArgs: Any) =
-    try {
-        getString(resId, *formatArgs)
-    } catch (e: Exception) {
-        resId.toString()
-    }
-
-/**
- * 获取字符串数组
- * */
-fun Context.stringArray(@ArrayRes resId: Int): Array<String> =
-    try {
-        resources.getStringArray(resId)
-    } catch (e: Exception) {
-        arrayOf(resId.toString())
-    }

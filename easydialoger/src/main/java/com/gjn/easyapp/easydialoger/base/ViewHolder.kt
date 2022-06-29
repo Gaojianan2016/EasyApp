@@ -29,7 +29,7 @@ class ViewHolder private constructor(var view: View?) {
             context: Context?,
             @LayoutRes resource: Int,
             root: ViewGroup?
-        ): ViewHolder = create(context.inflate(resource, root))
+        ): ViewHolder = create(context.inflate(resource, root, false))
     }
 }
 
@@ -43,7 +43,7 @@ class DataBindingHolder private constructor(var dataBinding: ViewDataBinding) {
             @LayoutRes resource: Int,
             root: ViewGroup?
         ): DataBindingHolder {
-            val binding: ViewDataBinding = context.inflateDataBindingUtil(resource, root)
+            val binding: ViewDataBinding = context.inflateDataBindingUtil(resource, root, false)
             return create(binding)
         }
     }

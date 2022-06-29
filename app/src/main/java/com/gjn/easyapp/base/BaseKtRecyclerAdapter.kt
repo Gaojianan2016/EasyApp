@@ -24,7 +24,7 @@ abstract class BaseKtRecyclerAdapter<T>(
     var onItemLongClickListener: OnItemLongClickListener<T>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseVH {
-        val vh = BaseVH(context.inflate(layoutId, parent)!!)
+        val vh = BaseVH(context.inflate(layoutId, parent, false)!!)
         initVH(vh)
         addItemClick(vh)
         return vh
