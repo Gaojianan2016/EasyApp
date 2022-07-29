@@ -139,6 +139,12 @@ fun String.setOmittedText(max: Int, suffix: String = "..."): String =
     if (isNullOrEmpty() || length < max) this else substring(0, max) + suffix
 
 /**
+ * 获取后几位字符串
+ * */
+fun String.latterIndexString(index: Int) =
+    if (length <= index) this else substring(length - index)
+
+/**
  * 匹配文本 改变颜色
  * */
 fun SpannableStringBuilder.matcherTextToColor(

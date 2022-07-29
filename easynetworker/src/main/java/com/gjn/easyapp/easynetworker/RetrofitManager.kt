@@ -12,6 +12,7 @@ import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
 import okhttp3.*
 import okio.Buffer
+import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.EOFException
@@ -25,30 +26,37 @@ object RetrofitManager {
 
     var isDebug = true
 
-    var baseUrl = ""
-
-    var timeOut = 30L
-
     var customInterceptorListener: OnCustomInterceptorListener? = null
 
     var okHttpClient = OkHttpClient.Builder()
-        .connectTimeout(timeOut, TimeUnit.SECONDS)
-        .readTimeout(timeOut, TimeUnit.SECONDS)
-        .writeTimeout(timeOut, TimeUnit.SECONDS)
+        .connectTimeout(30L, TimeUnit.SECONDS)
+        .readTimeout(30L, TimeUnit.SECONDS)
+        .writeTimeout(30L, TimeUnit.SECONDS)
         .addInterceptor(LoggingInterceptor())
         .build()
 
-    fun <T> create(clazz: Class<T>, url: String = baseUrl): T = Retrofit.Builder()
-        .baseUrl(url)
-        .client(okHttpClient)
-        //添加过滤gson解析失败异常
-        .addConverterFactory(
-            GsonConverterFactory.create(
-                GsonBuilder().registerTypeAdapterFactory(GsonTypeAdapterFactory()).create()
+    fun <T> create(clazz: Class<T>, url: String): T =
+        create(
+            clazz, url,
+            arrayOf(
+                //添加自动过滤gson解析失败异常
+                GsonConverterFactory.create(
+                    GsonBuilder().registerTypeAdapterFactory(GsonTypeAdapterFactory()).create()
+                )
             )
         )
-        .build()
-        .create(clazz)
+
+    fun <T> create(
+        clazz: Class<T>,
+        url: String,
+        factoryArray: Array<Converter.Factory> = arrayOf()
+    ): T {
+        val builder = Retrofit.Builder().baseUrl(url).client(okHttpClient)
+        factoryArray.forEach {
+            builder.addConverterFactory(it)
+        }
+        return builder.build().create(clazz)
+    }
 
     private fun isPlaintext(buffer: Buffer): Boolean {
         return try {

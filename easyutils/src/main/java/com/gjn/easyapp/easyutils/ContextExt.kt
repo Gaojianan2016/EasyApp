@@ -7,6 +7,7 @@ import android.app.NotificationManager
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.pm.PackageManager
+import android.hardware.usb.UsbManager
 import android.media.AudioManager
 import android.net.ConnectivityManager
 import android.os.Build
@@ -54,6 +55,9 @@ inline val Context.audioManager: AudioManager
 
 inline val Context.inputMethodManager: InputMethodManager
     get() = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+inline val Context.usbManager: UsbManager
+    get() = getSystemService(Context.USB_SERVICE) as UsbManager
 
 /**
  * 制作跳转页面 自定义转场动画

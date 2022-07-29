@@ -42,16 +42,28 @@ inline val View.viewHeight: Int
             height
         }
 
-inline fun View.visible() {
+fun View.visible() {
     isVisible = true
 }
 
-inline fun View.invisible() {
+fun View.invisible() {
     isInvisible = true
 }
 
-inline fun View.gone() {
+fun View.gone() {
     isGone = true
+}
+
+inline fun Array<out View?>.gone() {
+    forEach { it?.gone() }
+}
+
+inline fun Array<out View?>.visible() {
+    forEach { it?.visible() }
+}
+
+inline fun Array<out View?>.invisible() {
+    forEach { it?.invisible() }
 }
 
 fun View.enabled() {
@@ -163,6 +175,10 @@ fun TextView.setTextAppearanceResource(@StyleRes resId: Int) {
  * */
 fun TextView.setTextColorResource(@ColorRes id: Int) {
     setTextColor(ActivityCompat.getColor(context, id))
+}
+
+inline fun Array<out TextView?>.setTextColorResources(@ColorRes id: Int) {
+    forEach { it?.setTextColorResource(id) }
 }
 
 /**
