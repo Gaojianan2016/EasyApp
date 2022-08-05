@@ -35,6 +35,11 @@ Any.getAnnotation 获取注解的对象
 Any.getField 获取注解的成员变量
 ```
 
+## AnyExt
+```
+Any.cloneAny 使用gson复制对象
+```
+
 ## AppExt
 ```
 String.toPackageNameUri 包名转换为uri
@@ -137,6 +142,7 @@ Bitmap.skew 偏斜
 Bitmap.rotate 旋转
 Bitmap.alpha 透明
 Bitmap.gray 灰色
+Bitmap.blackWhitePixel 黑白化
 
 Bitmap.toCircle 切圆
 Bitmap.toRoundCorner 切圆角
@@ -240,6 +246,7 @@ Context.windowManager
 Context.keyguardManager
 Context.audioManager
 Context.inputMethodManager
+Context.usbManager
 
 Context.makeCustomAnimationBundle 制作跳转页面 自定义转场动画
 Context.makeSceneTransitionAnimationBundle 制作跳转页面 View过渡动画
@@ -666,7 +673,9 @@ String.hideName 隐藏姓名
 String.hideSubstring 隐藏中间字段
 
 String.getUrlLastName 获取url最后一个/后的名字
+String.removeLast 删除最后一个字符
 String.setOmittedText 设置省略文本
+String.latterIndexString 获取后几位字符串
 
 //匹配文本 改变颜色
 SpannableStringBuilder.matcherTextToColor
@@ -740,9 +749,10 @@ View.viewWidth
 View.viewHeight
 
 //显示相关
-View.visible
-View.invisible
-View.gone
+View/Array.toggleVisible
+View/Array.visible
+View/Array.invisible
+View/Array.gone
 
 //可用相关
 View.enabled
@@ -759,7 +769,7 @@ TextView.underline 下划线
 TextView.trimText 获取修整Text
 TextView.trimHint 获取修整Hint
 TextView.getTrimTextOrHint 获取Text或者Hint
-TextView.setTextAppearanceResource 设置TextAppearance
+TextView/Array.setTextAppearanceResource 设置TextAppearance
 TextView.setTextColorResource 设置TextColor
 TextView.setHintTextColorResource 设置HintTextColor
 

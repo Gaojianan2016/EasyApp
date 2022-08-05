@@ -239,11 +239,33 @@ fun Bitmap.alpha(recycle: Boolean = false): Bitmap {
 fun Bitmap.gray(recycle: Boolean = false): Bitmap {
     val bitmap = Bitmap.createBitmap(width, height, config)
     val paint = Paint()
-    val colorMatrix = ColorMatrix().apply {
-        setSaturation(0f)
-    }
+    val colorMatrix = ColorMatrix().apply { setSaturation(0f) }
     paint.colorFilter = ColorMatrixColorFilter(colorMatrix)
     Canvas(bitmap).drawBitmap(this, 0f, 0f, paint)
+    if (recycle && !isRecycled && bitmap != this) recycle()
+    return bitmap
+}
+
+fun Bitmap.blackWhitePixel(isReverse: Boolean = false, recycle: Boolean = false): Bitmap {
+    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    Canvas(bitmap).drawBitmap(this, Matrix(), Paint())
+    for (i in 0 until width) {
+        for (j in 0 until height) {
+            val cc = getPixel(i, j)
+            val red = Color.red(cc)
+            val green = Color.green(cc)
+            val blue = Color.blue(cc)
+            val alpha = Color.alpha(cc)
+            val avg = (red + green + blue) / 3
+            val color1 = if (isReverse) Color.argb(alpha, 0, 0, 0) else Color.argb(alpha, 255, 255, 255)
+            val color2 = if (isReverse) Color.argb(alpha, 255, 255, 255) else Color.argb(alpha, 0, 0, 0)
+            if (avg >= 127) { //亮度大于127设置为亮色
+                bitmap.setPixel(i, j, color1)
+            } else {
+                bitmap.setPixel(i, j, color2)
+            }
+        }
+    }
     if (recycle && !isRecycled && bitmap != this) recycle()
     return bitmap
 }

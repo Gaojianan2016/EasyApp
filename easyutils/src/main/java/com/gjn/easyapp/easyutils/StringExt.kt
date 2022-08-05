@@ -133,6 +133,11 @@ fun String.getUrlLastName(): String =
     toUri().lastPathSegment ?: substring(lastIndexOf('/') + 1)
 
 /**
+ * 删除最后一个字符
+ * */
+fun String.removeLast() = if (isEmpty()) this else substring(0, length - 1)
+
+/**
  * 设置省略文本
  * */
 fun String.setOmittedText(max: Int, suffix: String = "..."): String =

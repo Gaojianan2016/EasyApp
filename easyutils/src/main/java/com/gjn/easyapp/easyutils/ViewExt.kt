@@ -4,9 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Paint
 import android.os.Build
-import android.text.Editable
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.MotionEvent
@@ -42,6 +40,10 @@ inline val View.viewHeight: Int
             height
         }
 
+fun View.toggleVisible() {
+    if (isVisible) gone() else visible()
+}
+
 fun View.visible() {
     isVisible = true
 }
@@ -52,6 +54,10 @@ fun View.invisible() {
 
 fun View.gone() {
     isGone = true
+}
+
+inline fun Array<out View?>.toggleVisible() {
+    forEach { it?.toggleVisible() }
 }
 
 inline fun Array<out View?>.gone() {

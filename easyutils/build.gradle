@@ -37,6 +37,9 @@ dependencies {
     implementation "com.google.android.material:material:${library_versions.material}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${library_versions.kotlinx_coroutines}"
 
+    //gson
+    compileOnly "com.google.code.gson:gson:${library_versions.gson}"
+
     compileOnly "com.google.zxing:core:${library_versions.zxing}"
     compileOnly "com.tencent:mmkv-static:${library_versions.mmkv}"
     compileOnly "net.lingala.zip4j:zip4j:${library_versions.zip4j}"

@@ -1,5 +1,6 @@
 package com.gjn.easyapp.easynetworker
 
+import com.gjn.easyapp.easyutils.HttpsUtils
 import com.gjn.easyapp.easyutils.formatJson
 import com.gjn.easyapp.easyutils.logD
 import com.google.gson.Gson
@@ -28,10 +29,14 @@ object RetrofitManager {
 
     var customInterceptorListener: OnCustomInterceptorListener? = null
 
+    val ignoreLogUrlPath = mutableListOf<String>()
+
     var okHttpClient = OkHttpClient.Builder()
         .connectTimeout(30L, TimeUnit.SECONDS)
         .readTimeout(30L, TimeUnit.SECONDS)
         .writeTimeout(30L, TimeUnit.SECONDS)
+        .sslSocketFactory(HttpsUtils.createSSLSocketFactory()!!, HttpsUtils.mX509TrustManager)
+        .hostnameVerifier(HttpsUtils.mHostnameVerifier)
         .addInterceptor(LoggingInterceptor())
         .build()
 
@@ -40,9 +45,7 @@ object RetrofitManager {
             clazz, url,
             arrayOf(
                 //添加自动过滤gson解析失败异常
-                GsonConverterFactory.create(
-                    GsonBuilder().registerTypeAdapterFactory(GsonTypeAdapterFactory()).create()
-                )
+                GsonConverterFactory.create(GsonBuilder().registerTypeAdapterFactory(GsonTypeAdapterFactory()).create())
             )
         )
 
@@ -52,9 +55,7 @@ object RetrofitManager {
         factoryArray: Array<Converter.Factory> = arrayOf()
     ): T {
         val builder = Retrofit.Builder().baseUrl(url).client(okHttpClient)
-        factoryArray.forEach {
-            builder.addConverterFactory(it)
-        }
+        factoryArray.forEach { builder.addConverterFactory(it) }
         return builder.build().create(clazz)
     }
 
@@ -144,6 +145,11 @@ object RetrofitManager {
 
         private fun printResponseBody(response: Response): String {
             val log = StringBuilder()
+            ignoreLogUrlPath.forEach {
+                if (response.request.url.toString() == it) {
+                    return "ignore Log"
+                }
+            }
             if (response.body == null) {
                 return "no Body"
             }

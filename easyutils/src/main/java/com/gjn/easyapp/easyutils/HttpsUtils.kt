@@ -20,7 +20,7 @@ object HttpsUtils {
         HttpsURLConnection.setDefaultSSLSocketFactory(createSSLSocketFactory())
     }
 
-    private fun createSSLSocketFactory(): SSLSocketFactory? {
+    fun createSSLSocketFactory(): SSLSocketFactory? {
         var factory: SSLSocketFactory? = null
         try {
             val sslContext = SSLContext.getInstance("TLS")
