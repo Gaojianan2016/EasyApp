@@ -14,21 +14,25 @@ private val SAFE_DATE_FORMAT = object : ThreadLocal<MutableMap<String, SimpleDat
 }
 
 @SuppressLint("SimpleDateFormat")
-private fun safeDateFormat(pattern: String): SimpleDateFormat {
+private fun safeDateFormat(pattern: String, locale: Locale): SimpleDateFormat {
     val map = SAFE_DATE_FORMAT.get() ?: return SimpleDateFormat(pattern)
-    var dateFormat: SimpleDateFormat? = map[pattern]
+    val key = pattern + locale.country
+    var dateFormat: SimpleDateFormat? = map[key]
     if (dateFormat == null) {
-        dateFormat = SimpleDateFormat(pattern)
-        map[pattern] = dateFormat
+        dateFormat = SimpleDateFormat(pattern, locale)
+        map[key] = dateFormat
     }
     return dateFormat
 }
 
 /**
  * 时间戳转日期格式
+ * 常用如下
+ * [yyyy 年, MM 月, dd 日, HH 24小时, hh 12小时, mm 分钟, ss 秒, SSS 毫秒]
+ * [EEEE 星期几, a 上午/下午(和hh配合)]
  * */
-fun Long.toDateFormat(pattern: String = "yyyy-MM-dd HH:mm:ss"): String =
-    safeDateFormat(pattern).format(this)
+fun Long.toDateFormat(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault()): String =
+    safeDateFormat(pattern, locale).format(this)
 
 /**
  * 时间戳转日期
@@ -44,15 +48,15 @@ fun Long.toWeek(pattern: String = "EEEE", locale: Locale = Locale.getDefault()):
 /**
  * 日期格式转时间戳
  * */
-fun String.toTimeMillis(pattern: String = "yyyy-MM-dd HH:mm:ss"): Long =
-    toDate(pattern)?.time ?: -1L
+fun String.toTimeMillis(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault()): Long =
+    toDate(pattern, locale)?.time ?: -1L
 
 /**
  * 日期格式转日期
  * */
-fun String.toDate(pattern: String = "yyyy-MM-dd HH:mm:ss"): Date? =
+fun String.toDate(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault()): Date? =
     try {
-        safeDateFormat(pattern).parse(this)
+        safeDateFormat(pattern, locale).parse(this)
     } catch (e: Exception) {
         e.printStackTrace()
         null
@@ -61,8 +65,8 @@ fun String.toDate(pattern: String = "yyyy-MM-dd HH:mm:ss"): Date? =
 /**
  * 日期转日期格式
  * */
-fun Date.toDateFormat(pattern: String = "yyyy-MM-dd HH:mm:ss"): String =
-    safeDateFormat(pattern).format(this)
+fun Date.toDateFormat(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault()): String =
+    safeDateFormat(pattern, locale).format(this)
 
 /**
  * 时间差
@@ -91,8 +95,9 @@ fun timeDifferenceMillis(
     time1: String,
     time2: String,
     pattern: String = "yyyy-MM-dd HH:mm:ss",
-    timeUnit: TimeUnit = TimeUnit.MILLISECONDS
-) = timeDifferenceMillis(time1.toTimeMillis(pattern), time2.toTimeMillis(pattern), timeUnit)
+    timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+    locale: Locale = Locale.getDefault()
+) = timeDifferenceMillis(time1.toTimeMillis(pattern, locale), time2.toTimeMillis(pattern, locale), timeUnit)
 
 /**
  * 时间差
@@ -189,8 +194,8 @@ fun Long.isToday(): Boolean {
 /**
  * 获取当前时间字符串
  * */
-fun getNowTimeString(pattern: String = "yyyy-MM-dd HH:mm:ss") =
-    System.currentTimeMillis().toDateFormat(pattern)
+fun getNowTimeString(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault()) =
+    System.currentTimeMillis().toDateFormat(pattern, locale)
 
 /**
  * 获取当天0:0:0时间戳

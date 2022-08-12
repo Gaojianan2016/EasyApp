@@ -425,7 +425,9 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("activity getMetaData ${mActivity.getMetaData("TEST_KEY2")}")
         }
 
-        NetworkStateManager.init(mActivity)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            NetworkStateManager.init(mActivity)
+        }
 
         btn37_ad.click {
 //            mActivity.openWirelessSettings()
@@ -555,9 +557,9 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn45_ad.click {
-            println("string ${mActivity.string(R.string.test_string)}")
-            println("string ${mActivity.string(R.string.test_string2, "123455")}")
-            mActivity.stringArray(R.array.test_string_array).forEach {
+            println("string ${getString(R.string.test_string)}")
+            println("string ${getString(R.string.test_string2, "123455")}")
+            mActivity.resources.getStringArray(R.array.test_string_array).forEach {
                 println("stringArray ->  $it")
             }
 
@@ -713,9 +715,9 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             NetworkStateManager.get().unregisterNetworkCallback(this@DemoActivity)
+            NetworkStateManager.destroy()
         }
 
-        NetworkStateManager.destroy()
     }
 
 }

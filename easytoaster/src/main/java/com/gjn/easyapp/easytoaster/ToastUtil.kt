@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import com.gjn.easyapp.easyutils.SingletonCompanionInitializer
 import com.gjn.easyapp.easyutils.inflate
 import kotlinx.coroutines.runBlocking
 
@@ -169,7 +170,7 @@ class ToastUtil(private val mContext: Context) {
         showToast(msg, duration, mEasyToastView, gravity, xOffset, yOffset, isShowAppName)
     }
 
-    companion object {
+    companion object : SingletonCompanionInitializer<ToastUtil>() {
         private const val EASY_TYPE_NULL = -1
         private const val EASY_TYPE_CONFIRM = 0
         private const val EASY_TYPE_INFO = 1
@@ -180,18 +181,8 @@ class ToastUtil(private val mContext: Context) {
         private const val EASY_TYPE_WAIT = 6
         private const val EASY_TYPE_PROHIBIT = 7
 
-        @SuppressLint("StaticFieldLeak")
-        private var toastUtils: ToastUtil? = null
-
-        fun init(context: Context): ToastUtil {
-            if (toastUtils == null) {
-                synchronized(ToastUtil::class.java) {
-                    if (toastUtils == null) {
-                        toastUtils = ToastUtil(context)
-                    }
-                }
-            }
-            return toastUtils!!
+        fun init(context: Context) = initialize {
+            ToastUtil(context)
         }
 
         fun showToast(
@@ -203,7 +194,7 @@ class ToastUtil(private val mContext: Context) {
             yOffset: Int = 0,
             isShowAppName: Boolean = true
         ) {
-            toastUtils?.showToast(msg, duration, view, gravity, xOffset, yOffset, isShowAppName)
+            instance?.showToast(msg, duration, view, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showNullToast(
@@ -214,7 +205,7 @@ class ToastUtil(private val mContext: Context) {
             yOffset: Int = 0,
             isShowAppName: Boolean = true
         ) {
-            toastUtils?.showNullToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
+            instance?.showNullToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showConfirmToast(
@@ -225,7 +216,7 @@ class ToastUtil(private val mContext: Context) {
             yOffset: Int = 0,
             isShowAppName: Boolean = true
         ) {
-            toastUtils?.showConfirmToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
+            instance?.showConfirmToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showInfoToast(
@@ -236,7 +227,7 @@ class ToastUtil(private val mContext: Context) {
             yOffset: Int = 0,
             isShowAppName: Boolean = true
         ) {
-            toastUtils?.showInfoToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
+            instance?.showInfoToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showWarningToast(
@@ -247,7 +238,7 @@ class ToastUtil(private val mContext: Context) {
             yOffset: Int = 0,
             isShowAppName: Boolean = true
         ) {
-            toastUtils?.showWarningToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
+            instance?.showWarningToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showErrorToast(
@@ -258,7 +249,7 @@ class ToastUtil(private val mContext: Context) {
             yOffset: Int = 0,
             isShowAppName: Boolean = true
         ) {
-            toastUtils?.showErrorToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
+            instance?.showErrorToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showFailToast(
@@ -269,7 +260,7 @@ class ToastUtil(private val mContext: Context) {
             yOffset: Int = 0,
             isShowAppName: Boolean = true
         ) {
-            toastUtils?.showFailToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
+            instance?.showFailToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showSuccessToast(
@@ -280,7 +271,7 @@ class ToastUtil(private val mContext: Context) {
             yOffset: Int = 0,
             isShowAppName: Boolean = true
         ) {
-            toastUtils?.showSuccessToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
+            instance?.showSuccessToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showWaitToast(
@@ -291,7 +282,7 @@ class ToastUtil(private val mContext: Context) {
             yOffset: Int = 0,
             isShowAppName: Boolean = true
         ) {
-            toastUtils?.showWaitToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
+            instance?.showWaitToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
 
         fun showProhibitToast(
@@ -302,7 +293,7 @@ class ToastUtil(private val mContext: Context) {
             yOffset: Int = 0,
             isShowAppName: Boolean = true
         ) {
-            toastUtils?.showProhibitToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
+            instance?.showProhibitToast(msg, duration, gravity, xOffset, yOffset, isShowAppName)
         }
     }
 }

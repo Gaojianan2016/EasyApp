@@ -17,42 +17,37 @@ fun Context.isDevicePhone() = telephonyManager.phoneType != TelephonyManager.PHO
  * */
 @SuppressLint("MissingPermission", "HardwareIds")
 @RequiresPermission(READ_PHONE_STATE)
-fun Context.getDeviceId(): String {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) return ""
+fun Context.getDeviceId(): String =
     try {
-        val deviceId = telephonyManager.deviceId
-        if (deviceId.isNotEmpty()) return deviceId
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (telephonyManager.imei.isNotEmpty()) return telephonyManager.imei
-            if (telephonyManager.meid.isNotEmpty()) return telephonyManager.meid
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> "Unknown DeviceId"
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                if (telephonyManager.imei.isNullOrEmpty()) telephonyManager.meid ?: "Unknown DeviceId"
+                else telephonyManager.imei ?: "Unknown DeviceId"
+            }
+            else -> telephonyManager.deviceId ?: "Unknown DeviceId"
         }
     } catch (e: Exception) {
         e.printStackTrace()
+        "Unknown DeviceId"
     }
-    return ""
-}
 
 /**
  * 获取序列号
  * */
 @SuppressLint("MissingPermission", "HardwareIds")
 @RequiresPermission(READ_PHONE_STATE)
-fun getSerial(): String {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        return try {
-            Build.getSerial()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            ""
+fun getSerial(): String =
+    try {
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> Build.getSerial()
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> Build.getSerial()
+            else -> Build.SERIAL
         }
-    }
-    return try {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Build.getSerial() else Build.SERIAL
     } catch (e: Exception) {
         e.printStackTrace()
-        ""
+        "Unknown Serial"
     }
-}
 
 /**
  * 是否准备好sim卡
@@ -62,21 +57,18 @@ fun Context.isSimCardReady() = telephonyManager.simState == TelephonyManager.SIM
 /**
  * 获取sim卡运营商名称
  * */
-fun Context.getSimOperatorName(): String = telephonyManager.simOperatorName
+fun Context.getSimOperatorName() = telephonyManager.simOperatorName ?: "未知运营商"
 
 /**
  * 通过Mnc获取sim卡运营商
  * */
-fun Context.getSimOperatorByMnc(): String {
-    val operator = telephonyManager.simOperator
-    if (operator.isNullOrEmpty()) return ""
-    return when (operator) {
+fun Context.getSimOperatorByMnc() =
+    when (telephonyManager.simOperator) {
         "46000", "46002", "46007", "46020" -> "中国移动"
         "46001", "46006", "46009" -> "中国联通"
         "46003", "46005", "46011" -> "中国电信"
-        else -> operator
+        else -> "未知运营商"
     }
-}
 
 /**
  * 是否是特定品牌的手机
@@ -115,7 +107,7 @@ fun phoneBrand(): String {
         isPhoneRom(PhoneRom.ROM_SONY) -> "索尼手机"
         isPhoneRom(PhoneRom.ROM_GIONEE) -> "金立手机"
         isPhoneRom(PhoneRom.ROM_MOTOROLA) -> "摩托罗拉手机"
-        else -> "未知"
+        else -> "未知品牌"
     }
 }
 

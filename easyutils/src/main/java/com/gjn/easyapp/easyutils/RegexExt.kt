@@ -42,67 +42,51 @@ object RegexConstants {
 /**
  * 是否是手机号码
  * */
-fun CharSequence.isMobileNumber(): Boolean {
-    if (isEmpty()) return false
-    return Pattern.matches(RegexConstants.REGEX_MOBILE_NUMBER, this)
-}
+fun CharSequence.isMobileNumber() =
+    if (isEmpty()) false else Pattern.matches(RegexConstants.REGEX_MOBILE_NUMBER, this)
 
 /**
  * 是否是电话号码
  * */
-fun CharSequence.isTelNumber(): Boolean {
-    if (isEmpty()) return false
-    return Pattern.matches(RegexConstants.REGEX_TEL_NUMBER, this)
-}
+fun CharSequence.isTelNumber() =
+    if (isEmpty()) false else Pattern.matches(RegexConstants.REGEX_TEL_NUMBER, this)
 
 /**
  * 是否是身份证
  * */
-fun CharSequence.isIdCard(): Boolean {
-    if (isEmpty()) return false
-    return Pattern.matches(RegexConstants.REGEX_ID_CARD_2, this)
+fun CharSequence.isIdCard() =
+    if (isEmpty()) false else Pattern.matches(RegexConstants.REGEX_ID_CARD_2, this)
             || Pattern.matches(RegexConstants.REGEX_ID_CARD_1, this)
-}
 
 /**
  * 是否是E-mail
  * */
-fun CharSequence.isEmail(): Boolean {
-    if (isEmpty()) return false
-    return PatternsCompat.EMAIL_ADDRESS.matcher(this).matches()
-}
+fun CharSequence.isEmail() =
+    if (isEmpty()) false else PatternsCompat.EMAIL_ADDRESS.matcher(this).matches()
 
 /**
  * 是否是url
  * */
-fun CharSequence.isUrl(): Boolean {
-    if (isEmpty()) return false
-    return Pattern.matches(RegexConstants.REGEX_URL, this)
-}
+fun CharSequence.isUrl() =
+    if (isEmpty()) false else Pattern.matches(RegexConstants.REGEX_URL, this)
 
 /**
  * 是否是webUrl
  * */
-fun CharSequence.isWebUrl(): Boolean {
-    if (isEmpty()) return false
-    return PatternsCompat.WEB_URL.matcher(this).matches()
-}
+fun CharSequence.isWebUrl() =
+    if (isEmpty()) false else PatternsCompat.WEB_URL.matcher(this).matches()
 
 /**
  * 是否是Ip地址
  * */
-fun CharSequence.isIpAddress(): Boolean {
-    if (isEmpty()) return false
-    return PatternsCompat.IP_ADDRESS.matcher(this).matches()
-}
+fun CharSequence.isIpAddress() =
+    if (isEmpty()) false else PatternsCompat.IP_ADDRESS.matcher(this).matches()
 
 /**
  * 是否是中国邮编号码
  * */
-fun CharSequence.isZhPostCode(): Boolean {
-    if (isEmpty()) return false
-    return Pattern.matches(RegexConstants.REGEX_ZH_POST_CODE, this)
-}
+fun CharSequence.isZhPostCode() =
+    if (isEmpty()) false else Pattern.matches(RegexConstants.REGEX_ZH_POST_CODE, this)
 
 /**
  * 查找正则表达式

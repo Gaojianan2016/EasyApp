@@ -24,7 +24,7 @@ fun Context.isNotificationsEnabled() =
 /**
  * 发送通知
  * */
-@SuppressLint("RestrictedApi")
+@SuppressLint("RestrictedApi", "NewApi")
 fun Context.sendNotification(
     id: Int,
     tag: String? = null,
@@ -50,6 +50,7 @@ fun Context.sendNotification(
 /**
  * 发送前台通知
  * */
+@SuppressLint("NewApi")
 fun Service.sendForegroundNotification(
     id: Int,
     channelId: String = packageName,
@@ -59,10 +60,8 @@ fun Service.sendForegroundNotification(
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val builder = Notification.Builder(this, channelId)
         block.invoke(builder)
-        if (foregroundServiceType == null)
-            startForeground(id, builder.build())
-        else
-            startForeground(id, builder.build(), foregroundServiceType)
+        if (foregroundServiceType == null) startForeground(id, builder.build())
+        else startForeground(id, builder.build(), foregroundServiceType)
     }
 }
 
@@ -157,10 +156,6 @@ class NotificationChannelConfig(val id: String, val name: CharSequence, importan
 
     companion object {
         fun getDefaultConfig(context: Context) =
-            NotificationChannelConfig(
-                context.packageName,
-                context.packageName,
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
+            NotificationChannelConfig(context.packageName, context.packageName, NotificationManager.IMPORTANCE_DEFAULT)
     }
 }

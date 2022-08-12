@@ -146,7 +146,7 @@ object RetrofitManager {
         private fun printResponseBody(response: Response): String {
             val log = StringBuilder()
             ignoreLogUrlPath.forEach {
-                if (response.request.url.toString() == it) {
+                if (response.request.url.toString().contains(it)) {
                     return "ignore Log"
                 }
             }

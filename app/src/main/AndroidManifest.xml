@@ -24,6 +24,8 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"  />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -38,7 +40,8 @@
                 android:name=".MainActivity"-->
         <activity
             android:name=".demo.DemoActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden">
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -48,12 +51,12 @@
             <meta-data android:name="TEST_KEY2" android:value="activity meta-data 测试数据" />
         </activity>
 
-        <activity android:name=".GalleryActivity" />
-        <activity android:name=".ActivityResultActivity" />
-<!--        <activity android:name=".demo.DemoActivity" />-->
-        <activity android:name=".MainActivity" />
-        <activity android:name=".demo.ImageActivity" />
-        <activity android:name=".demo.DrawerActivity" />
+        <activity android:name=".GalleryActivity" android:exported="true"/>
+        <activity android:name=".ActivityResultActivity" android:exported="true"/>
+<!--        <activity android:name=".demo.DemoActivity" android:exported="true"/>-->
+        <activity android:name=".MainActivity" android:exported="true"/>
+        <activity android:name=".demo.ImageActivity" android:exported="true"/>
+        <activity android:name=".demo.DrawerActivity" android:exported="true"/>
 
         <meta-data android:name="TEST_KEY" android:value="app meta-data 测试数据"/>
         

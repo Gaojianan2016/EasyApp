@@ -83,12 +83,7 @@ fun Activity.fixAndroidBug5497() {
     content.viewTreeObserver.addOnGlobalLayoutListener {
         val height = contentViewInvisibleHeight
         if (oldInvisibleHeight[0] != height) {
-            child.updatePadding(
-                child.left,
-                child.top,
-                child.right,
-                paddingBottom + decorViewInvisibleHeight
-            )
+            child.updatePadding(child.left, child.top, child.right, paddingBottom + decorViewInvisibleHeight)
             oldInvisibleHeight[0] = height
         }
     }

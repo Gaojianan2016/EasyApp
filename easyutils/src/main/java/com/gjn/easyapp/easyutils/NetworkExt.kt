@@ -26,11 +26,9 @@ fun Context.openWirelessSettings() {
 fun Context.isNetworkConnected(): Boolean {
     val cm = connectivityManager
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        cm.getNetworkCapabilities(cm.activeNetwork)?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-            ?: false
+        cm.getNetworkCapabilities(cm.activeNetwork)?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) ?: false
     } else {
-        cm.activeNetworkInfo?.isConnected
-            ?: false
+        cm.activeNetworkInfo?.isConnected ?: false
     }
 }
 
@@ -41,11 +39,9 @@ fun Context.isNetworkConnected(): Boolean {
 fun Context.isWifiConnected(): Boolean {
     val cm = connectivityManager
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        cm.getNetworkCapabilities(cm.activeNetwork)?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-            ?: false
+        cm.getNetworkCapabilities(cm.activeNetwork)?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ?: false
     } else {
-        cm.activeNetworkInfo?.let { it.isConnected && it.type == ConnectivityManager.TYPE_WIFI }
-            ?: false
+        cm.activeNetworkInfo?.let { it.isConnected && it.type == ConnectivityManager.TYPE_WIFI } ?: false
     }
 }
 
@@ -56,11 +52,9 @@ fun Context.isWifiConnected(): Boolean {
 fun Context.isMobileConnected(): Boolean {
     val cm = connectivityManager
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        cm.getNetworkCapabilities(cm.activeNetwork)?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-            ?: false
+        cm.getNetworkCapabilities(cm.activeNetwork)?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ?: false
     } else {
-        cm.activeNetworkInfo?.let { it.isConnected && it.type == ConnectivityManager.TYPE_MOBILE }
-            ?: false
+        cm.activeNetworkInfo?.let { it.isConnected && it.type == ConnectivityManager.TYPE_MOBILE } ?: false
     }
 }
 
@@ -71,11 +65,9 @@ fun Context.isMobileConnected(): Boolean {
 fun Context.isEthernetConnected(): Boolean {
     val cm = connectivityManager
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        cm.getNetworkCapabilities(cm.activeNetwork)?.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
-            ?: false
+        cm.getNetworkCapabilities(cm.activeNetwork)?.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) ?: false
     } else {
-        cm.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET)?.let { it.state == NetworkInfo.State.CONNECTED || it.state == NetworkInfo.State.CONNECTING }
-            ?: false
+        cm.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET)?.let { it.state == NetworkInfo.State.CONNECTED || it.state == NetworkInfo.State.CONNECTING } ?: false
     }
 }
 

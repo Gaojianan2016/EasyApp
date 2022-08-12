@@ -37,9 +37,7 @@ inline val Context.appScreenWidth: Int
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             windowManager.currentWindowMetrics.bounds.width()
         } else {
-            Point().apply {
-                windowManager.defaultDisplay.getSize(this)
-            }.x
+            Point().apply { windowManager.defaultDisplay.getSize(this) }.x
         }
 
 /**
@@ -50,9 +48,7 @@ inline val Context.appScreenHeight: Int
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             windowManager.currentWindowMetrics.bounds.height()
         } else {
-            Point().apply {
-                windowManager.defaultDisplay.getSize(this)
-            }.y
+            Point().apply { windowManager.defaultDisplay.getSize(this) }.y
         }
 
 /**
