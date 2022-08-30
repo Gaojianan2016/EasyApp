@@ -1,5 +1,8 @@
 package com.gjn.easyapp.easyutils
 
+import org.json.JSONArray
+import org.json.JSONObject
+
 /**
  * json 格式化
  * */
@@ -41,5 +44,20 @@ fun String?.formatJson(
 private fun StringBuilder.addTab(line: Int) {
     for (i in 0 until line) {
         append('\t')
+    }
+}
+
+fun String?.isJsonStr(): Boolean {
+    if (isNullOrEmpty()) return false
+    return try {
+        if (trim().startsWith("[") && trim().endsWith("]")) {
+            JSONArray(this)
+            true
+        } else {
+            JSONObject(this)
+            true
+        }
+    } catch (e: Exception) {
+        false
     }
 }

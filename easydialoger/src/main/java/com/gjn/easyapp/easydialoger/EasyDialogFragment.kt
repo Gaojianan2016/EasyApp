@@ -35,10 +35,6 @@ class EasyDialogFragment : BaseDialogFragment() {
         dataBindingConvert?.convertDataBinding(holder, dialogFragment)
     }
 
-    interface EasyInputListener {
-        fun confirm(msg: Editable, max: Int)
-    }
-
     companion object {
         fun newInstance(): EasyDialogFragment {
             return newInstance(null)

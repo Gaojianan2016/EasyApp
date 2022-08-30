@@ -431,6 +431,7 @@ String.getComponentIntent 包名获取组件 Intent
 ## JsonExt
 ```
 String?.formatJson json 格式化
+String?.isJsonStr 是否是json字符串
 ```
 
 ## KeyboardExt
@@ -711,7 +712,7 @@ Long.nowTimeDifference 时间戳跟当前时差
 Long.isToday 是否是当天
 
 getNowTimeString 获取当前时间字符串
-getTodayMillis 获取当天0:0:0时间戳
+getTodayMillis 获取当天某个时间时间戳
 createGregorianCalendar 创建阳历
 ```
 
@@ -740,6 +741,14 @@ String.toUri 字符串转uri
 ```
 Context.startVibrate 设备开始震动
 Context.cancelVibrate 设备取消震动
+```
+
+## ViewBindingExt
+```
+Activity.inflateBinding 快捷绑定viewbinding
+Dialog.inflateBinding 快捷绑定viewbinding
+bindViewBinding 快捷绑定viewbinding
+inflateViewBinding 快捷绑定viewbinding
 ```
 
 ## ViewExt

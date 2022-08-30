@@ -114,6 +114,10 @@ class DownLoadManager(private val activity: FragmentActivity) {
 
     private fun downloadStream(call: Call, response: Response, file: File): Boolean {
         val length = response.header(LENGTH)?.toInt() ?: -1
+        if (length < 0) {
+            onDownLoadListener?.downLoadStatus(downLoadStatus, "下载内容为空")
+            return false
+        }
         var iStream: InputStream? = null
         var fos: FileOutputStream? = null
         val buffer = ByteArray(streamByte(length))

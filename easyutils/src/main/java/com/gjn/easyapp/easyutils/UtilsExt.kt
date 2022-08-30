@@ -111,5 +111,5 @@ fun <T> List<T?>?.toMutableListOrEmptyList(): MutableList<T> {
 /**
  * 单选position
  * */
-fun singleChoicePosition(cur: Int, change: Int, default: Int = -1): Int =
+fun singleChoicePosition(cur: Int, change: Int, default: Int = -1) =
     if (cur == change) default else change

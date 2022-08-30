@@ -198,13 +198,18 @@ fun getNowTimeString(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = L
     System.currentTimeMillis().toDateFormat(pattern, locale)
 
 /**
- * 获取当天0:0:0时间戳
+ * 获取当天某个时间时间戳
  * */
-fun getTodayMillis(): Long = Calendar.getInstance().also {
-    it.set(Calendar.HOUR_OF_DAY, 0)
-    it.set(Calendar.SECOND, 0)
-    it.set(Calendar.MINUTE, 0)
-    it.set(Calendar.MILLISECOND, 0)
+fun getTodayMillis(
+    @IntRange(from = 0, to = 23) hourOfDay: Int = 0,
+    @IntRange(from = 0, to = 60) minute: Int = 0,
+    @IntRange(from = 0, to = 60) second: Int = 0,
+    @IntRange(from = 0) millisecond: Int = 0
+) = Calendar.getInstance().also {
+    it.set(Calendar.HOUR_OF_DAY, hourOfDay)
+    it.set(Calendar.MINUTE, minute)
+    it.set(Calendar.SECOND, second)
+    it.set(Calendar.MILLISECOND, millisecond)
 }.timeInMillis
 
 /**

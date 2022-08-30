@@ -16,7 +16,7 @@ class FastJsonConverterFactory private constructor(
         parameterAnnotations: Array<Annotation>,
         methodAnnotations: Array<Annotation>,
         retrofit: Retrofit
-    ): Converter<*, RequestBody>? {
+    ): Converter<*, RequestBody> {
         return FastJsonRequestBodyConverter<Any>(serializeConfig)
     }
 
@@ -24,7 +24,7 @@ class FastJsonConverterFactory private constructor(
         type: Type,
         annotations: Array<Annotation>,
         retrofit: Retrofit
-    ): Converter<ResponseBody, *>? {
+    ): Converter<ResponseBody, *> {
         return FastJsonResponseBodyConvert<Any>(type)
     }
 

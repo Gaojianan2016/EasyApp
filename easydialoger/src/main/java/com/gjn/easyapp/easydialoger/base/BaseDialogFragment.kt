@@ -1,6 +1,5 @@
 package com.gjn.easyapp.easydialoger.base
 
-import android.app.Dialog
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -35,12 +34,8 @@ abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragmen
 
     abstract fun dataBindingResId(): Int
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        if (createDialogBuilder() != null) {
-            return createDialogBuilder()!!.create()
-        }
-        return super.onCreateDialog(savedInstanceState)
-    }
+    override fun onCreateDialog(savedInstanceState: Bundle?) =
+        if (createDialogBuilder() != null) createDialogBuilder()!!.create() else super.onCreateDialog(savedInstanceState)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,9 +60,9 @@ abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragmen
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        dialog?.let { dialog ->
-            dialog.setCanceledOnTouchOutside(isCloseOnTouchOutside)
-            dialog.setCancelable(isCanClose)
+        dialog?.run {
+            setCanceledOnTouchOutside(isCloseOnTouchOutside)
+            setCancelable(isCanClose)
         }
     }
 

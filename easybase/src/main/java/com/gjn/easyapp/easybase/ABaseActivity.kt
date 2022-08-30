@@ -74,11 +74,9 @@ abstract class ABaseActivity : AppCompatActivity(), UIEvent {
         super.onDestroy()
     }
 
-    protected inline fun <reified T : ViewModel> bindViewModel(
-        clz: Class<T>
-    ): Lazy<T> = lazy { clz.createViewModel(this) }
+    protected inline fun <reified T : ViewModel> bindViewModel(clz: Class<T>): Lazy<T> =
+        lazy { clz.createViewModel(this) }
 
-    protected inline fun <reified T : ViewModel> bindAndroidViewModel(
-        clz: Class<T>
-    ): Lazy<T> = lazy { clz.createAndroidViewModel(this, mActivity.application) }
+    protected inline fun <reified T : ViewModel> bindAndroidViewModel(clz: Class<T>): Lazy<T> =
+        lazy { clz.createAndroidViewModel(this, mActivity.application) }
 }

@@ -2,6 +2,7 @@ package com.gjn.easyapp.easynetworker
 
 import com.gjn.easyapp.easyutils.HttpsUtils
 import com.gjn.easyapp.easyutils.formatJson
+import com.gjn.easyapp.easyutils.isJsonStr
 import com.gjn.easyapp.easyutils.logD
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -13,6 +14,7 @@ import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
 import okhttp3.*
 import okio.Buffer
+import retrofit2.CallAdapter
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -31,7 +33,7 @@ object RetrofitManager {
 
     val ignoreLogUrlPath = mutableListOf<String>()
 
-    var okHttpClient = OkHttpClient.Builder()
+    private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(30L, TimeUnit.SECONDS)
         .readTimeout(30L, TimeUnit.SECONDS)
         .writeTimeout(30L, TimeUnit.SECONDS)
@@ -40,9 +42,9 @@ object RetrofitManager {
         .addInterceptor(LoggingInterceptor())
         .build()
 
-    fun <T> create(clazz: Class<T>, url: String): T =
+    fun <T> create(clazz: Class<T>, url: String, client: OkHttpClient = okHttpClient): T =
         create(
-            clazz, url,
+            clazz, url, client,
             arrayOf(
                 //添加自动过滤gson解析失败异常
                 GsonConverterFactory.create(GsonBuilder().registerTypeAdapterFactory(GsonTypeAdapterFactory()).create())
@@ -52,10 +54,13 @@ object RetrofitManager {
     fun <T> create(
         clazz: Class<T>,
         url: String,
-        factoryArray: Array<Converter.Factory> = arrayOf()
+        client: OkHttpClient = okHttpClient,
+        converterFactoryArray: Array<Converter.Factory> = arrayOf(),
+        callAdapterFactoryArray: Array<CallAdapter.Factory> = arrayOf(),
     ): T {
-        val builder = Retrofit.Builder().baseUrl(url).client(okHttpClient)
-        factoryArray.forEach { builder.addConverterFactory(it) }
+        val builder = Retrofit.Builder().baseUrl(url).client(client)
+        converterFactoryArray.forEach { builder.addConverterFactory(it) }
+        callAdapterFactoryArray.forEach { builder.addCallAdapterFactory(it) }
         return builder.build().create(clazz)
     }
 
@@ -107,14 +112,12 @@ object RetrofitManager {
 
         private fun printRequest(request: Request): String {
             val log = StringBuilder()
-            log.append("http request\n----------Request HEAD----------\n")
-                .append("--> ${request.method} ${request.url}\n")
+            log.append("http request\n----------Request HEAD----------\n").append("--> ${request.method} ${request.url}\n")
             request.headers.forEach { (name, value) ->
                 log.append("-> $name = $value\n")
             }
             request.body?.let {
-                log.append("----------Request BODY----------\n")
-                    .append("--> ${it.contentType()} ${it.contentLength()}\n")
+                log.append("----------Request BODY----------\n").append("--> ${it.contentType()} ${it.contentLength()}\n")
                 if (it is FormBody) {
                     for (i in 0 until it.size) {
                         log.append("-> ${it.encodedName(i)} = ${it.encodedValue(i)}\n")
@@ -123,8 +126,7 @@ object RetrofitManager {
                     val buffer = Buffer()
                     it.writeTo(buffer)
                     if (isPlaintext(buffer)) {
-                        val charset = it.contentType()?.charset(StandardCharsets.UTF_8)
-                            ?: StandardCharsets.UTF_8
+                        val charset = it.contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8
                         log.append(buffer.readString(charset)).append("\n")
                     }
                 }
@@ -158,10 +160,9 @@ object RetrofitManager {
                 source.request(Long.MAX_VALUE)
                 val buffer = source.buffer
                 if (isPlaintext(buffer)) {
-                    val charset = it.contentType()?.charset(StandardCharsets.UTF_8)
-                        ?: StandardCharsets.UTF_8
+                    val charset = it.contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8
                     val result = buffer.clone().readString(charset)
-                    if (result.startsWith("{\"") || result.startsWith("[{")) {
+                    if (result.isJsonStr()) {
                         log.append(result.formatJson())
                     } else {
                         log.append(result)
@@ -223,8 +224,7 @@ object RetrofitManager {
                         consumeAll(jr)
                     }
                     JsonToken.NULL -> jr.nextNull()
-                    else -> {
-                    }
+                    else -> {}
                 }
             }
         }

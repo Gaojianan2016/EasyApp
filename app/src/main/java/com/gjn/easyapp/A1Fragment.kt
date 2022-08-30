@@ -255,7 +255,7 @@ class A1Fragment : BaseLazyFragment() {
                     mDialogManager.showAndroidDialog("标题", "测试")
                     mDialogManager.showEasyNormalDialog("消息",
                         positive = "按钮1",
-                        positiveClickListener = { showToast("关闭按钮1") }
+                        positiveClickBlock = { showToast("关闭按钮1") }
                     )
                     mDialogManager.showSmallLoadingDialog()
 

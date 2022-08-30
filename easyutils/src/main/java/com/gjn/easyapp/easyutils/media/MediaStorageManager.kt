@@ -49,12 +49,8 @@ class MediaStorageManager(private val context: Context) {
     }
 
     private fun registerMediaObserver() {
-        context.contentResolver.registerContentObserver(
-            videoUri, true, videoObserver
-        )
-        context.contentResolver.registerContentObserver(
-            photoUri, true, photoObserver
-        )
+        context.contentResolver.registerContentObserver(videoUri, true, videoObserver)
+        context.contentResolver.registerContentObserver(photoUri, true, photoObserver)
     }
 
     private fun unregisterMediaObserver() {
@@ -65,7 +61,7 @@ class MediaStorageManager(private val context: Context) {
     private fun connectScanFileListener(
         paths: Array<String> = arrayOf(Environment.getExternalStorageDirectory().toString()),
         mimeTypes: Array<String>? = null,
-        client: OnScanCompletedListener? = OnScanCompletedListener { path, uri ->
+        client: OnScanCompletedListener? = OnScanCompletedListener { _, uri ->
             uri.toFile().notifyScanMediaFile(context)
         }
     ) {
@@ -82,54 +78,40 @@ class MediaStorageManager(private val context: Context) {
     private fun generatePhotoInfo(cursor: Cursor): MediaInfo? {
         val path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
         val name = path.getUrlLastName()
-        val parent =
-            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
-        val mimeType =
-            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE))
+        val parent = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
+        val mimeType = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE))
         val width = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.WIDTH))
         val height = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.HEIGHT))
         val size = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE))
-        val orientation =
-            cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.ORIENTATION))
-        val addData =
-            cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED))
-
+        val orientation = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.ORIENTATION))
+        val addData = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED))
         val parentPath = path.replace(name, "")
-
         if (filterListener != null) {
             if (!filterListener!!.onFilterPhoto(name)) return null
         }
-
-        return MediaInfo(name, path, parent, parentPath, mimeType, width, height, size, addData)
-            .apply {
-                this.orientation = orientation
-                this.isVideo = false
-            }
+        return MediaInfo(name, path, parent, parentPath, mimeType, width, height, size, addData).apply {
+            this.orientation = orientation
+            this.isVideo = false
+        }
     }
 
     private fun generateVideoInfo(cursor: Cursor): MediaInfo? {
         val path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
         val name = path.getUrlLastName()
-        val parent =
-            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.BUCKET_DISPLAY_NAME))
-        val mimeType =
-            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE))
+        val parent = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.BUCKET_DISPLAY_NAME))
+        val mimeType = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE))
         val size = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE))
         val id = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
         val width = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.WIDTH))
         val height = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.HEIGHT))
-        val resolution =
-            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.RESOLUTION))
-        val addData =
-            cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED))
-
+        val resolution = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.RESOLUTION))
+        val addData = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED))
         val duration = try {
             cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION))
         } catch (e: Exception) {
             logW("获取视频duration失败", TAG)
             0
         }
-
         val rotation = try {
             val mmr = MediaMetadataRetriever()
             mmr.setDataSource(path)
@@ -138,14 +120,11 @@ class MediaStorageManager(private val context: Context) {
             logW("获取视频rotation失败", TAG)
             0
         }
-
         val parentPath = path.replace(name, "")
-
         if (filterListener != null) {
             if (!filterListener!!.onFilterVideo(name)) return null
         }
-
-        val thumbCursor: Cursor? = context.contentResolver.query(
+        val thumbCursor = context.contentResolver.query(
             MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI,
             arrayOf(MediaStore.Video.Thumbnails.DATA, MediaStore.Video.Thumbnails.VIDEO_ID),
             "${MediaStore.Video.Thumbnails.VIDEO_ID}=?",
@@ -160,9 +139,7 @@ class MediaStorageManager(private val context: Context) {
             }
             thumbCursor.tryClose()
         }
-
-        return MediaInfo(name, path, parent, parentPath, mimeType, width, height, size, addData)
-            .apply {
+        return MediaInfo(name, path, parent, parentPath, mimeType, width, height, size, addData).apply {
                 this.duration = duration
                 this.resolution = resolution
                 this.rotation = rotation
