@@ -122,7 +122,7 @@ fun File.toRectBitmap(
     recycle: Boolean = false
 ): Bitmap? {
     if (!exists()) return null
-    if (newWidth.isNullOrZero() || newHeight.isNullOrZero()) return toBitmap(quality)
+    if (newWidth.orZero() == 0 || newHeight.orZero() == 0) return toBitmap(quality)
     return toBitmap(quality)?.scale(newWidth!!, newHeight!!, recycle)
 }
 
