@@ -340,10 +340,8 @@ fun Context.openFile(file: File) {
  * 获取本地文件uri
  * */
 fun Context.getLocalFileUri(file: File): Uri =
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-        FileProvider.getUriForFile(this, packageName + FILEPROVIDER, file)
-    else
-        Uri.fromFile(file)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) FileProvider.getUriForFile(this, packageName + FILEPROVIDER, file)
+    else Uri.fromFile(file)
 
 /**
  * 获取本地文件通过uri

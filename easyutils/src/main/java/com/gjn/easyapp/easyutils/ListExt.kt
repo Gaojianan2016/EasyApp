@@ -2,6 +2,11 @@ package com.gjn.easyapp.easyutils
 
 
 /**
+ * 是否是非空集合
+ * */
+inline fun <T> Collection<T>?.isNotEmptyCollection() = orEmpty().isNotEmpty()
+
+/**
  * 列表需要大于1
  * */
 inline fun <T> Collection<T>.isList(): Boolean = isNotEmpty() && size > 1

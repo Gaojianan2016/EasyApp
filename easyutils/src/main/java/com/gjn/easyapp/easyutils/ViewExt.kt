@@ -3,6 +3,7 @@ package com.gjn.easyapp.easyutils
 import android.app.Activity
 import android.content.Context
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.TextUtils
 import android.text.method.HideReturnsTransformationMethod
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.annotation.StyleRes
 import androidx.core.app.ActivityCompat
 import androidx.core.view.*
@@ -70,6 +72,18 @@ inline fun Array<out View?>.visible() {
 
 inline fun Array<out View?>.invisible() {
     forEach { it?.invisible() }
+}
+
+inline fun Array<out View?>.setBackgroundDrawable(drawable: Drawable?) {
+    forEach { it?.background = drawable }
+}
+
+inline fun Array<out View?>.setBackgroundResource(@DrawableRes resId: Int) {
+    forEach { it?.setBackgroundResource(resId) }
+}
+
+inline fun Array<out TextView?>.setSelected(selected: Boolean) {
+    forEach { it?.isSelected = selected }
 }
 
 fun View.enabled() {

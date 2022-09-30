@@ -1,13 +1,9 @@
 package com.gjn.easyapp.easyutils
 
 import android.app.Application
-import android.graphics.Color
-import android.graphics.Paint
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
-import java.io.File
 import kotlin.math.asin
 import kotlin.math.cos
 import kotlin.math.sin
@@ -25,21 +21,15 @@ fun Double.intervalOpen(min: Double, max: Double) = min.coerceAtLeast(this.coerc
 // (x, y)
 fun Long.intervalOpen(min: Long, max: Long) = min.coerceAtLeast(this.coerceAtMost(max))
 
-fun Int?.isNotNullOrZero() = !isNullOrZero()
+fun Int?.orZero(): Int = this ?: 0
 
-fun Float?.isNotNullOrZero() = !isNullOrZero()
+fun Float?.orZero(): Float = this ?: 0f
 
-fun Double?.isNotNullOrZero() = !isNullOrZero()
+fun Double?.orZero(): Double = this ?: 0.0
 
-fun Long?.isNotNullOrZero() = !isNullOrZero()
+fun Long?.orZero(): Long = this ?: 0L
 
-fun Int?.isNullOrZero() = this == null || this == 0
-
-fun Float?.isNullOrZero() = this == null || this == 0f
-
-fun Double?.isNullOrZero() = this == null || this == 0.0
-
-fun Long?.isNullOrZero() = this == null || this == 0L
+fun Boolean?.isTrue() = this == true
 
 /**
  * 创建ViewModel对象
@@ -112,4 +102,10 @@ fun <T> List<T?>?.toMutableListOrEmptyList(): MutableList<T> {
  * 单选position
  * */
 fun singleChoicePosition(cur: Int, change: Int, default: Int = -1) =
+    if (cur == change) default else change
+
+/**
+ * 单选字符串
+ * */
+fun singleChoiceString(cur: String, change: String, default: String = "") =
     if (cur == change) default else change

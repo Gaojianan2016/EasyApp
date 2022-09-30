@@ -1,5 +1,8 @@
 package com.gjn.easyapp.easyutils
 
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -43,7 +46,7 @@ fun String?.formatJson(
 
 private fun StringBuilder.addTab(line: Int) {
     for (i in 0 until line) {
-        append('\t')
+        append("  ")
     }
 }
 
@@ -60,4 +63,27 @@ fun String?.isJsonStr(): Boolean {
     } catch (e: Exception) {
         false
     }
+}
+
+/**
+ * Any转json
+ * */
+fun Any?.toGsonJson(): String = Gson().toJson(this)
+
+/**
+ * Gson 解析字符串 返回对象
+ * */
+fun <T> String.fromGsonJson(clazz: Class<T>): T = Gson().fromJson(this, clazz)
+
+/**
+ * Gson 解析字符串 返回数组
+ * */
+fun <T> String.fromGsonJsonList(clazz: Class<T>): List<T> {
+    val gson = Gson()
+    val list = mutableListOf<T>()
+    val jsonList = gson.fromJson<List<JsonObject>>(this, object : TypeToken<List<JsonObject>>() {}.type)
+    jsonList.forEach {
+        list.add(gson.fromJson(it, clazz))
+    }
+    return list
 }

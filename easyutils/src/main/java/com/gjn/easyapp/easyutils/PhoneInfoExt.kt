@@ -117,6 +117,11 @@ fun phoneBrand(): String {
 fun phoneModel(): String = Build.MODEL
 
 /**
+ * 手机制造商
+ * */
+fun phoneManufacturer(): String = Build.MANUFACTURER
+
+/**
  * 手机rom
  * */
 object PhoneRom {

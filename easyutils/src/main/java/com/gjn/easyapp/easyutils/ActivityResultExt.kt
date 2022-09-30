@@ -123,14 +123,11 @@ fun FragmentActivity.quickActivityResult(
     block: (Int, Intent?) -> Unit
 ) {
     try {
-        ActivityResultHelper.newInstance(this)
-            .startActivityForResult(
-                intent, extras,
-                object : ActivityResultHelper.SimpleActivityResultListener() {
-                    override fun onActivityResult(resultCode: Int, data: Intent?) {
-                        block.invoke(resultCode, data)
-                    }
-                })
+        ActivityResultHelper.newInstance(this).startActivityForResult(intent, extras, object : ActivityResultHelper.SimpleActivityResultListener() {
+            override fun onActivityResult(resultCode: Int, data: Intent?) {
+                block.invoke(resultCode, data)
+            }
+        })
     } catch (e: Exception) {
         e.printStackTrace()
     }
@@ -145,14 +142,11 @@ fun Fragment.quickActivityResult(
     block: (Int, Intent?) -> Unit
 ) {
     try {
-        ActivityResultHelper.newInstance(this)
-            .startActivityForResult(
-                intent, extras,
-                object : ActivityResultHelper.SimpleActivityResultListener() {
-                    override fun onActivityResult(resultCode: Int, data: Intent?) {
-                        block.invoke(resultCode, data)
-                    }
-                })
+        ActivityResultHelper.newInstance(this).startActivityForResult(intent, extras, object : ActivityResultHelper.SimpleActivityResultListener() {
+            override fun onActivityResult(resultCode: Int, data: Intent?) {
+                block.invoke(resultCode, data)
+            }
+        })
     } catch (e: Exception) {
         e.printStackTrace()
     }

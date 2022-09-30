@@ -11,6 +11,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.util.concurrent.TimeUnit
 
 class DownLoadManager(private val activity: FragmentActivity) {
 
@@ -18,7 +19,15 @@ class DownLoadManager(private val activity: FragmentActivity) {
         private set
     var onDownLoadListener: OnDownLoadListener? = null
 
-    private val mOkHttpClient = OkHttpClient()
+    var mOkHttpClient = OkHttpClient.Builder()
+        .connectTimeout(30L, TimeUnit.SECONDS)
+        .readTimeout(30L, TimeUnit.SECONDS)
+        .writeTimeout(30L, TimeUnit.SECONDS)
+        .sslSocketFactory(HttpsUtils.createSSLSocketFactory()!!, HttpsUtils.mX509TrustManager)
+        .hostnameVerifier(HttpsUtils.mHostnameVerifier)
+        .addInterceptor(RetrofitManager.LoggingInterceptor())
+        .build()
+
     private var mCall: Call? = null
 
     //停止下载 会改变下载状态

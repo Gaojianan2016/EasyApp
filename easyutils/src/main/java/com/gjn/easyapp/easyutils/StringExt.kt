@@ -9,6 +9,16 @@ import androidx.annotation.ColorInt
 import java.util.*
 
 /**
+ * 字符串Null或Empty 执行block
+ * */
+fun String?.ifNullOrEmpty(block: () -> String): String = orEmpty().ifEmpty { block.invoke() }
+
+/**
+ * 字符串Null或Empty 返回value
+ * */
+fun String?.orValue(value: String): String = ifNullOrEmpty { value }
+
+/**
  * 生成UUID随机数字符串
  * */
 inline val randomUUIDString: String
@@ -94,12 +104,12 @@ fun Long.byteToStr(): String = when {
 /**
  * 隐藏手机号码 177****1234
  * */
-fun String.hidePhone(): String = hideSubstring(3, 4)
+fun String.hidePhone() = hideSubstring(3, 4)
 
 /**
  * 隐藏姓名 张*良 张*
  * */
-fun String.hideName(): String = hideSubstring()
+fun String.hideName() = hideSubstring()
 
 /**
  * 隐藏中间字段
@@ -129,7 +139,7 @@ fun String.hideSubstring(start: Int = 1, end: Int = 1): String {
 /**
  * 获取url最后一个/后的名字
  * */
-fun String.getUrlLastName(): String =
+fun String.getUrlLastName() =
     toUri().lastPathSegment ?: substring(lastIndexOf('/') + 1)
 
 /**
@@ -140,7 +150,7 @@ fun String.removeLast() = if (isEmpty()) this else substring(0, length - 1)
 /**
  * 设置省略文本
  * */
-fun String.setOmittedText(max: Int, suffix: String = "..."): String =
+fun String.setOmittedText(max: Int, suffix: String = "...") =
     if (isNullOrEmpty() || length < max) this else substring(0, max) + suffix
 
 /**

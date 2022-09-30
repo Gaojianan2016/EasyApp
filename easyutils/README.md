@@ -432,6 +432,9 @@ String.getComponentIntent 包名获取组件 Intent
 ```
 String?.formatJson json 格式化
 String?.isJsonStr 是否是json字符串
+Any?.toGsonJson obj转json字符串
+String.fromGsonJson json字符串通过gson转obj
+String.fromGsonJsonList json字符串通过gson转list列表
 ```
 
 ## KeyboardExt
@@ -453,6 +456,7 @@ Activity.fixAndroidBug5497 修复软键盘bug
 
 ## ListExt
 ```
+Collection<T>?.isNotEmptyCollection 是否是非空集合
 *.isList 列表需要大于1
 *.isLimitSize 最多不超过设置数量
 String.split2List 分割字符串成列表
@@ -538,6 +542,7 @@ getSerial 获取序列号
 isPhoneRom 是否是特定品牌的手机
 phoneBrand 手机品牌
 phoneModel 手机型号
+phoneManufacturer 手机制造商
 ```
 
 ## QRCodeExt
@@ -669,6 +674,9 @@ Char.isEmoji 是否是emoji字符
 
 Long.byteToStr 字节转gb mb kb字符串
 
+String?.ifNullOrEmpty 字符串为空执行block
+String?.orValue 字符串为空返回value值
+
 String.hidePhone 隐藏手机号码
 String.hideName 隐藏姓名
 String.hideSubstring 隐藏中间字段
@@ -727,6 +735,21 @@ createGregorianCalendar 创建阳历
 UnitObj 一些常用单位对象
 ```
 
+## UtilsExt
+```
+*.intervalOpen 开区间
+*?.orZero 为空转为0
+Boolean?.isTrue 是否为true
+
+coordinateDistance 计算地球坐标两点距离
+
+Map<K, V>?.toHashMap 将map中数据为空的字段剔除掉
+List<T?>?.toMutableListOrEmptyList 将list中数据为空的字段剔除掉
+
+singleChoicePosition 单选Int数值
+singleChoiceString 单选字符串
+```
+
 ## UriExt
 ```
 //媒体uri地址
@@ -763,9 +786,15 @@ View/Array.visible
 View/Array.invisible
 View/Array.gone
 
+//设置背景相关
+View/Array.setBackgroundDrawable
+View/Array.setBackgroundResource
+
 //可用相关
 View.enabled
 View.disable
+
+View/Array.setSelected
 
 Context.isLayoutRtl 是否是RTL布局
 ViewGroup.findChildViewByResourceName 获取子视图 按资源名称

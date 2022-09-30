@@ -12,7 +12,6 @@ import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easyutils.*
 import kotlinx.android.synthetic.main.activity_demo.*
-import kotlinx.android.synthetic.main.fragment_a1.view.*
 import kotlinx.coroutines.delay
 import java.io.FileFilter
 import java.util.*
