@@ -1,6 +1,5 @@
 package com.gjn.easyapp.easydialoger
 
-import android.text.Editable
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
@@ -50,20 +49,14 @@ class EasyDialogFragment : BaseDialogFragment() {
             return newInstance(resId, null as ConvertLayoutDialogFragment)
         }
 
-        fun newInstance(
-            @LayoutRes resId: Int,
-            layoutConvert: ConvertLayoutDialogFragment?
-        ): EasyDialogFragment {
+        fun newInstance(@LayoutRes resId: Int, layoutConvert: ConvertLayoutDialogFragment?): EasyDialogFragment {
             val dialogFragment = EasyDialogFragment()
             dialogFragment.layoutResId = resId
             dialogFragment.layoutConvert = layoutConvert
             return dialogFragment
         }
 
-        fun newInstance(
-            @LayoutRes resId: Int,
-            dataBindingConvert: ConvertDataBindingDialogFragment?
-        ): EasyDialogFragment {
+        fun newInstance(@LayoutRes resId: Int, dataBindingConvert: ConvertDataBindingDialogFragment?): EasyDialogFragment {
             val dialogFragment = EasyDialogFragment()
             dialogFragment.dataBindingResId = resId
             dialogFragment.dataBindingConvert = dataBindingConvert

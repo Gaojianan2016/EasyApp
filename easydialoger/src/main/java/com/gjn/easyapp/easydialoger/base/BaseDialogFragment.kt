@@ -27,6 +27,7 @@ abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragmen
     var isMatchHeight: Boolean = false
 
     private var onDialogCancelListeners: MutableList<OnDialogCancelListener>? = null
+    private var onDialogDismissListeners: MutableList<OnDialogDismissListener>? = null
 
     abstract fun createDialogBuilder(): AlertDialog.Builder?
 
@@ -103,6 +104,11 @@ abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragmen
         }
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onDialogDismissListeners?.forEach { it.onDismiss(dialog, this) }
+    }
+
     override fun onCancel(dialog: DialogInterface) {
         onDialogCancelListeners?.forEach { it.onCancel(dialog, this) }
     }
@@ -114,8 +120,27 @@ abstract class BaseDialogFragment : DialogFragment(), ConvertLayoutDialogFragmen
         onDialogCancelListeners?.add(listener)
     }
 
+    fun removeOnDialogCancelListener(listener: OnDialogCancelListener) {
+        onDialogCancelListeners?.remove(listener)
+    }
+
     fun clearOnDialogCancelListeners() {
         onDialogCancelListeners?.clear()
+    }
+
+    fun addOnDialogDismissListener(listener: OnDialogDismissListener) {
+        if (onDialogDismissListeners == null) {
+            onDialogDismissListeners = mutableListOf()
+        }
+        onDialogDismissListeners?.add(listener)
+    }
+
+    fun removeOnDialogDismissListener(listener: OnDialogDismissListener) {
+        onDialogDismissListeners?.remove(listener)
+    }
+
+    fun clearOnDialogDismissListeners() {
+        onDialogDismissListeners?.clear()
     }
 
     companion object {

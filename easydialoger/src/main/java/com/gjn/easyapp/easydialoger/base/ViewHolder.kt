@@ -25,11 +25,8 @@ class ViewHolder private constructor(var view: View?) {
     companion object {
         fun create(view: View?): ViewHolder = ViewHolder(view)
 
-        fun create(
-            context: Context?,
-            @LayoutRes resource: Int,
-            root: ViewGroup?
-        ): ViewHolder = create(context.inflate(resource, root, false))
+        fun create(context: Context?, @LayoutRes resource: Int, root: ViewGroup?): ViewHolder =
+            create(context.inflate(resource, root, false))
     }
 }
 
@@ -38,11 +35,7 @@ class DataBindingHolder private constructor(var dataBinding: ViewDataBinding) {
     companion object {
         fun create(dataBinding: ViewDataBinding): DataBindingHolder = DataBindingHolder(dataBinding)
 
-        fun create(
-            context: Context?,
-            @LayoutRes resource: Int,
-            root: ViewGroup?
-        ): DataBindingHolder {
+        fun create(context: Context?, @LayoutRes resource: Int, root: ViewGroup?): DataBindingHolder {
             val binding: ViewDataBinding = context.inflateDataBindingUtil(resource, root, false)
             return create(binding)
         }

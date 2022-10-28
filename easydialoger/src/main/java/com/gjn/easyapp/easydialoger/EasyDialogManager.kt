@@ -222,10 +222,7 @@ class EasyDialogManager {
 
     fun showBigLoadingDialog(): BaseDialogFragment? = showEasyLoadingDialog(LOADING_B)
 
-    fun showEasyLoadingDialog(
-        size: Int,
-        dimAmount: Float = BaseDialogFragment.DIM_AMOUNT
-    ): BaseDialogFragment? {
+    fun showEasyLoadingDialog(size: Int, dimAmount: Float = BaseDialogFragment.DIM_AMOUNT): BaseDialogFragment? {
         mActivity?.let {
             val edge = when (size) {
                 LOADING_B -> it.screenWidth / LOADING_B

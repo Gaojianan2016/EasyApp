@@ -18,6 +18,10 @@ interface OnDialogCancelListener {
     fun onCancel(dialog: DialogInterface, dialogFragment: DialogFragment)
 }
 
+interface OnDialogDismissListener {
+    fun onDismiss(dialog: DialogInterface, dialogFragment: DialogFragment)
+}
+
 fun simpleLayoutDialog(
     @LayoutRes resId: Int,
     block: (View?, DialogFragment) -> Unit
