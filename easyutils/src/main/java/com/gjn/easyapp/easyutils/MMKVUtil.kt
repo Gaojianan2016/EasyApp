@@ -48,24 +48,26 @@ class MMKVUtil private constructor(private val mmkv: MMKV) {
         if (key.isEmpty() || defaultValue == null) return null
 
         return when (defaultValue) {
+            is String -> decodeString(key, defaultValue)
+
             // Scalars
-            is Boolean -> mmkv.decodeBool(key, defaultValue)
-            is Double -> mmkv.decodeDouble(key, defaultValue)
-            is Float -> mmkv.decodeFloat(key, defaultValue)
-            is Int -> mmkv.decodeInt(key, defaultValue)
-            is Long -> mmkv.decodeLong(key, defaultValue)
+            is Boolean -> decodeBool(key, defaultValue)
+            is Double -> decodeDouble(key, defaultValue)
+            is Float -> decodeFloat(key, defaultValue)
+            is Int -> decodeInt(key, defaultValue)
+            is Long -> decodeLong(key, defaultValue)
 
             // References
-            is Parcelable -> mmkv.decodeParcelable(key, defaultValue as Class<Parcelable>?)
+            is Parcelable -> decodeParcelable(key, defaultValue as Class<Parcelable>?)
 
             // Scalar arrays
-            is ByteArray -> mmkv.decodeBytes(key, defaultValue)
+            is ByteArray -> decodeBytes(key, defaultValue)
 
             // Reference set
             is Set<*> -> {
                 val componentType = defaultValue.javaClass.componentType!!
                 if (String::class.java.isAssignableFrom(componentType)) {
-                    mmkv.decodeStringSet(key, defaultValue as Set<String>)
+                    decodeStringSet(key, defaultValue as Set<String>)
                 } else {
                     val valueType = componentType.canonicalName
                     throw IllegalArgumentException(
@@ -96,10 +98,10 @@ class MMKVUtil private constructor(private val mmkv: MMKV) {
     fun decodeLong(key: String, defaultValue: Long = 0): Long =
         mmkv.decodeLong(key, defaultValue)
 
-    fun decodeBytes(key: String): ByteArray =
-        mmkv.decodeBytes(key)
+    fun decodeBytes(key: String, defaultValue: ByteArray? = null): ByteArray =
+        mmkv.decodeBytes(key, defaultValue)
 
-    fun decodeStringSet(key: String, defaultValue: Set<String> = emptySet()): Set<String> =
+    fun decodeStringSet(key: String, defaultValue: Set<String>? = null): Set<String> =
         mmkv.decodeStringSet(key, defaultValue)
 
     fun <T : Parcelable> decodeParcelable(key: String, clazz: Class<T>?): T? =
