@@ -73,6 +73,7 @@ private fun Char.hex2Dec(): Int {
 /**
  * Bytes to Parcelable
  * */
+@Suppress("UNCHECKED_CAST")
 fun <T> ByteArray?.toParcelable(creator: Parcelable.Creator<T>): T?{
     if (this == null) return null
     val parcel = Parcel.obtain()

@@ -13,6 +13,7 @@ class ViewHolder private constructor(var view: View?) {
 
     private val views: SparseArray<View> = SparseArray()
 
+    @Suppress("UNCHECKED_CAST")
     fun <T : View?> findViewById(id: Int): T? {
         var idView = views[id]
         if (idView == null) {

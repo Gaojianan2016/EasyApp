@@ -10,6 +10,8 @@ class MMKVUtil private constructor(private val mmkv: MMKV) {
         val key = pair.first
         val value = pair.second ?: return
         when (value) {
+            is String -> mmkv.encode(key, value)
+
             // Scalars
             is Boolean -> mmkv.encode(key, value)
             is Double -> mmkv.encode(key, value)
