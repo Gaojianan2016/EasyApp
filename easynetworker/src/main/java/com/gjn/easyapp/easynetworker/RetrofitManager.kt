@@ -45,10 +45,20 @@ object RetrofitManager {
     fun <T> create(clazz: Class<T>, url: String, client: OkHttpClient = okHttpClient): T =
         create(
             clazz, url, client,
-            arrayOf(
+            converterFactoryArray = arrayOf(
                 //添加自动过滤gson解析失败异常
                 GsonConverterFactory.create(GsonBuilder().registerTypeAdapterFactory(GsonTypeAdapterFactory()).create())
             )
+        )
+
+    fun <T> create(clazz: Class<T>, url: String, interceptorArray: Array<Interceptor> = arrayOf()): T =
+        create(
+            clazz, url,
+            converterFactoryArray = arrayOf(
+                //添加自动过滤gson解析失败异常
+                GsonConverterFactory.create(GsonBuilder().registerTypeAdapterFactory(GsonTypeAdapterFactory()).create())
+            ),
+            interceptorArray = interceptorArray
         )
 
     fun <T> create(
@@ -59,6 +69,27 @@ object RetrofitManager {
         callAdapterFactoryArray: Array<CallAdapter.Factory> = arrayOf(),
     ): T {
         val builder = Retrofit.Builder().baseUrl(url).client(client)
+        converterFactoryArray.forEach { builder.addConverterFactory(it) }
+        callAdapterFactoryArray.forEach { builder.addCallAdapterFactory(it) }
+        return builder.build().create(clazz)
+    }
+
+    fun <T> create(
+        clazz: Class<T>,
+        url: String,
+        converterFactoryArray: Array<Converter.Factory> = arrayOf(),
+        callAdapterFactoryArray: Array<CallAdapter.Factory> = arrayOf(),
+        interceptorArray: Array<Interceptor> = arrayOf(),
+    ): T {
+        val clientBuilder = OkHttpClient.Builder()
+            .connectTimeout(30L, TimeUnit.SECONDS)
+            .readTimeout(30L, TimeUnit.SECONDS)
+            .writeTimeout(30L, TimeUnit.SECONDS)
+            .sslSocketFactory(HttpsUtils.createSSLSocketFactory()!!, HttpsUtils.mX509TrustManager)
+            .hostnameVerifier(HttpsUtils.mHostnameVerifier)
+            .addInterceptor(LoggingInterceptor())
+        interceptorArray.forEach { clientBuilder.addInterceptor(it) }
+        val builder = Retrofit.Builder().baseUrl(url).client(clientBuilder.build())
         converterFactoryArray.forEach { builder.addConverterFactory(it) }
         callAdapterFactoryArray.forEach { builder.addCallAdapterFactory(it) }
         return builder.build().create(clazz)
@@ -88,6 +119,52 @@ object RetrofitManager {
         }
     }
 
+    fun requestBodyStr(request: Request): String {
+        val bodyBuilder = StringBuilder()
+        request.body?.let {
+            if (it is FormBody) {
+                for (i in 0 until it.size) {
+                    bodyBuilder.append("${it.encodedName(i)} = ${it.encodedValue(i)}\n")
+                }
+            } else {
+                val buffer = Buffer()
+                it.writeTo(buffer)
+                if (isPlaintext(buffer)) {
+                    val charset = it.contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8
+                    bodyBuilder.append(buffer.readString(charset)).append("\n")
+                }
+            }
+        }
+        return bodyBuilder.toString()
+    }
+
+    fun responseBodyStr(response: Response, ignoreLogUrArray: Array<String>): String {
+        val bodyBuilder = StringBuilder()
+        ignoreLogUrArray.forEach {
+            if (response.request.url.toString().contains(it)) {
+                return "ignore Log"
+            }
+        }
+        if (response.body == null) {
+            return "no Body"
+        }
+        response.body?.let {
+            val source = it.source()
+            source.request(Long.MAX_VALUE)
+            val buffer = source.buffer
+            if (isPlaintext(buffer)) {
+                val charset = it.contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8
+                val result = buffer.clone().readString(charset)
+                if (result.isJsonStr()) {
+                    bodyBuilder.append(result.formatJson())
+                } else {
+                    bodyBuilder.append(result)
+                }
+            }
+        }
+        return bodyBuilder.toString()
+    }
+
     class LoggingInterceptor : Interceptor {
 
         @Throws(IOException::class)
@@ -102,7 +179,7 @@ object RetrofitManager {
             customInterceptorListener?.getResponse(response)
             val t2 = System.nanoTime()
 
-            log("${printRequest(request)}${printResponse(response, t1, t2)}")
+            log("${printRequest(request)}${printResponseHeader(response, t1, t2)}")
             if (printBody) {
                 log("${request.url}\n${printResponseBody(response)}")
             }
@@ -135,7 +212,7 @@ object RetrofitManager {
             return log.toString()
         }
 
-        private fun printResponse(response: Response, startTime: Long, endTime: Long): String {
+        private fun printResponseHeader(response: Response, startTime: Long, endTime: Long): String {
             val log = StringBuilder()
             log.append("--> ${response.code} ${(endTime - startTime) / 1e6}ms\n")
             log.append("----------Response HEAD----------\n")

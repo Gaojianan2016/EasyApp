@@ -32,7 +32,6 @@ fun simpleLayoutDialog(
         }
     })
 
-@Suppress("UNCHECKED_CAST")
 fun <T> simpleDataBindingDialog(
     @LayoutRes resId: Int,
     block: (T, DialogFragment) -> Unit
