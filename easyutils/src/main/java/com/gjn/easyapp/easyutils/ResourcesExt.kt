@@ -97,8 +97,8 @@ fun Context.assetsStr(fileName: String): String {
  * */
 fun Context.assetsCopyFile(fileName: String, target: File): Boolean {
     if (fileName.isEmpty()) return false
-    if (!target.createNewFile()) return false
     return try {
+        if (!target.createNewFile()) return false
         assets.open(fileName).copyTo(target.outputStream())
         true
     } catch (e: Exception) {
@@ -125,8 +125,8 @@ fun Context.rawStr(@RawRes resId: Int): String =
  * 复制raw file
  * */
 fun Context.rawCopyFile(@RawRes resId: Int, target: File): Boolean {
-    if (!target.createNewFile()) return false
     return try {
+        if (!target.createNewFile()) return false
         resources.openRawResource(resId).copyTo(target.outputStream())
         true
     } catch (e: Exception) {

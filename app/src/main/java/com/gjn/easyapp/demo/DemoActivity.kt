@@ -487,7 +487,13 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
             quickRequestPermissions(arrayOf(Manifest.permission.READ_PHONE_STATE)) {
                 println("getDeviceId ${mActivity.getDeviceId()}")
-                println("getSerial ${getSerial()}")
+                try {
+                    val sn = getSerial()
+                    println("getSerial $sn")
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    println("getSerial 未知")
+                }
             }
         }
 
@@ -508,20 +514,25 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn42_ad.click {
-            println("get status_bar_height ${mActivity.getSystemDimenIdentifier("status_bar_height")}")
-            println("get ic_launcher_background ${mActivity.getAppDrawableIdentifier("ic_launcher_background")}")
-            println("get anim_bottom_in ${mActivity.getAppAnimIdentifier("anim_bottom_in")}")
-            println("get network_security_config ${mActivity.getAppXmlIdentifier("network_security_config")}")
+            requestWRPermission {
+                try {
+                    println("get status_bar_height ${mActivity.getSystemDimenIdentifier("status_bar_height")}")
+                    println("get ic_launcher_background ${mActivity.getAppDrawableIdentifier("ic_launcher_background")}")
+                    println("get anim_bottom_in ${mActivity.getAppAnimIdentifier("anim_bottom_in")}")
+                    println("get network_security_config ${mActivity.getAppXmlIdentifier("network_security_config")}")
 
-            val file =
-                "${Environment.getExternalStorageDirectory()}/aA_test/assetsFile.txt".toFile()
-            val file2 = "${Environment.getExternalStorageDirectory()}/aA_test/rawFile.txt".toFile()
+                    val file = "${Environment.getExternalStorageDirectory()}/aA_test/assetsFile.txt".toFile()
+                    val file2 = "${Environment.getExternalStorageDirectory()}/aA_test/rawFile.txt".toFile()
 
-            println("assetsStr ${mActivity.assetsStr("test_file.txt")}")
-            println("assetsCopyFile ${mActivity.assetsCopyFile("test_file.txt", file)}")
+                    println("assetsStr ${mActivity.assetsStr("test_file.txt")}")
+                    println("assetsCopyFile ${mActivity.assetsCopyFile("test_file.txt", file)}")
 
-            println("rawStr ${mActivity.rawStr(R.raw.test_raw)}")
-            println("rawCopyFile ${mActivity.rawCopyFile(R.raw.test_raw, file2)}")
+                    println("rawStr ${mActivity.rawStr(R.raw.test_raw)}")
+                    println("rawCopyFile ${mActivity.rawCopyFile(R.raw.test_raw, file2)}")
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
 
         btn43_ad.click {

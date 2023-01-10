@@ -17,19 +17,15 @@ fun Context.isDevicePhone() = telephonyManager.phoneType != TelephonyManager.PHO
  * */
 @SuppressLint("MissingPermission", "HardwareIds")
 @RequiresPermission(READ_PHONE_STATE)
+@Throws(Exception::class)
 fun Context.getDeviceId(): String =
-    try {
-        when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> "Unknown DeviceId"
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                if (telephonyManager.imei.isNullOrEmpty()) telephonyManager.meid ?: "Unknown DeviceId"
-                else telephonyManager.imei ?: "Unknown DeviceId"
-            }
-            else -> telephonyManager.deviceId ?: "Unknown DeviceId"
+    when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> "Unknown DeviceId"
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+            if (telephonyManager.imei.isNullOrEmpty()) telephonyManager.meid ?: "Unknown DeviceId"
+            else telephonyManager.imei ?: "Unknown DeviceId"
         }
-    } catch (e: Exception) {
-        e.printStackTrace()
-        "Unknown DeviceId"
+        else -> telephonyManager.deviceId ?: "Unknown DeviceId"
     }
 
 /**
@@ -37,16 +33,11 @@ fun Context.getDeviceId(): String =
  * */
 @SuppressLint("MissingPermission", "HardwareIds")
 @RequiresPermission(READ_PHONE_STATE)
+@Throws(Exception::class)
 fun getSerial(): String =
-    try {
-        when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> Build.getSerial()
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> Build.getSerial()
-            else -> Build.SERIAL
-        }
-    } catch (e: Exception) {
-        e.printStackTrace()
-        "Unknown Serial"
+    when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> Build.getSerial()
+        else -> Build.SERIAL
     }
 
 /**
