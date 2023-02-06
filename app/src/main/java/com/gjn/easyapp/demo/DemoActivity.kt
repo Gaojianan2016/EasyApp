@@ -25,6 +25,9 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
     override fun initView() {
         val bmp = mActivity.toBitmap(R.mipmap.test_img)
 
+        println("TimeZone ${TimeZone.getDefault()}")
+        println("TimeZone displayName ${TimeZone.getDefault().displayName}")
+
         btn1_ad.click {
             //id动画
 //            mActivity.startActivity<ImageActivity>(enterResId = R.anim.anim_bottom_in, exitResId = R.anim.anim_bottom_out)
@@ -278,31 +281,27 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
         btn28_ad.click {
-            val file =
-                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".toFile()
+            val file = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".toFile()
 
             println("file createOrExistsFile ${file.createOrExistsFile()}")
 //            println("file createFile ${file.createfile}")
         }
 
         btn29_ad.click {
-            val file =
-                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".toFile()
+            val file = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".toFile()
 
             println("file deleteFile ${file.deleteFile()}")
         }
 
         btn30_ad.click {
-            val file =
-                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".toFile()
+            val file = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".toFile()
 
             println("file rename ${file.rename("text2.txt")}")
         }
 
         btn31_ad.click {
             val dir = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test".toFile()
-            val file =
-                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".toFile()
+            val file = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".toFile()
             println("dir absolutePath ${dir.absolutePath}")
             println("file absolutePath ${file.absolutePath}")
 
@@ -312,6 +311,8 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("file isAvailableDir ${file.isAvailableDir()}")
             println("file isAvailableFile ${file.isAvailableFile()}")
 
+            println("file actualName ${file.actualFileName}")
+            println("file suffix ${file.suffix}")
             println("file mimeType ${file.mimeType}")
             println("file extension ${file.extension}")
 
@@ -327,20 +328,11 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
                 println("list dir -> " + it.path)
             }
 
-            val file3 =
-                "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text_副本.txt".toFile()
+            val file3 = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text_副本.txt".toFile()
             println("${file3.name} fileLength ${file3.getFileLength().byteToStr()}")
 
-            println(
-                "externalDir statFsTotalSize ${
-                    Environment.getExternalStorageDirectory().getStatFsTotalSize().byteToStr()
-                }"
-            )
-            println(
-                "externalDir statFsAvailableSize ${
-                    Environment.getExternalStorageDirectory().getStatFsAvailableSize().byteToStr()
-                }"
-            )
+            println("externalDir statFsTotalSize ${Environment.getExternalStorageDirectory().getStatFsTotalSize().byteToStr()}")
+            println("externalDir statFsAvailableSize ${Environment.getExternalStorageDirectory().getStatFsAvailableSize().byteToStr()}")
         }
 
         btn32_ad.click {
@@ -606,32 +598,49 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
             println("isToday ${day7.isToday()}")
             println("getNowTimeString ${getNowTimeString()}")
+            println("getNowTimeString UTC ${getNowTimeString(timeZone = TimeZone.getTimeZone("UTC"))}")
+            println("getNowTimeString GMT ${getNowTimeString(timeZone = TimeZone.getTimeZone("GMT"))}")
 
             val now = Calendar.getInstance().timeInMillis
 
-            val time0 = now - UnitObj.TIME_SECONDS_MILLIS
-            val time1 = now - UnitObj.TIME_MINUTE_MILLIS
-            val time2 = now - UnitObj.TIME_MINUTE_MILLIS * 4
-            val time3 = now - UnitObj.TIME_HOUR_MILLIS
-            val time4 = now - UnitObj.TIME_HOUR_MILLIS * 2
-            val time5 = now - UnitObj.TIME_DAY_MILLIS
-            val time6 = now - UnitObj.TIME_HOUR_MILLIS * 22
-            val time7 = now - UnitObj.TIME_DAY_MILLIS * 5
+            val time0 = now - 1.secondsMillis
+            val time1 = now - 1.minuteMillis
+            val time2 = now - 4.minuteMillis
+            val time3 = now - 1.hourMillis
+            val time4 = now - 2.hourMillis
+            val time5 = now - 1.daysMillis
+            val time6 = now - 22.hourMillis
+            val time7 = now - 5.daysMillis
 
-            println("----> ${time0.nowTimeDifference()}")
-            println("----> ${time1.nowTimeDifference()}")
-            println("----> ${time2.nowTimeDifference()}")
-            println("----> ${time3.nowTimeDifference()}")
-            println("----> ${time4.nowTimeDifference()}")
-            println("----> ${time5.nowTimeDifference()}")
-            println("----> ${time6.nowTimeDifference()}")
-            println("----> ${time7.nowTimeDifference()}")
+            println("time----> ${time0.nowTimeDifference()}")
+            println("time----> ${time1.nowTimeDifference()}")
+            println("time----> ${time2.nowTimeDifference()}")
+            println("time----> ${time3.nowTimeDifference()}")
+            println("time----> ${time4.nowTimeDifference()}")
+            println("time----> ${time5.nowTimeDifference()}")
+            println("time----> ${time6.nowTimeDifference()}")
+            println("time----> ${time7.nowTimeDifference()}")
 
             println("hidePhone ${"17745645645".hidePhone()}")
             println("hideName ${"张三".hideName()}")
             println("hideName ${"张三丰".hideName()}")
             println("hideSubstring ${"张三丰有限公司".hideSubstring(5, 5)}")
             println("getUrlLastName ${"http://www.baidu.com/xxx.ext".getUrlLastName()}")
+            println("getUrlLastActualName ${"http://www.baidu.com/xxx.ext".getUrlLastActualName()}")
+
+            val size0 = 15.kbByte
+            val size1 = 22L.mbByte_B
+            val size2 = 77L.gbByte
+            val size3 = 66.tbByte_B
+            val size4 = 66L.tbByte
+            val size5 = 554
+
+            println("size $size0----> ${size0.byteToStr()}")
+            println("size $size1----> ${size1.byteToStr(true)}")
+            println("size $size2----> ${size2.byteToStr()}")
+            println("size $size3----> ${size3.byteToStr(true)}")
+            println("size $size4----> ${size4.byteToStr()}")
+            println("size $size5----> ${size5.byteToStr()}")
 
             val sp = "StringExt".createImageSpannableStringBuilder(
                 drawable = ActivityCompat.getDrawable(
@@ -679,6 +688,36 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
                 parameterTypes = arrayOf(String::class.java),
                 args = arrayOf("1111")
             )
+        }
+
+        btn49_ad.click {
+            val json1 = "{\"name\":\"111\",\"age\":11,\"phone\":\"123123213\",\"email\":\"123123123@123.com\"}"
+            val json2 = "[{\"name\":\"111\",\"age\":11,\"phone\":\"123123213\",\"email\":\"123123123@123.com\"}," +
+                    "{\"name\":\"222\",\"age\":22,\"phone\":\"456456456456\",\"email\":\"456456456456@123.com\"}]"
+            val json3 = "{\"data\":{\"name\":\"111\",\"age\":\"11\",\"phone\":\"123123213\",\"email\":\"123123123@123.com\"}}"
+            val json4 = "{\"data\":[{\"name\":\"111\",\"age\":\"11\",\"phone\":\"123123213\",\"email\":\"123123123@123.com\"}," +
+                    "{\"name\":\"222\",\"age\":\"22\",\"phone\":\"456456456456\",\"email\":\"456456456456@123.com\"}]}"
+
+            val json3b = json3.fromGsonJson<BaseTestJsonBean<TestJsonBean>>(BaseTestJsonBean::class.java, TestJsonBean::class.java)
+            val json4b = json4.fromGsonJson<BaseTestJsonListBean<TestJsonBean>>(BaseTestJsonListBean::class.java, TestJsonBean::class.java)
+
+            println("json1 fromGsonJson ${json1.fromGsonJson(TestJsonBean::class.java)}")
+            println("json2 fromGsonJson ${json2.fromGsonJsonList<TestJsonBean>()}")
+            println("json3b fromGsonJson $json3b")
+            println("json4b fromGsonJson $json4b")
+
+            val jsonBean1 = TestJsonBean("333", 33, "789789", "66666@33.com")
+            val jsonBean2 = mutableListOf(
+                TestJsonBean("444", 44, "44789789", "4466666@44.com"),
+                TestJsonBean("555", 55, "55789789", "5566666@55.com"),
+            )
+            val jsonBean3 = BaseTestJsonBean(jsonBean1)
+            val jsonBean4 = BaseTestJsonBean(jsonBean2)
+
+            println("jsonBean1 toGsonJson ${jsonBean1.toGsonJson()}")
+            println("jsonBean2 toGsonJson ${jsonBean2.toGsonJson()}")
+            println("jsonBean3 toGsonJson ${jsonBean3.toGsonJson()}")
+            println("jsonBean4 toGsonJson ${jsonBean4.toGsonJson()}")
         }
     }
 
@@ -729,5 +768,21 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
         }
 
     }
+
+    data class BaseTestJsonBean<T>(
+        val data: T
+    )
+
+    data class BaseTestJsonListBean<T>(
+        val data: List<T>
+    )
+
+    data class TestJsonBean(
+        val name: String,
+        val age: Int,
+        val phone: String,
+        val email: String,
+        val list: List<TestJsonBean>? = null
+    )
 
 }

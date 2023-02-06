@@ -36,4 +36,7 @@ dependencies {
     compileOnly project(path: ':easytoaster')
     compileOnly project(path: ':easydialoger')
     compileOnly project(path: ':easyutils')
+
+    //gson
+    compileOnly "com.google.code.gson:gson:${library_versions.gson}"
 }

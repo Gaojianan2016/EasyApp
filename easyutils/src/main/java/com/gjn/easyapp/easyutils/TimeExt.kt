@@ -14,12 +14,12 @@ private val SAFE_DATE_FORMAT = object : ThreadLocal<MutableMap<String, SimpleDat
 }
 
 @SuppressLint("SimpleDateFormat")
-private fun safeDateFormat(pattern: String, locale: Locale): SimpleDateFormat {
+private fun safeDateFormat(pattern: String, locale: Locale, timeZone: TimeZone): SimpleDateFormat {
     val map = SAFE_DATE_FORMAT.get() ?: return SimpleDateFormat(pattern)
-    val key = pattern + locale.country
+    val key = pattern + locale.country + timeZone.id
     var dateFormat: SimpleDateFormat? = map[key]
     if (dateFormat == null) {
-        dateFormat = SimpleDateFormat(pattern, locale)
+        dateFormat = SimpleDateFormat(pattern, locale).also { it.timeZone = timeZone }
         map[key] = dateFormat
     }
     return dateFormat
@@ -31,8 +31,8 @@ private fun safeDateFormat(pattern: String, locale: Locale): SimpleDateFormat {
  * [yyyy 年, MM 月, dd 日, HH 24小时, hh 12小时, mm 分钟, ss 秒, SSS 毫秒]
  * [EEEE 星期几, a 上午/下午(和hh配合)]
  * */
-fun Long.toDateFormat(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault()): String =
-    safeDateFormat(pattern, locale).format(this)
+fun Long.toDateFormat(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault(), timeZone: TimeZone = TimeZone.getDefault()): String =
+    safeDateFormat(pattern, locale, timeZone).format(this)
 
 /**
  * 时间戳转日期
@@ -40,23 +40,17 @@ fun Long.toDateFormat(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = 
 fun Long.toDate() = Date(this)
 
 /**
- * 时间戳转周
- * */
-fun Long.toWeek(pattern: String = "EEEE", locale: Locale = Locale.getDefault()): String =
-    SimpleDateFormat(pattern, locale).format(this)
-
-/**
  * 日期格式转时间戳
  * */
-fun String.toTimeMillis(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault()): Long =
+fun String.toTimeMillis(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault(), timeZone: TimeZone = TimeZone.getDefault()): Long =
     toDate(pattern, locale)?.time ?: -1L
 
 /**
  * 日期格式转日期
  * */
-fun String.toDate(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault()): Date? =
+fun String.toDate(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault(), timeZone: TimeZone = TimeZone.getDefault()): Date? =
     try {
-        safeDateFormat(pattern, locale).parse(this)
+        safeDateFormat(pattern, locale, timeZone).parse(this)
     } catch (e: Exception) {
         e.printStackTrace()
         null
@@ -65,8 +59,8 @@ fun String.toDate(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Loca
 /**
  * 日期转日期格式
  * */
-fun Date.toDateFormat(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault()): String =
-    safeDateFormat(pattern, locale).format(this)
+fun Date.toDateFormat(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault(), timeZone: TimeZone = TimeZone.getDefault()): String =
+    safeDateFormat(pattern, locale, timeZone).format(this)
 
 /**
  * 时间差
@@ -79,10 +73,10 @@ fun timeDifferenceMillis(
 ): Long {
     val result = abs(time1 - time2)
     return when (timeUnit) {
-        TimeUnit.DAYS -> result / UnitObj.TIME_DAY_MILLIS
-        TimeUnit.HOURS -> result / UnitObj.TIME_HOUR_MILLIS
-        TimeUnit.MINUTES -> result / UnitObj.TIME_MINUTE_MILLIS
-        TimeUnit.SECONDS -> result / UnitObj.TIME_SECONDS_MILLIS
+        TimeUnit.DAYS -> result / 1.daysMillis
+        TimeUnit.HOURS -> result / 1.hourMillis
+        TimeUnit.MINUTES -> result / 1.minuteMillis
+        TimeUnit.SECONDS -> result / 1.secondsMillis
         else -> result
     }
 }
@@ -141,10 +135,7 @@ fun Long.toTimeString(
     isChinese: Boolean = false
 ): String {
     val unitStr = if (isChinese) arrayOf("天", "时", "分", "秒") else arrayOf(":", ":", ":", ":")
-    val unitTime = arrayOf(
-        UnitObj.TIME_DAY_MILLIS, UnitObj.TIME_HOUR_MILLIS,
-        UnitObj.TIME_MINUTE_MILLIS, UnitObj.TIME_SECONDS_MILLIS
-    )
+    val unitTime = arrayOf(1.daysMillis, 1.hourMillis, 1.minuteMillis, 1.secondsMillis)
     var millis = this
     val sb = StringBuilder()
     for (i in 0..3) {
@@ -166,19 +157,11 @@ fun Long.nowTimeDifference(): String {
     val todayMillis = getTodayMillis()
     return when {
         span < 0 -> String.format("%tF", this)
-        span <= UnitObj.TIME_SECONDS_MILLIS -> "刚刚"
-        span < UnitObj.TIME_MINUTE_MILLIS -> String.format(
-            Locale.getDefault(),
-            "%d秒前",
-            span / UnitObj.TIME_SECONDS_MILLIS
-        )
-        span < UnitObj.TIME_HOUR_MILLIS -> String.format(
-            Locale.getDefault(),
-            "%d分钟前",
-            span / UnitObj.TIME_MINUTE_MILLIS
-        )
+        span <= 2.secondsMillis -> "刚刚"
+        span < 1.minuteMillis -> String.format(Locale.getDefault(), "%d秒前", span / 1.secondsMillis)
+        span < 1.hourMillis -> String.format(Locale.getDefault(), "%d分钟前", span / 1.minuteMillis)
         this >= todayMillis -> String.format("今天%tR", this)
-        this >= todayMillis - UnitObj.TIME_DAY_MILLIS -> String.format("昨天%tR", this)
+        this >= todayMillis - 1.daysMillis -> String.format("昨天%tR", this)
         else -> String.format("%tF", this)
     }
 }
@@ -188,14 +171,14 @@ fun Long.nowTimeDifference(): String {
  * */
 fun Long.isToday(): Boolean {
     val todayMillis = getTodayMillis()
-    return this > todayMillis || this - todayMillis < UnitObj.TIME_DAY_MILLIS
+    return this > todayMillis || this - todayMillis < 1.daysMillis
 }
 
 /**
  * 获取当前时间字符串
  * */
-fun getNowTimeString(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault()) =
-    System.currentTimeMillis().toDateFormat(pattern, locale)
+fun getNowTimeString(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault(), timeZone: TimeZone = TimeZone.getDefault()) =
+    System.currentTimeMillis().toDateFormat(pattern, locale, timeZone)
 
 /**
  * 获取当天某个时间时间戳

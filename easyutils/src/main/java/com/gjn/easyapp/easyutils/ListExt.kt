@@ -4,17 +4,25 @@ package com.gjn.easyapp.easyutils
 /**
  * 是否是非空集合
  * */
-inline fun <T> Collection<T>?.isNotEmptyCollection() = orEmpty().isNotEmpty()
+fun <E> Collection<E>?.isNotEmptyCollection() = orEmpty().isNotEmpty()
 
 /**
  * 列表需要大于1
  * */
-inline fun <T> Collection<T>.isList(): Boolean = isNotEmpty() && size > 1
+fun <E> Collection<E>.isList(): Boolean = isNotEmpty() && size > 1
 
 /**
  * 最多不超过设置数量
  * */
-inline fun <T> Collection<T>.isLimitSize(size: Int = 10): Boolean = isNotEmpty() && this.size <= size
+fun <E> Collection<E>.isLimitSize(size: Int = 10): Boolean = isNotEmpty() && this.size <= size
+
+/**
+ * 重设list数组
+ * */
+fun <E> MutableList<E>.setAll(list: List<E>): Boolean {
+    clear()
+    return addAll(list)
+}
 
 /**
  * 分割字符串成列表

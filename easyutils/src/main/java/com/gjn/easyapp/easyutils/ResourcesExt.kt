@@ -25,10 +25,11 @@ private fun Context.getIdentifier(name: String, defType: String, defPackage: Str
 /**
  * 获取系统标识符
  * */
-private fun Context.getSystemIdentifier(name: String, defType: String) =
-    getIdentifier(name, defType, "android")
+fun Context.getSystemIdentifier(name: String, defType: String) = getIdentifier(name, defType, "android")
 
 fun Context.getSystemIdIdentifier(name: String) = getSystemIdentifier(name, "id")
+
+fun Context.getSystemStringIdentifier(name: String) = getSystemIdentifier(name, "string")
 
 fun Context.getSystemLayoutIdentifier(name: String) = getSystemIdentifier(name, "layout")
 
@@ -49,10 +50,11 @@ fun Context.getSystemBoolIdentifier(name: String) = getSystemIdentifier(name, "b
 /**
  * 获取App标识符
  * */
-private fun Context.getAppIdentifier(name: String, defType: String) =
-    getIdentifier(name, defType, packageName)
+fun Context.getAppIdentifier(name: String, defType: String) = getIdentifier(name, defType, packageName)
 
 fun Context.getAppIdIdentifier(name: String) = getAppIdentifier(name, "id")
+
+fun Context.getAppStringIdentifier(name: String) = getAppIdentifier(name, "string")
 
 fun Context.getAppAnimIdentifier(name: String) = getAppIdentifier(name, "anim")
 

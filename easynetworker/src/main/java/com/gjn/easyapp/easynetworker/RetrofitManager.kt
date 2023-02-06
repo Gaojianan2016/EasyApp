@@ -1,9 +1,6 @@
 package com.gjn.easyapp.easynetworker
 
-import com.gjn.easyapp.easyutils.HttpsUtils
-import com.gjn.easyapp.easyutils.formatJson
-import com.gjn.easyapp.easyutils.isJsonStr
-import com.gjn.easyapp.easyutils.logD
+import com.gjn.easyapp.easyutils.*
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.TypeAdapter

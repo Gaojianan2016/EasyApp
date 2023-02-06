@@ -10,7 +10,8 @@ import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
 import net.lingala.zip4j.ZipFile
-import java.io.*
+import java.io.File
+import java.io.FileFilter
 import java.util.*
 import java.util.zip.ZipInputStream
 
@@ -32,6 +33,13 @@ fun Uri.toFile(): File = File(path)
 fun File.toByteArray(): ByteArray = inputStream().use { return it.readBytes() }
 
 /**
+ * 文件实际名称
+ * e.g. xx/xxx/fileName.txt -> fileName
+ * */
+inline val File.actualFileName: String
+    get() = name.run { return substring(lastIndexOf('/') + 1, lastIndexOf('.')) }
+
+/**
  * 文件后缀
  * */
 inline val File.suffix: String
@@ -39,14 +47,14 @@ inline val File.suffix: String
 
 /**
  * mimeType 获取 文件后缀
- * i.e. text/plain -> txt
+ * e.g. text/plain -> txt
  * */
 inline val File.extension: String?
     get() = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
 
 /**
  * 文件后缀 获取 mimeType
- * i.e. txt -> text/plain
+ * e.g. txt -> text/plain
  * */
 inline val File.mimeType: String?
     get() = MimeTypeMap.getSingleton().getMimeTypeFromExtension(suffix)

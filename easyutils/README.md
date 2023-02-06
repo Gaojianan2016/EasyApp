@@ -354,7 +354,8 @@ String.binaryDecode 二进制解密
 *.toFile 转为file
 File.toByteArray 转为字节
 
-File.suffix 直接最后一个.获取文件后缀
+File.actualFileName 获取文件实际名称
+File.suffix 获取文件后缀
 File.extension 通过mimeType获取文件后缀
 File.mimeType 通过后缀获取文件类型
 
@@ -430,11 +431,26 @@ String.getComponentIntent 包名获取组件 Intent
 
 ## JsonExt
 ```
+setDelegateGson 设置代理Gson
+putGsonMap 修改默认GsonMap
+getGson(String) 从GsonMap获取当前Gson 不存在则取代理Gson 再不存在则取默认Gson
+
 String?.formatJson json 格式化
 String?.isJsonStr 是否是json字符串
 Any?.toGsonJson obj转json字符串
 String.fromGsonJson json字符串通过gson转obj
-String.fromGsonJsonList json字符串通过gson转list列表
+Reader.fromGsonJson json字符串通过gson转obj
+
+convertType 转换参数化Type
+Type.convertListType 转换List Type
+Type.convertSetType 转换Set Type
+Type.convertMapType 转换Map Type
+Type.convertArrayType 转换Array Type
+
+String.fromGsonJsonList json字符串通过gson转list
+String.fromGsonJsonSet json字符串通过gson转set
+String.fromGsonJsonMap json字符串通过gson转map
+String.fromGsonJsonArray json字符串通过gson转array
 ```
 
 ## KeyboardExt
@@ -459,6 +475,7 @@ Activity.fixAndroidBug5497 修复软键盘bug
 Collection<T>?.isNotEmptyCollection 是否是非空集合
 *.isList 列表需要大于1
 *.isLimitSize 最多不超过设置数量
+MutableList.setAll 重设list数组
 String.split2List 分割字符串成列表
 ```
 
@@ -681,7 +698,8 @@ String.hidePhone 隐藏手机号码
 String.hideName 隐藏姓名
 String.hideSubstring 隐藏中间字段
 
-String.getUrlLastName 获取url最后一个/后的名字
+String.getUrlLastName 获取url最后一个/后的名字 包含后缀
+String.getUrlLastActualName 获取url最后一个/后的名字 不包含后缀
 String.removeLast 删除最后一个字符
 String.setOmittedText 设置省略文本
 String.latterIndexString 获取后几位字符串

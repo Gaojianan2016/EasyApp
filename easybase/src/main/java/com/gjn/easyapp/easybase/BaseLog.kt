@@ -1,6 +1,8 @@
 package com.gjn.easyapp.easybase
 
 import com.gjn.easyapp.easylogger.LogUtil
+import com.gjn.easyapp.easyutils.getGson
+import com.google.gson.Gson
 
 object BaseLog {
 
@@ -31,7 +33,7 @@ object BaseLog {
         if (isDebug) LogUtil.wtf(tag, msg, tr)
     }
 
-    fun json(tag: String = TAG, any: Any?) {
-        if (isDebug) LogUtil.json(tag, any)
+    fun json(tag: String = TAG, any: Any?, gson: Gson = getGson()) {
+        if (isDebug) LogUtil.json(tag, any, gson)
     }
 }

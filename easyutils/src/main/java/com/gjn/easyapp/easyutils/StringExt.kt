@@ -30,7 +30,8 @@ inline val randomUUIDString: String
 fun String.toMd5() = encryptMD5ToString()
 
 /**
- * 转义特殊词 e.g. [\ -> \\, $ -> \$, ....]
+ * 转义特殊词
+ * e.g. [\ -> \\, $ -> \$, ....]
  * */
 fun String.escapeSpecialWord(): String {
     if (isEmpty()) return this
@@ -90,15 +91,28 @@ fun String.containsEmoji(): Boolean {
 fun Char.isEmoji(): Boolean = !(code == 0x0 || code == 0x9 || code == 0xA
         || code == 0xD || code in 0x20..0xD7FF || code in 0xE000..0xFFFD)
 
+
 /**
- * 字节转gb mb kb字符串 0.5Tb 1.20Gb 60.00Mb 798.35Kb 666b
+ * 字节转GB MB KB字符串
  * */
-fun Long.byteToStr(): String = when {
-    this >= UnitObj.SIZE_TB -> (this / UnitObj.SIZE_TB.toDouble()).format(suffix = "Tb")
-    this >= UnitObj.SIZE_GB -> (this / UnitObj.SIZE_GB.toDouble()).format(suffix = "Gb")
-    this >= UnitObj.SIZE_MB -> (this / UnitObj.SIZE_MB.toDouble()).format(suffix = "Mb")
-    this >= UnitObj.SIZE_KB -> (this / UnitObj.SIZE_KB.toDouble()).format(suffix = "Kb")
-    else -> (toDouble()).format(0, suffix = "b")
+fun Int.byteToStr(isBinary: Boolean = false): String = toLong().byteToStr(isBinary)
+
+/**
+ * 字节转GB MB KB字符串
+ * e.g [0.5TB 1.20GB 60.00MB 798.35KB 666B]
+ * */
+fun Long.byteToStr(isBinary: Boolean = false): String {
+    val tb = if (isBinary) 1.tbByte_B else 1.tbByte
+    val gb = if (isBinary) 1.gbByte_B else 1.gbByte
+    val mb = if (isBinary) 1.mbByte_B else 1.mbByte
+    val kb = if (isBinary) 1.kbByte_B else 1.kbByte
+    return when {
+        this >= tb -> (this / tb.toDouble()).format(suffix = "TB")
+        this >= gb -> (this / gb.toDouble()).format(suffix = "GB")
+        this >= mb -> (this / mb.toDouble()).format(suffix = "MB")
+        this >= kb -> (this / kb.toDouble()).format(suffix = "KB")
+        else -> (toDouble()).format(0, suffix = "B")
+    }
 }
 
 /**
@@ -137,10 +151,18 @@ fun String.hideSubstring(start: Int = 1, end: Int = 1): String {
 }
 
 /**
- * 获取url最后一个/后的名字
+ * 获取url最后一个/后的名字 包含后缀
  * */
 fun String.getUrlLastName() =
     toUri().lastPathSegment ?: substring(lastIndexOf('/') + 1)
+
+/**
+ * 获取url最后一个/后的名字 不包含后缀
+ * */
+fun String.getUrlLastActualName(): String {
+    val lastName = getUrlLastName()
+    return lastName.substring(0, lastName.lastIndexOf('.'))
+}
 
 /**
  * 删除最后一个字符

@@ -12,10 +12,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseDatabindingActivity<ActivityMainBinding>() {
 
-//    val vm by bindViewModel(A2ViewModel::class.java)
-
     val tabs = arrayOf(A1Fragment(), A2Fragment(), A3Fragment())
-//    val tabTitles = arrayOf("A1Fragment", "A2Fragment", "A3Fragment")
 
     override fun layoutId(): Int = R.layout.activity_main
 
@@ -42,11 +39,7 @@ class MainActivity : BaseDatabindingActivity<ActivityMainBinding>() {
 
             }
 
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
 
             }
 

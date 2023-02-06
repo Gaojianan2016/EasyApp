@@ -53,7 +53,7 @@ object LogUtil {
         println(LEVEL_WTF, tag, msg, tr)
     }
 
-    fun json(tag: String = LOG_TAG, any: Any?) {
+    fun json(tag: String = LOG_TAG, any: Any?, gson: Gson = getGson()) {
         if (any == null) {
             e(tag, "json is null")
             return
@@ -61,7 +61,7 @@ object LogUtil {
         val json = when (any) {
             is String -> any
             is JSONObject -> any.toString()
-            else -> Gson().toJson(any)
+            else -> gson.toJson(any)
         }
         d(tag, json.formatJson())
     }

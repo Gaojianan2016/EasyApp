@@ -4,12 +4,14 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.app.KeyguardManager
 import android.app.NotificationManager
+import android.app.WallpaperManager
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.usb.UsbManager
 import android.media.AudioManager
 import android.net.ConnectivityManager
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.telephony.TelephonyManager
@@ -58,6 +60,9 @@ inline val Context.inputMethodManager: InputMethodManager
 
 inline val Context.usbManager: UsbManager
     get() = getSystemService(Context.USB_SERVICE) as UsbManager
+
+inline val Context.wallpaperManager: WallpaperManager
+    get() = getSystemService(Context.WALLPAPER_SERVICE) as WallpaperManager
 
 /**
  * 制作跳转页面 自定义转场动画
