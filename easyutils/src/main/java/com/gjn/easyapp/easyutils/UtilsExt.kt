@@ -31,6 +31,24 @@ fun Long?.orZero(): Long = this ?: 0L
 
 fun Boolean?.isTrue() = this == true
 
+//生成 随机数
+
+fun randomNumber(min: Double, max: Double): Double = Math.random() * max + min
+
+fun randomNumber(min: Float, max: Float): Float = (Math.random() * max + min).toFloat()
+
+fun randomNumber(min: Long, max: Long): Long = (Math.random() * max + min).toLong()
+
+fun randomNumber(min: Int, max: Int): Int = (Math.random() * max + min).toInt()
+
+fun randomNumber(max: Double) = randomNumber(0.0, max)
+
+fun randomNumber(max: Float) = randomNumber(0f, max)
+
+fun randomNumber(max: Long) = randomNumber(0L, max)
+
+fun randomNumber(max: Int) = randomNumber(0, max)
+
 /**
  * 创建ViewModel对象
  * */

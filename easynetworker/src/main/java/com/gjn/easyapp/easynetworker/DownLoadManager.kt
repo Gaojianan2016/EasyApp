@@ -25,7 +25,7 @@ class DownLoadManager(private val activity: FragmentActivity) {
         .writeTimeout(30L, TimeUnit.SECONDS)
         .sslSocketFactory(HttpsUtils.createSSLSocketFactory()!!, HttpsUtils.mX509TrustManager)
         .hostnameVerifier(HttpsUtils.mHostnameVerifier)
-        .addInterceptor(RetrofitManager.LoggingInterceptor())
+        .addInterceptor(RetrofitManager.LoggingAndCustomRequestInterceptor())
         .build()
 
     private var mCall: Call? = null

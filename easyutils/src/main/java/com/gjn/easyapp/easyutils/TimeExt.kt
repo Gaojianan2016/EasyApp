@@ -14,16 +14,22 @@ private val SAFE_DATE_FORMAT = object : ThreadLocal<MutableMap<String, SimpleDat
 }
 
 @SuppressLint("SimpleDateFormat")
-private fun safeDateFormat(pattern: String, locale: Locale, timeZone: TimeZone): SimpleDateFormat {
+private fun safeDateFormat(pattern: String, locale: Locale, timeZone: TimeZone?): SimpleDateFormat {
     val map = SAFE_DATE_FORMAT.get() ?: return SimpleDateFormat(pattern)
-    val key = pattern + locale.country + timeZone.id
+    val key = pattern + locale.country + timeZone?.id.orEmpty()
     var dateFormat: SimpleDateFormat? = map[key]
     if (dateFormat == null) {
-        dateFormat = SimpleDateFormat(pattern, locale).also { it.timeZone = timeZone }
+        dateFormat = SimpleDateFormat(pattern, locale)
+        if (timeZone != null) dateFormat.timeZone = timeZone
         map[key] = dateFormat
     }
     return dateFormat
 }
+
+/**
+ * 快速创建时区字符串
+ * */
+fun createTimeZone(@IntRange(from = -12, to = 12) zone: Int) = "GMT$zone:00"
 
 /**
  * 时间戳转日期格式
@@ -31,7 +37,7 @@ private fun safeDateFormat(pattern: String, locale: Locale, timeZone: TimeZone):
  * [yyyy 年, MM 月, dd 日, HH 24小时, hh 12小时, mm 分钟, ss 秒, SSS 毫秒]
  * [EEEE 星期几, a 上午/下午(和hh配合)]
  * */
-fun Long.toDateFormat(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault(), timeZone: TimeZone = TimeZone.getDefault()): String =
+fun Long.toDateFormat(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault(), timeZone: TimeZone? = null): String =
     safeDateFormat(pattern, locale, timeZone).format(this)
 
 /**
@@ -42,13 +48,13 @@ fun Long.toDate() = Date(this)
 /**
  * 日期格式转时间戳
  * */
-fun String.toTimeMillis(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault(), timeZone: TimeZone = TimeZone.getDefault()): Long =
-    toDate(pattern, locale)?.time ?: -1L
+fun String.toTimeMillis(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault(), timeZone: TimeZone? = null): Long =
+    toDate(pattern, locale, timeZone)?.time ?: -1L
 
 /**
  * 日期格式转日期
  * */
-fun String.toDate(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault(), timeZone: TimeZone = TimeZone.getDefault()): Date? =
+fun String.toDate(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault(), timeZone: TimeZone? = null): Date? =
     try {
         safeDateFormat(pattern, locale, timeZone).parse(this)
     } catch (e: Exception) {
@@ -59,7 +65,7 @@ fun String.toDate(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Loca
 /**
  * 日期转日期格式
  * */
-fun Date.toDateFormat(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault(), timeZone: TimeZone = TimeZone.getDefault()): String =
+fun Date.toDateFormat(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault(), timeZone: TimeZone? = null): String =
     safeDateFormat(pattern, locale, timeZone).format(this)
 
 /**
@@ -177,8 +183,19 @@ fun Long.isToday(): Boolean {
 /**
  * 获取当前时间字符串
  * */
-fun getNowTimeString(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault(), timeZone: TimeZone = TimeZone.getDefault()) =
+fun getNowTimeString(pattern: String = "yyyy-MM-dd HH:mm:ss", locale: Locale = Locale.getDefault(), timeZone: TimeZone? = null) =
     System.currentTimeMillis().toDateFormat(pattern, locale, timeZone)
+
+/**
+ * 获取当前时区字符串
+ * */
+fun currentTimeZone(format: String = "%02d:00", timeZone: TimeZone = TimeZone.getDefault()): String {
+    val utc = timeZone.getOffset(System.currentTimeMillis()) / 1.hourMillis
+    val isNegative = utc < 0
+    val formatStr = if (isNegative) "-$format" else "+$format"
+    String.format(formatStr, abs(utc))
+    return String.format(formatStr, abs(utc))
+}
 
 /**
  * 获取当天某个时间时间戳

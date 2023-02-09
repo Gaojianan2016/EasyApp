@@ -714,7 +714,9 @@ CharSequence.createImageSpannableStringBuilder 创建带图的SpannableStringBui
 ## TabLayoutExt
 ```
 TabScrollBar 快速创建TabLayout
+TabScrollBar2 快速创建TabLayout
 
+TabLayout.hideToolTipText 隐藏TabLayout 自带长按提示toast
 TabLayout.setSelectedTabIndicatorFixWidth 强制固定TabLayout宽度 兼容5.0 5.1
 ```
 
@@ -758,6 +760,7 @@ UnitObj 一些常用单位对象
 *.intervalOpen 开区间
 *?.orZero 为空转为0
 Boolean?.isTrue 是否为true
+randomNumber 随机数生成
 
 coordinateDistance 计算地球坐标两点距离
 

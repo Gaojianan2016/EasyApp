@@ -600,6 +600,22 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("getNowTimeString ${getNowTimeString()}")
             println("getNowTimeString UTC ${getNowTimeString(timeZone = TimeZone.getTimeZone("UTC"))}")
             println("getNowTimeString GMT ${getNowTimeString(timeZone = TimeZone.getTimeZone("GMT"))}")
+            println("getNowTimeZone1 ${currentTimeZone()}")
+            println("getNowTimeZone2 ${currentTimeZone("%02d")}")
+            println("getNowTimeZone3 ${currentTimeZone("%02d", TimeZone.getTimeZone("GMT-7:00"))}")
+
+            val testDay = 1675418071000
+            println("testDay0 ${testDay.toDateFormat()}")
+            println("testDay1 ${testDay.toDateFormat("MM-dd-yyyy HH:mm")}")
+            println("testDay2 ${testDay.toDateFormat("MM-dd-yyyy hh:mm", Locale.US)}")
+            println("testDay3 ${testDay.toDateFormat("MM-dd-yyyy hh:mm", Locale.US, TimeZone.getDefault())}")
+            println("testDay4 ${testDay.toDateFormat("MM-dd-yyyy hh:mm", Locale.US, TimeZone.getTimeZone("GMT-5:00"))}")
+            println("testDay5 ${testDay.toDateFormat("MM-dd-yyyy hh:mm", Locale.getDefault(), TimeZone.getTimeZone("GMT-5:00"))}")
+
+            println("timezone1 ${createTimeZone(-12)}")
+            println("timezone2 ${createTimeZone(12)}")
+            println("timezone3 ${createTimeZone(8)}")
+            println("timezone4 ${createTimeZone(-5)}")
 
             val now = Calendar.getInstance().timeInMillis
 
@@ -705,6 +721,9 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("json2 fromGsonJson ${json2.fromGsonJsonList<TestJsonBean>()}")
             println("json3b fromGsonJson $json3b")
             println("json4b fromGsonJson $json4b")
+
+            println("json1 toGsonJsonStr \n${json1.toGsonJsonStr()}\n\n")
+            println("json1 formatJson \n${json1.formatJson()}\n\n")
 
             val jsonBean1 = TestJsonBean("333", 33, "789789", "66666@33.com")
             val jsonBean2 = mutableListOf(

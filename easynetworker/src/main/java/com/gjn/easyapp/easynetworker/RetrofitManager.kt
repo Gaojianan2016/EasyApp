@@ -30,72 +30,60 @@ object RetrofitManager {
 
     val ignoreLogUrlPath = mutableListOf<String>()
 
-    private val okHttpClient = OkHttpClient.Builder()
+    private val okHttpClientBuilder = OkHttpClient.Builder()
         .connectTimeout(30L, TimeUnit.SECONDS)
         .readTimeout(30L, TimeUnit.SECONDS)
         .writeTimeout(30L, TimeUnit.SECONDS)
         .sslSocketFactory(HttpsUtils.createSSLSocketFactory()!!, HttpsUtils.mX509TrustManager)
         .hostnameVerifier(HttpsUtils.mHostnameVerifier)
-        .addInterceptor(LoggingInterceptor())
-        .build()
+        .addInterceptor(LoggingAndCustomRequestInterceptor())
 
-    fun <T> create(clazz: Class<T>, url: String, client: OkHttpClient = okHttpClient): T =
-        create(
-            clazz, url, client,
-            converterFactoryArray = arrayOf(
-                //添加自动过滤gson解析失败异常
-                GsonConverterFactory.create(GsonBuilder().registerTypeAdapterFactory(GsonTypeAdapterFactory()).create())
-            )
-        )
-
-    fun <T> create(clazz: Class<T>, url: String, interceptorArray: Array<Interceptor> = arrayOf()): T =
-        create(
-            clazz, url,
-            converterFactoryArray = arrayOf(
-                //添加自动过滤gson解析失败异常
-                GsonConverterFactory.create(GsonBuilder().registerTypeAdapterFactory(GsonTypeAdapterFactory()).create())
-            ),
-            interceptorArray = interceptorArray
-        )
-
+    /**
+     * 快捷扩展创建方法
+     * */
     fun <T> create(
         clazz: Class<T>,
         url: String,
-        client: OkHttpClient = okHttpClient,
-        converterFactoryArray: Array<Converter.Factory> = arrayOf(),
+        clientBuilder: OkHttpClient.Builder = okHttpClientBuilder,
+        //添加自动过滤gson解析失败异常 转换器工厂
+        converterFactoryArray: Array<Converter.Factory> = arrayOf(
+            GsonConverterFactory.create(GsonBuilder().registerTypeAdapterFactory(GsonTypeAdapterFactory()).create())
+        ),
         callAdapterFactoryArray: Array<CallAdapter.Factory> = arrayOf(),
-    ): T {
-        val builder = Retrofit.Builder().baseUrl(url).client(client)
-        converterFactoryArray.forEach { builder.addConverterFactory(it) }
-        callAdapterFactoryArray.forEach { builder.addCallAdapterFactory(it) }
-        return builder.build().create(clazz)
-    }
+        interceptorArray: Array<Interceptor> = arrayOf(),
+        retrofitBuilderBlock: ((Retrofit.Builder) -> Unit)? = null
+    ): T = createOriginal(clazz, url, clientBuilder, converterFactoryArray, callAdapterFactoryArray, interceptorArray, retrofitBuilderBlock)
 
-    fun <T> create(
+    /**
+     * 最原始创建方法
+     * */
+    fun <T> createOriginal(
         clazz: Class<T>,
         url: String,
+        clientBuilder: OkHttpClient.Builder = okHttpClientBuilder,
         converterFactoryArray: Array<Converter.Factory> = arrayOf(),
         callAdapterFactoryArray: Array<CallAdapter.Factory> = arrayOf(),
         interceptorArray: Array<Interceptor> = arrayOf(),
+        retrofitBuilderBlock: ((Retrofit.Builder) -> Unit)? = null
     ): T {
-        val clientBuilder = OkHttpClient.Builder()
-            .connectTimeout(30L, TimeUnit.SECONDS)
-            .readTimeout(30L, TimeUnit.SECONDS)
-            .writeTimeout(30L, TimeUnit.SECONDS)
-            .sslSocketFactory(HttpsUtils.createSSLSocketFactory()!!, HttpsUtils.mX509TrustManager)
-            .hostnameVerifier(HttpsUtils.mHostnameVerifier)
-            .addInterceptor(LoggingInterceptor())
+        //添加拦截器
         interceptorArray.forEach { clientBuilder.addInterceptor(it) }
+        //创建build对象
         val builder = Retrofit.Builder().baseUrl(url).client(clientBuilder.build())
+        //添加转换器
         converterFactoryArray.forEach { builder.addConverterFactory(it) }
+        //添加编译器
         callAdapterFactoryArray.forEach { builder.addCallAdapterFactory(it) }
+        //build其他操作
+        retrofitBuilderBlock?.invoke(builder)
+        //返回最终对象
         return builder.build().create(clazz)
     }
 
     private fun isPlaintext(buffer: Buffer): Boolean {
         return try {
             val prefix = Buffer()
-            val byteCount = if (buffer.size < 64) buffer.size else 64
+            val byteCount = buffer.size.coerceAtMost(64)
             buffer.copyTo(prefix, 0, byteCount)
             for (i in 0..15) {
                 if (prefix.exhausted()) break
@@ -111,58 +99,10 @@ object RetrofitManager {
     }
 
     private fun log(msg: String) {
-        if (isDebug) {
-            logD(msg, "LoggingInterceptor")
-        }
+        if (isDebug) logD(msg, "LoggingInterceptor")
     }
 
-    fun requestBodyStr(request: Request): String {
-        val bodyBuilder = StringBuilder()
-        request.body?.let {
-            if (it is FormBody) {
-                for (i in 0 until it.size) {
-                    bodyBuilder.append("${it.encodedName(i)} = ${it.encodedValue(i)}\n")
-                }
-            } else {
-                val buffer = Buffer()
-                it.writeTo(buffer)
-                if (isPlaintext(buffer)) {
-                    val charset = it.contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8
-                    bodyBuilder.append(buffer.readString(charset)).append("\n")
-                }
-            }
-        }
-        return bodyBuilder.toString()
-    }
-
-    fun responseBodyStr(response: Response, ignoreLogUrArray: Array<String>): String {
-        val bodyBuilder = StringBuilder()
-        ignoreLogUrArray.forEach {
-            if (response.request.url.toString().contains(it)) {
-                return "ignore Log"
-            }
-        }
-        if (response.body == null) {
-            return "no Body"
-        }
-        response.body?.let {
-            val source = it.source()
-            source.request(Long.MAX_VALUE)
-            val buffer = source.buffer
-            if (isPlaintext(buffer)) {
-                val charset = it.contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8
-                val result = buffer.clone().readString(charset)
-                if (result.isJsonStr()) {
-                    bodyBuilder.append(result.formatJson())
-                } else {
-                    bodyBuilder.append(result)
-                }
-            }
-        }
-        return bodyBuilder.toString()
-    }
-
-    class LoggingInterceptor : Interceptor {
+    class LoggingAndCustomRequestInterceptor : Interceptor {
 
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response {
@@ -177,9 +117,7 @@ object RetrofitManager {
             val t2 = System.nanoTime()
 
             log("${printRequest(request)}${printResponseHeader(response, t1, t2)}")
-            if (printBody) {
-                log("${request.url}\n${printResponseBody(response)}")
-            }
+            if (printBody) log("${request.url}\n${printResponseBody(response)}")
 
             return response
         }

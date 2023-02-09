@@ -93,6 +93,9 @@ private fun StringBuilder.addTab(line: Int) {
     }
 }
 
+/**
+ * 字符串是否是JSON字符串
+ * */
 fun String?.isJsonStr(): Boolean {
     if (isNullOrEmpty()) return false
     return try {

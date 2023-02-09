@@ -6,9 +6,9 @@ import com.gjn.easyapp.easynetworker.RetrofitManager
 
 class AppNetWorker {
 
-    val gankApi = RetrofitManager.create(GankUrl::class.java, GankUrl.BASE_URL, interceptorArray = arrayOf())
+    val gankApi = RetrofitManager.create(GankUrl::class.java, GankUrl.BASE_URL)
 
-    val wanApi = RetrofitManager.create(WanUrl::class.java, WanUrl.BASE_URL, interceptorArray = arrayOf())
+    val wanApi = RetrofitManager.create(WanUrl::class.java, WanUrl.BASE_URL)
 
     companion object {
         val netWorker by lazy { AppNetWorker() }
