@@ -764,7 +764,7 @@ randomNumber 随机数生成
 
 coordinateDistance 计算地球坐标两点距离
 
-Map<K, V>?.toHashMap 将map中数据为空的字段剔除掉
+Map<K, V>?.toHashMapOrEmptyMap 将map中数据为空的字段剔除掉
 List<T?>?.toMutableListOrEmptyList 将list中数据为空的字段剔除掉
 
 singleChoicePosition 单选Int数值

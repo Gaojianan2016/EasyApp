@@ -29,7 +29,7 @@ private fun safeDateFormat(pattern: String, locale: Locale, timeZone: TimeZone?)
 /**
  * 快速创建时区字符串
  * */
-fun createTimeZone(@IntRange(from = -12, to = 12) zone: Int) = "GMT$zone:00"
+fun createTimeZone(@IntRange(from = -12, to = 14) zone: Int) = "GMT$zone:00"
 
 /**
  * 时间戳转日期格式

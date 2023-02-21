@@ -21,8 +21,7 @@ fun String?.orValue(value: String): String = ifNullOrEmpty { value }
 /**
  * 生成UUID随机数字符串
  * */
-inline val randomUUIDString: String
-    get() = UUID.randomUUID().toString()
+inline val randomUUIDString: String get() = UUID.randomUUID().toString()
 
 /**
  * 转为MD5

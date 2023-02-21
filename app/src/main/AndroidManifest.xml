@@ -36,8 +36,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="UnusedAttribute">
-<!--        <activity
-                android:name=".MainActivity"-->
         <activity
             android:name=".demo.DemoActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -53,8 +51,6 @@
 
         <activity android:name=".GalleryActivity" android:exported="true"/>
         <activity android:name=".ActivityResultActivity" android:exported="true"/>
-<!--        <activity android:name=".demo.DemoActivity" android:exported="true"/>-->
-        <activity android:name=".MainActivity" android:exported="true"/>
         <activity android:name=".demo.ImageActivity" android:exported="true"/>
         <activity android:name=".demo.DrawerActivity" android:exported="true"/>
 
@@ -64,16 +60,6 @@
             android:enabled="true"
             android:exported="true" />
 
-<!--        &lt;!&ndash; 7.0文件路径 &ndash;&gt;-->
-<!--        <provider-->
-<!--            android:name="androidx.core.content.FileProvider"-->
-<!--            android:authorities="${applicationId}.fileprovider"-->
-<!--            android:exported="false"-->
-<!--            android:grantUriPermissions="true">-->
-<!--            <meta-data-->
-<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
-<!--                android:resource="@xml/file_paths" />-->
-<!--        </provider>-->
     </application>
 
 </manifest>

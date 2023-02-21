@@ -1,26 +1,20 @@
 package com.gjn.easyapp.easyutils
 
-import android.app.Application
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 import kotlin.math.asin
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-// (x, y)
+//区间相关
 fun Int.intervalOpen(min: Int, max: Int) = min.coerceAtLeast(this.coerceAtMost(max))
 
-// (x, y)
 fun Float.intervalOpen(min: Float, max: Float) = min.coerceAtLeast(this.coerceAtMost(max))
 
-// (x, y)
 fun Double.intervalOpen(min: Double, max: Double) = min.coerceAtLeast(this.coerceAtMost(max))
 
-// (x, y)
 fun Long.intervalOpen(min: Long, max: Long) = min.coerceAtLeast(this.coerceAtMost(max))
 
+//非零处理
 fun Int?.orZero(): Int = this ?: 0
 
 fun Float?.orZero(): Float = this ?: 0f
@@ -32,42 +26,21 @@ fun Long?.orZero(): Long = this ?: 0L
 fun Boolean?.isTrue() = this == true
 
 //生成 随机数
-
-fun randomNumber(min: Double, max: Double): Double = Math.random() * max + min
+fun randomNumber(min: Int, max: Int): Int = (Math.random() * max + min).toInt()
 
 fun randomNumber(min: Float, max: Float): Float = (Math.random() * max + min).toFloat()
 
+fun randomNumber(min: Double, max: Double): Double = Math.random() * max + min
+
 fun randomNumber(min: Long, max: Long): Long = (Math.random() * max + min).toLong()
-
-fun randomNumber(min: Int, max: Int): Int = (Math.random() * max + min).toInt()
-
-fun randomNumber(max: Double) = randomNumber(0.0, max)
-
-fun randomNumber(max: Float) = randomNumber(0f, max)
-
-fun randomNumber(max: Long) = randomNumber(0L, max)
 
 fun randomNumber(max: Int) = randomNumber(0, max)
 
-/**
- * 创建ViewModel对象
- * */
-fun <T : ViewModel> Class<T>.createViewModel(
-    owner: ViewModelStoreOwner
-): T = ViewModelProvider(
-    owner, ViewModelProvider.NewInstanceFactory()
-).get(this)
+fun randomNumber(max: Float) = randomNumber(0f, max)
 
-/**
- * 创建AndroidViewModel对象
- * */
-fun <T : ViewModel> Class<T>.createAndroidViewModel(
-    owner: ViewModelStoreOwner,
-    application: Application
-): T = ViewModelProvider(
-    owner, ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-).get(this)
+fun randomNumber(max: Double) = randomNumber(0.0, max)
 
+fun randomNumber(max: Long) = randomNumber(0L, max)
 
 /**
  * 计算地球坐标两点距离
@@ -95,7 +68,7 @@ fun coordinateDistance(
 /**
  * 将map中数据为空的字段剔除掉
  * */
-fun <K, V> Map<K, V>?.toHashMap(): HashMap<K, V> {
+fun <K, V> Map<K, V>?.toHashMapOrEmptyMap(): HashMap<K, V> {
     if (this == null) return HashMap()
     val hashMap = HashMap<K, V>()
     forEach { (k, v) ->

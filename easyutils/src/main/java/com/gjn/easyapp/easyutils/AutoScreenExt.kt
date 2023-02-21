@@ -78,20 +78,20 @@ object AutoScreenUtil {
                 density = defaultDensity
                 densityDpi = defaultDensityDpi
                 scaledDensity = defaultScaledDensity
-                log("${activity::class.java.simpleName} default density")
+                log("${activity.javaClass.simpleName} default density")
             }
             is IAutoChange -> {
                 //改变自动设置
                 density = metrics.widthPixels / activity.newWidth()
                 densityDpi = (density * 160).toInt()
                 scaledDensity = density * (defaultScaledDensity / defaultDensity)
-                log("${activity::class.java.simpleName} change new density ${activity.newWidth()}")
+                log("${activity.javaClass.simpleName} change new density ${activity.newWidth()}")
             }
             else -> {
                 density = changeDensity
                 densityDpi = changeDensityDpi
                 scaledDensity = changeScaledDensity
-                log("${activity::class.java.simpleName} change density $width")
+                log("${activity.javaClass.simpleName} change density $width")
             }
         }
         metrics.density = density

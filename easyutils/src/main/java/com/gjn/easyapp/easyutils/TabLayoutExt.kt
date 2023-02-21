@@ -1,9 +1,7 @@
 package com.gjn.easyapp.easyutils
 
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
-import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -159,7 +157,7 @@ class TabScrollBar {
 
 class TabScrollBar2<VDB : ViewDataBinding> {
 
-    private val viewPager2: ViewPager2?
+    val activity: FragmentActivity
     private val fragment: Fragment?
     private val fragmentManager: FragmentManager
     private var customViewLayoutId: Int = View.NO_ID
@@ -167,9 +165,9 @@ class TabScrollBar2<VDB : ViewDataBinding> {
     private var onCustomViewDataBindingConvertCallback: OnCustomViewDataBindingConvertCallback<VDB>? = null
 
     val bars: MutableList<BarTab>
-    var activity: FragmentActivity?
-        private set
     var tabLayout: TabLayout?
+        private set
+    var viewPager2: ViewPager2?
         private set
     var curPosition: Int = 0
         private set
@@ -195,7 +193,7 @@ class TabScrollBar2<VDB : ViewDataBinding> {
         bars: MutableList<BarTab> = mutableListOf(),
         viewPager2: ViewPager2? = null
     ) {
-        this.activity = fragment.activity
+        this.activity = fragment.requireActivity()
         this.fragment = fragment
         this.fragmentManager = fragment.childFragmentManager
 
@@ -204,9 +202,7 @@ class TabScrollBar2<VDB : ViewDataBinding> {
         this.viewPager2 = viewPager2
     }
 
-    fun create(layout: TabLayout? = null, list: List<BarTab>? = null) {
-        if (layout != null) tabLayout = layout
-        if (list != null) bars.setAll(list)
+    fun create() {
         if (bars.isEmpty()) {
             logW("bars is null.", TAG)
             return
@@ -222,11 +218,11 @@ class TabScrollBar2<VDB : ViewDataBinding> {
                 }
             } else {
                 if (fragment != null) {
-                    viewPager2.adapter = ViewPager2Adapter(fragment)
-                } else if (activity != null) {
-                    viewPager2.adapter = ViewPager2Adapter(activity!!)
+                    viewPager2!!.adapter = ViewPager2Adapter(fragment)
+                } else {
+                    viewPager2!!.adapter = ViewPager2Adapter(activity)
                 }
-                val mediator = TabLayoutMediator(this, viewPager2) { _, _ -> }
+                val mediator = TabLayoutMediator(this, viewPager2!!) { _, _ -> }
                 //绑定tabLayout viewPager2
                 mediator.attach()
             }
@@ -284,6 +280,13 @@ class TabScrollBar2<VDB : ViewDataBinding> {
                 onCustomViewDataBindingConvertCallback?.convertData(customViewDataBindingList[position], bars[position], position, curPosition)
             }
         }
+    }
+
+    fun updateTab(tl: TabLayout? = null, vp: ViewPager2? = null, list: List<BarTab>? = null): TabScrollBar2<VDB> {
+        tabLayout = tl
+        viewPager2 = vp
+        bars.setAll(list.orEmpty())
+        return this
     }
 
     fun setCustomTabView(id: Int, callback: OnCustomViewDataBindingConvertCallback<VDB>?): TabScrollBar2<VDB> {
@@ -347,23 +350,4 @@ fun TabLayout.hideToolTipText() {
             }
         }
     }
-}
-
-/**
- * 强制固定TabLayout宽度 兼容5.0 5.1
- * 地址 https://juejin.cn/post/6925318518128771079
- * */
-fun TabLayout.setSelectedTabIndicatorFixWidth(width: Float) {
-    setSelectedTabIndicator(object : DrawableWrapper(tabSelectedIndicator) {
-        override fun setBounds(left: Int, top: Int, right: Int, bottom: Int) {
-            var realLeft = left
-            var realRight = right
-            if ((right - left).toFloat() != width) {
-                val center = left + (right - left).toFloat() / 2
-                realLeft = (center - width / 2).toInt()
-                realRight = (center + width / 2).toInt()
-            }
-            super.setBounds(realLeft, top, realRight, bottom)
-        }
-    })
 }

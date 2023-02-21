@@ -1,7 +1,6 @@
 package com.gjn.easyapp.easynetworker
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.fragment.app.FragmentActivity
@@ -47,12 +46,7 @@ class DownLoadManager(private val activity: FragmentActivity) {
         //如果是apk 安卓8.0之后需要申请未知来源权限
         if (file.path.endsWith(".apk") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (!activity.packageManager.canRequestPackageInstalls()) {
-                activity.quickActivityResult(
-                    Intent(
-                        Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
-                        Uri.parse("package:${activity.packageName}")
-                    )
-                ) { _, _ ->
+                activity.quickActivityResult(Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, activity.packageNameUri)) { _, _ ->
                     openFile(file)
                 }
                 return
@@ -91,20 +85,10 @@ class DownLoadManager(private val activity: FragmentActivity) {
 
                 override fun onResponse(call: Call, response: Response) {
                     val folder = File(path)
-                    if (!folder.exists()) {
-                        if (folder.mkdirs()) {
-                            println("create folder $folder")
-                        }
-                    }
+                    if (!folder.exists()) if (folder.mkdirs()) println("create folder $folder")
                     val file = File(path, name)
-                    if (file.exists()) {
-                        if (file.delete()) {
-                            println("delete file $file")
-                        }
-                    }
-                    if (file.createNewFile()) {
-                        println("createNewFile $file")
-                    }
+                    if (file.exists()) if (file.delete()) println("delete file $file")
+                    if (file.createNewFile()) println("createNewFile $file")
                     if (downloadStream(call, response, file)) {
                         launchMain {
                             downLoadStatus = DOWNLOAD_SUCCESS
@@ -151,11 +135,7 @@ class DownLoadManager(private val activity: FragmentActivity) {
             }
             return true
         } catch (e: Exception) {
-            if (file.exists()) {
-                if (file.delete()) {
-                    println("file error delete $file")
-                }
-            }
+            if (file.exists()) if (file.delete()) println("file error delete $file")
             launchMain {
                 onDownLoadListener?.error(call, e)
                 onDownLoadListener?.fail(call)

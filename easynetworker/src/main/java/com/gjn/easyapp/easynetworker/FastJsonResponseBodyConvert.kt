@@ -7,6 +7,8 @@ import java.lang.reflect.Type
 
 class FastJsonResponseBodyConvert<T>(private val type: Type) : Converter<ResponseBody, T> {
 
-    override fun convert(value: ResponseBody): T? = JSON.parseObject(value.string(), type)
+    override fun convert(value: ResponseBody): T? = value.use {
+        JSON.parseObject(value.string(), type)
+    }
 
 }

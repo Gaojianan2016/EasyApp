@@ -28,7 +28,7 @@ object RetrofitManager {
 
     var customInterceptorListener: OnCustomInterceptorListener? = null
 
-    val ignoreLogUrlPath = mutableListOf<String>()
+    val ignoreLogUrlPath = arrayOf<String>()
 
     private val okHttpClientBuilder = OkHttpClient.Builder()
         .connectTimeout(30L, TimeUnit.SECONDS)
@@ -99,7 +99,55 @@ object RetrofitManager {
     }
 
     private fun log(msg: String) {
-        if (isDebug) logD(msg, "LoggingInterceptor")
+        if (isDebug) logD(msg, "EasyLogging")
+    }
+
+    fun requestBodyStr(request: Request): String {
+        val bodyBuilder = StringBuilder()
+        request.body?.let {
+            if (it is FormBody) {
+                for (i in 0 until it.size) {
+                    bodyBuilder.append("${it.encodedName(i)} = ${it.encodedValue(i)}\n")
+                }
+            } else {
+                val buffer = Buffer()
+                it.writeTo(buffer)
+                if (isPlaintext(buffer)) {
+                    val charset = it.contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8
+                    bodyBuilder.append(buffer.readString(charset)).append("\n")
+                }
+            }
+        }
+        return bodyBuilder.toString()
+    }
+
+    fun responseBodyStr(response: Response, ignoreUrlArray: Array<String> = arrayOf()): String {
+        val bodyBuilder = StringBuilder()
+        ignoreUrlArray.forEach {
+            if (response.request.url.toString().contains(it)) {
+                return "ignore Log"
+            }
+        }
+        if (response.body == null) return "no Body"
+        try {
+            response.body?.let {
+                val source = it.source()
+                source.request(Long.MAX_VALUE)
+                val buffer = source.buffer
+                if (isPlaintext(buffer)) {
+                    val charset = it.contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8
+                    val result = buffer.clone().readString(charset)
+                    if (result.isJsonStr()) {
+                        bodyBuilder.append(result.formatJson())
+                    } else {
+                        bodyBuilder.append(result)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return bodyBuilder.toString()
     }
 
     class LoggingAndCustomRequestInterceptor : Interceptor {
@@ -116,73 +164,34 @@ object RetrofitManager {
             customInterceptorListener?.getResponse(response)
             val t2 = System.nanoTime()
 
-            log("${printRequest(request)}${printResponseHeader(response, t1, t2)}")
-            if (printBody) log("${request.url}\n${printResponseBody(response)}")
+            log(buildString {
+                //request HEAD
+                append("----------Request HEAD----------\n")
+                append("--> ${request.method} ${request.url}\n")
+                request.headers.forEach { (name, value) ->
+                    append("-> $name = $value\n")
+                }
+                //request BODY
+                append("----------Request BODY----------\n")
+                append("--> ${request.body?.contentType()} ${request.body?.contentLength()}\n")
+                append(requestBodyStr(request))
+                append("----------Request END----------\n")
+                //response HEAD
+                append("--> ${response.code} ${(t2 - t1) / 1e6}ms\n")
+                append("----------Response HEAD----------\n")
+                response.headers.forEach { (name, value) ->
+                    append("-> $name = $value\n")
+                }
+                //response BODY
+                if (printBody) {
+                    append(request.url)
+                    append(responseBodyStr(response, ignoreLogUrlPath))
+                }
+            })
 
             return response
         }
 
-        private fun printRequest(request: Request): String {
-            val log = StringBuilder()
-            log.append("http request\n----------Request HEAD----------\n").append("--> ${request.method} ${request.url}\n")
-            request.headers.forEach { (name, value) ->
-                log.append("-> $name = $value\n")
-            }
-            request.body?.let {
-                log.append("----------Request BODY----------\n").append("--> ${it.contentType()} ${it.contentLength()}\n")
-                if (it is FormBody) {
-                    for (i in 0 until it.size) {
-                        log.append("-> ${it.encodedName(i)} = ${it.encodedValue(i)}\n")
-                    }
-                } else {
-                    val buffer = Buffer()
-                    it.writeTo(buffer)
-                    if (isPlaintext(buffer)) {
-                        val charset = it.contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8
-                        log.append(buffer.readString(charset)).append("\n")
-                    }
-                }
-            }
-            log.append("----------Request END----------\n")
-            return log.toString()
-        }
-
-        private fun printResponseHeader(response: Response, startTime: Long, endTime: Long): String {
-            val log = StringBuilder()
-            log.append("--> ${response.code} ${(endTime - startTime) / 1e6}ms\n")
-            log.append("----------Response HEAD----------\n")
-            response.headers.forEach { (name, value) ->
-                log.append("-> $name = $value\n")
-            }
-            return log.toString()
-        }
-
-        private fun printResponseBody(response: Response): String {
-            val log = StringBuilder()
-            ignoreLogUrlPath.forEach {
-                if (response.request.url.toString().contains(it)) {
-                    return "ignore Log"
-                }
-            }
-            if (response.body == null) {
-                return "no Body"
-            }
-            response.body?.let {
-                val source = it.source()
-                source.request(Long.MAX_VALUE)
-                val buffer = source.buffer
-                if (isPlaintext(buffer)) {
-                    val charset = it.contentType()?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8
-                    val result = buffer.clone().readString(charset)
-                    if (result.isJsonStr()) {
-                        log.append(result.formatJson())
-                    } else {
-                        log.append(result)
-                    }
-                }
-            }
-            return log.toString()
-        }
     }
 
     /**
@@ -205,10 +214,15 @@ object RetrofitManager {
                         adapter?.read(jr)
                     } catch (e: Throwable) {
                         consumeAll(jr)
-                        null
+                        when (jr.peek()) {
+                            JsonToken.STRING -> ""
+                            JsonToken.NUMBER -> 0
+                            JsonToken.BOOLEAN -> false
+                            JsonToken.NULL -> null
+                            else -> null
+                        } as T?
                     }
                 }
-
             }
         }
 

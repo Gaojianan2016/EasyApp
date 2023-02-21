@@ -722,7 +722,6 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("json3b fromGsonJson $json3b")
             println("json4b fromGsonJson $json4b")
 
-            println("json1 toGsonJsonStr \n${json1.toGsonJsonStr()}\n\n")
             println("json1 formatJson \n${json1.formatJson()}\n\n")
 
             val jsonBean1 = TestJsonBean("333", 33, "789789", "66666@33.com")

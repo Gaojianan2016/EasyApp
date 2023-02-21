@@ -15,12 +15,12 @@ import java.io.File
 /**
  * 包名转uri
  * */
-inline fun String.toPackageNameUri(): Uri = Uri.parse("package:$this")
+inline val String.toPackageNameUri: Uri get() = Uri.parse("package:$this")
 
 /**
  * 获取packageName的Uri
  * */
-inline fun Context.toPackageNameUri(): Uri = packageName.toPackageNameUri()
+inline val Context.packageNameUri: Uri get() = packageName.toPackageNameUri
 
 /**
  * 安装app
@@ -55,7 +55,7 @@ fun Context.installApp(file: File?) {
  * 卸载app
  * */
 fun Context.uninstallApp(pkgName: String) {
-    startActivity(Intent(Intent.ACTION_DELETE, pkgName.toPackageNameUri()).addNewTaskFlag())
+    startActivity(Intent(Intent.ACTION_DELETE, pkgName.toPackageNameUri).addNewTaskFlag())
 }
 
 /**
@@ -113,7 +113,7 @@ fun Context.openAppDetailsSettings(pkgName: String = packageName) {
     if (isInstalled(pkgName)) {
         val intent = Intent(
             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-            pkgName.toPackageNameUri()
+            pkgName.toPackageNameUri
         )
         if (isIntentAvailable(intent)) startActivity(intent)
     }
@@ -124,7 +124,7 @@ fun Context.openAppDetailsSettings(pkgName: String = packageName) {
  * */
 fun Context.openUnknownAppSettings() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        startActivity(Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, toPackageNameUri()))
+        startActivity(Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageNameUri))
     }
 }
 
