@@ -28,7 +28,7 @@ object RetrofitManager {
 
     var customInterceptorListener: OnCustomInterceptorListener? = null
 
-    val ignoreLogUrlPath = arrayOf<String>()
+    val ignoreLogUrlPath = mutableListOf<String>()
 
     private val okHttpClientBuilder = OkHttpClient.Builder()
         .connectTimeout(30L, TimeUnit.SECONDS)
@@ -184,8 +184,8 @@ object RetrofitManager {
                 }
                 //response BODY
                 if (printBody) {
-                    append(request.url)
-                    append(responseBodyStr(response, ignoreLogUrlPath))
+                    append("${request.url}\n")
+                    append(responseBodyStr(response, ignoreLogUrlPath.toTypedArray()))
                 }
             })
 

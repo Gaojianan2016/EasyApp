@@ -10,9 +10,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
+import com.gjn.easyapp.easynetworker.RetrofitManager
 import com.gjn.easyapp.easyutils.*
+import com.gjn.easyapp.network.MainRepository
 import kotlinx.android.synthetic.main.activity_demo.*
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import java.io.FileFilter
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -27,6 +30,13 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
         println("TimeZone ${TimeZone.getDefault()}")
         println("TimeZone displayName ${TimeZone.getDefault().displayName}")
+
+        /*launchMain {
+            RetrofitManager.ignoreLogUrlPath.add("banner/json")
+            MainRepository.getBannerFlow().collectLatest {
+                println("getBannerFlow success")
+            }
+        }*/
 
         btn1_ad.click {
             //id动画
