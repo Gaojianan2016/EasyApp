@@ -125,11 +125,11 @@ object RetrofitManager {
         val bodyBuilder = StringBuilder()
         ignoreUrlArray.forEach {
             if (response.request.url.toString().contains(it)) {
-                return "ignore Log"
+                return "ignore body log"
             }
         }
-        if (response.body == null) return "no Body"
-        try {
+        if (response.body == null) return "body is null"
+        kotlin.runCatching {
             response.body?.let {
                 val source = it.source()
                 source.request(Long.MAX_VALUE)
@@ -144,8 +144,8 @@ object RetrofitManager {
                     }
                 }
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        }.onFailure {
+            return "body parse error [${it.message}]"
         }
         return bodyBuilder.toString()
     }
@@ -159,11 +159,9 @@ object RetrofitManager {
                 customInterceptorListener?.customRequest(original.url.toString(), this)
             }.build()
             val t1 = System.nanoTime()
-
             val response = chain.proceed(request)
             customInterceptorListener?.getResponse(response)
             val t2 = System.nanoTime()
-
             log(buildString {
                 //request HEAD
                 append("----------Request HEAD----------\n")
@@ -188,7 +186,6 @@ object RetrofitManager {
                     append(responseBodyStr(response, ignoreLogUrlPath.toTypedArray()))
                 }
             })
-
             return response
         }
 
@@ -250,7 +247,6 @@ object RetrofitManager {
                         consumeAll(jr)
                     }
                     JsonToken.NULL -> jr.nextNull()
-                    else -> {}
                 }
             }
         }

@@ -129,7 +129,7 @@ fun File.toRectBitmap(
 /**
  * view转Bitmap 可以当成截图view
  * */
-fun View.toBitmap(): Bitmap {
+fun View.toBitmap(config: Bitmap.Config = Bitmap.Config.RGB_565): Bitmap {
     val enabled = isDrawingCacheEnabled
     val drawing = willNotCacheDrawing()
     isDrawingCacheEnabled = true
@@ -141,7 +141,7 @@ fun View.toBitmap(): Bitmap {
         layout(0, 0, measuredWidth, measuredHeight)
         buildDrawingCache()
         if (drawingCache == null || drawingCache.isRecycled) {
-            bitmap = Bitmap.createBitmap(measuredWidth, measuredHeight, Bitmap.Config.RGB_565)
+            bitmap = Bitmap.createBitmap(measuredWidth, measuredHeight, config)
             draw(Canvas(bitmap))
         } else {
             bitmap = Bitmap.createBitmap(drawingCache)

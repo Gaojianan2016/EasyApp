@@ -487,6 +487,7 @@ logI
 logW
 logE
 logWTF
+printlnSuper
 ```
 
 ## MetaDataExt

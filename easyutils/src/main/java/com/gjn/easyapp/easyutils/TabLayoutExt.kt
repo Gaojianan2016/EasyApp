@@ -25,6 +25,7 @@ class TabScrollBar {
         private set
     var curPosition: Int = 0
         private set
+    var tabLayoutMediator: TabLayoutMediator? = null
 
     constructor(
         activity: FragmentActivity,
@@ -72,7 +73,7 @@ class TabScrollBar {
             } else if (activity != null) {
                 viewPager2.adapter = ViewPager2Adapter(activity!!)
             }
-            val mediator = TabLayoutMediator(tabLayout, viewPager2) { _, _ -> }
+            val mediator = tabLayoutMediator ?: TabLayoutMediator(tabLayout, viewPager2) { _, _ -> }
             //绑定tabLayout viewPager2
             mediator.attach()
         }
@@ -171,6 +172,7 @@ class TabScrollBar2<VDB : ViewDataBinding> {
         private set
     var curPosition: Int = 0
         private set
+    var tabLayoutMediator: TabLayoutMediator? = null
 
     constructor(
         activity: FragmentActivity,
@@ -222,7 +224,7 @@ class TabScrollBar2<VDB : ViewDataBinding> {
                 } else {
                     viewPager2!!.adapter = ViewPager2Adapter(activity)
                 }
-                val mediator = TabLayoutMediator(this, viewPager2!!) { _, _ -> }
+                val mediator = tabLayoutMediator ?: TabLayoutMediator(this, viewPager2!!) { _, _ -> }
                 //绑定tabLayout viewPager2
                 mediator.attach()
             }

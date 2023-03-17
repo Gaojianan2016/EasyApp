@@ -15,6 +15,9 @@ object HttpsUtils {
     val mHostnameVerifier = TrustAllHostnameVerifier()
     val mX509TrustManager = TrustAllManager()
 
+    /**
+     * 设置HttpsURLConnection默认允许全部Hostname和SSL
+     * */
     fun allowAllSSL() {
         HttpsURLConnection.setDefaultHostnameVerifier(mHostnameVerifier)
         HttpsURLConnection.setDefaultSSLSocketFactory(createSSLSocketFactory())
@@ -37,12 +40,12 @@ object HttpsUtils {
     class TrustAllManager : X509TrustManager {
         @SuppressLint("TrustAllX509TrustManager")
         override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
-            //接受任意客户端证书
+            //不处理代表接受任意客户端证书
         }
 
         @SuppressLint("TrustAllX509TrustManager")
         override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
-            //接受任意服务端证书
+            //不处理代表接受任意服务端证书
         }
 
         override fun getAcceptedIssuers(): Array<X509Certificate?> = arrayOfNulls(0)

@@ -10,12 +10,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
-import com.gjn.easyapp.easynetworker.RetrofitManager
 import com.gjn.easyapp.easyutils.*
-import com.gjn.easyapp.network.MainRepository
 import kotlinx.android.synthetic.main.activity_demo.*
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import java.io.FileFilter
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -746,6 +743,27 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("jsonBean2 toGsonJson ${jsonBean2.toGsonJson()}")
             println("jsonBean3 toGsonJson ${jsonBean3.toGsonJson()}")
             println("jsonBean4 toGsonJson ${jsonBean4.toGsonJson()}")
+        }
+
+        btn50_ad.click {
+            val log = buildString {
+                for (j in 0..170) {
+                    append("[$j]{床前明月光，疑是地上霜。举头望明月，低头思故乡。}")
+                }
+            }
+            val log2 = buildString {
+                for (j in 0..30) {
+                    append("[$j]{床前明月光，疑是地上霜。举头望明月，低头思故乡。}")
+                }
+            }
+            println(log.length)
+            println(log2.length)
+            printlnSuper(log)
+            printlnSuper(log2)
+//            logV(log, tr = Throwable("logV 测试"))
+//            logD(log, tr = Throwable("logD 测试"))
+            logE(log, tr = Throwable("logE 测试"))
+            logE(log2, tr = Throwable("logE 测试2"))
         }
     }
 

@@ -275,7 +275,7 @@ fun ByteArray?.rc4(
     key: ByteArray?
 ): ByteArray? {
     if (this == null || isEmpty() || key == null || key.isEmpty()) return null
-    if (key.isEmpty() || key.size > 256) {
+    if (key.size > 256) {
         throw IllegalArgumentException("key must be between 1 and 256 bytes");
     }
 
@@ -300,7 +300,7 @@ fun ByteArray?.rc4(
     var i = 0
     var t: Int
     var k: Byte
-    for (count in 0 until size) {
+    for (count in indices) {
         i = (i + 1) and 0xFF
         j = (j + iS[i]) and 0xFF
         tmp = iS[j]

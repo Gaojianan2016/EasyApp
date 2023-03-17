@@ -5,14 +5,16 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
+private const val EARTH_RADIUS = 6378137
+
 //区间相关
-fun Int.intervalOpen(min: Int, max: Int) = min.coerceAtLeast(this.coerceAtMost(max))
+fun Int.intervalOpen(min: Int, max: Int) = min.coerceAtLeast(coerceAtMost(max))
 
-fun Float.intervalOpen(min: Float, max: Float) = min.coerceAtLeast(this.coerceAtMost(max))
+fun Float.intervalOpen(min: Float, max: Float) = min.coerceAtLeast(coerceAtMost(max))
 
-fun Double.intervalOpen(min: Double, max: Double) = min.coerceAtLeast(this.coerceAtMost(max))
+fun Double.intervalOpen(min: Double, max: Double) = min.coerceAtLeast(coerceAtMost(max))
 
-fun Long.intervalOpen(min: Long, max: Long) = min.coerceAtLeast(this.coerceAtMost(max))
+fun Long.intervalOpen(min: Long, max: Long) = min.coerceAtLeast(coerceAtMost(max))
 
 //非零处理
 fun Int?.orZero(): Int = this ?: 0
@@ -52,17 +54,14 @@ fun coordinateDistance(
     longitude2: Double,
     latitude2: Double
 ): Double {
-    val r = 6378137 //地球半径
+    val r = EARTH_RADIUS
     val lat1 = Math.PI / 180 * latitude1
     val lat2 = Math.PI / 180 * latitude2
-
-    val a = lat1 - lat2
-    val b = Math.PI / 180 * (longitude1 - longitude2)
-
-    val sa = sin(a / 2)
-    val sb = sin(b / 2)
-
-    return asin(sqrt(sa * sa + cos(lat1) * cos(lat2) * sb * sb)) * r * 2
+    val latDiff = lat1 - lat2
+    val longDiff = Math.PI / 180 * (longitude1 - longitude2)
+    val sinLatDiff = sin(latDiff / 2)
+    val sinLongDiff = sin(longDiff / 2)
+    return asin(sqrt(sinLatDiff * sinLatDiff + cos(lat1) * cos(lat2) * sinLongDiff * sinLongDiff)) * r * 2
 }
 
 /**
