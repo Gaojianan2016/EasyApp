@@ -1,3 +1,40 @@
+pluginManagement {
+    repositories {
+        maven {
+            //阿里云google镜像
+            url 'https://maven.aliyun.com/repository/google'
+        }
+        maven {
+            //阿里云central仓和jcenter仓的聚合仓
+            url 'https://maven.aliyun.com/repository/public'
+        }
+        maven {
+            url 'https://jitpack.io'
+        }
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        maven {
+            //阿里云google镜像
+            url 'https://maven.aliyun.com/repository/google'
+        }
+        maven {
+            //阿里云central仓和jcenter仓的聚合仓
+            url 'https://maven.aliyun.com/repository/public'
+        }
+        maven {
+            url 'https://jitpack.io'
+        }
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = "EasyApp"
 include ':easynetworker'
 include ':easyinitalizer'
 include ':easyutils'
@@ -6,4 +43,3 @@ include ':easytoaster'
 include ':easylogger'
 include ':easybase'
 include ':app'
-rootProject.name = "EasyApp"

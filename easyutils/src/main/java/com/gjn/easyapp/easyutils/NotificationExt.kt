@@ -33,14 +33,11 @@ fun Context.sendNotification(
 ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         notificationManager.createNotificationChannel(config.notificationCancel)
-        println("createNotificationChannel ${config.notificationCancel}")
     }
     val notificationManager = NotificationManagerCompat.from(this)
     val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        println("Builder ${config.id}")
         NotificationCompat.Builder(this, config.id)
     } else {
-        println("Builder null")
         NotificationCompat.Builder(this)
     }
     block.invoke(builder)

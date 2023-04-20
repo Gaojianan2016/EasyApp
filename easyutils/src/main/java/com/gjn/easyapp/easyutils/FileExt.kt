@@ -10,6 +10,8 @@ import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
 import net.lingala.zip4j.ZipFile
+import net.lingala.zip4j.model.ZipParameters
+import net.lingala.zip4j.model.enums.EncryptionMethod
 import java.io.File
 import java.io.FileFilter
 import java.util.*
@@ -398,7 +400,7 @@ fun Context.unzipAssetsFile(assetName: String, targetPath: String) =
 fun Context.unzipAssetsFile(assetName: String, target: File?): Boolean {
     if (assetName.isEmpty() || target == null) return false
     if (!target.createOrExistsDir()) return false
-    try {
+    kotlin.runCatching {
         ZipInputStream(assets.open(assetName)).use { input ->
             var zipEntry = input.nextEntry
             var file: File
@@ -414,8 +416,6 @@ fun Context.unzipAssetsFile(assetName: String, target: File?): Boolean {
             }
         }
         return true
-    } catch (e: Exception) {
-        e.printStackTrace()
     }
     return false
 }
@@ -424,11 +424,31 @@ fun Context.unzipAssetsFile(assetName: String, target: File?): Boolean {
  * zip4j解压文件
  * github地址 https://github.com/srikanth-lingala/zip4j
  * */
-fun File.unzipFileUseZip4j(outputDir: String, password: CharArray? = null) {
-    if (!exists()) return
-    val zipFile = ZipFile(absolutePath)
-    if (zipFile.isEncrypted) {
-        zipFile.setPassword(password)
+fun File.unzipFileUseZip4j(outputDir: String, password: CharArray? = null): Boolean {
+    if (!exists()) return false
+    kotlin.runCatching {
+        val zipFile = ZipFile(absolutePath)
+        if (zipFile.isEncrypted) {
+            zipFile.setPassword(password)
+        }
+        zipFile.extractAll(outputDir)
+        return true
     }
-    zipFile.extractAll(outputDir)
+    return false
+}
+
+/**
+ * zip4j压缩文件
+ * github地址 https://github.com/srikanth-lingala/zip4j
+ * */
+fun File.zipFileUseZip4j(outputDir: String, password: CharArray? = null): Boolean {
+    if (!exists()) return false
+    kotlin.runCatching {
+        val zipFile = ZipFile(outputDir)
+        if (password != null) {
+            zipFile.setPassword(password)
+        }
+        return true
+    }
+    return false
 }

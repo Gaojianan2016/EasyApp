@@ -4,13 +4,13 @@ import android.os.Build
 import android.transition.Explode
 import android.transition.Fade
 import android.transition.Slide
+import android.widget.ImageView
 import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easyinitalizer.killAppByStack
 import com.gjn.easyapp.easyutils.*
-import kotlinx.android.synthetic.main.activity_image.*
 
-class ImageActivity: ABaseActivity() {
+class ImageActivity : ABaseActivity() {
 
     override fun layoutId() = R.layout.activity_image
 
@@ -33,8 +33,8 @@ class ImageActivity: ABaseActivity() {
                     window.enterTransition = Fade()
                 }
             }
-            if (id != -1){
-                img4_ai.setImageResource(id)
+            if (id != -1) {
+                findViewById<ImageView>(R.id.img4_ai).setImageResource(id)
             }
         }
 
@@ -44,18 +44,18 @@ class ImageActivity: ABaseActivity() {
     }
 
     override fun initData() {
-        img1_ai.click {
+        findViewById<ImageView>(R.id.img1_ai).click {
 //            finishActivityByStack(this@ImageActivity)
 //            finishAllActivitiesByStack()
             mActivity.killAppByStack()
 //            finishWithResult(777, "data" to "img1数据")
         }
-        img2_ai.click {
+        findViewById<ImageView>(R.id.img2_ai).click {
             finishWithResult("data" to "img2数据")
         }
     }
 
-    companion object{
+    companion object {
         const val DATA = "DATA"
         const val ID = "ID"
         const val ID2 = "ID2"

@@ -2,7 +2,7 @@ package com.gjn.easyapp.easyutils.media
 
 import android.graphics.Bitmap
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MediaInfo(
@@ -24,4 +24,4 @@ data class MediaInfo(
     var isVideo: Boolean = false,
     var dirSize: Int = 0,
     var expand: String? = null
-): Parcelable
+) : Parcelable

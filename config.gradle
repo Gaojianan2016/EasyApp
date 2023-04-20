@@ -1,9 +1,8 @@
 /**
  * buildScript 版本
  * */
-ext.build_gradle_version = "4.0.2"
-ext.kotlin_version = "1.6.10"
-ext.lifecycle_version = "2.4.1"
+ext.kotlin_version = "1.8.0"
+ext.lifecycle_version = "2.6.1"
 ext.lifecycle_ext_version = "2.2.0"
 
 /**
@@ -11,59 +10,39 @@ ext.lifecycle_ext_version = "2.2.0"
  * */
 def build_versions = [:]
 //android
-build_versions.compile_sdk = 32
+build_versions.compile_sdk = 33
 build_versions.build_tools = "29.0.3"
 
 build_versions.min_sdk = 19
-build_versions.target_sdk = 32
+build_versions.target_sdk = 33
 build_versions.app_version_code = 100000
 build_versions.app_version_name = "1.0.0"
 
 ext.build_versions = build_versions
 
 /**
- * 仓库管理
- * */
-def addRepositories(RepositoryHandler handler) {
-    handler.maven {
-        //阿里云google镜像
-        url 'https://maven.aliyun.com/repository/google'
-    }
-    handler.maven {
-        //阿里云central仓和jcenter仓的聚合仓
-        url 'https://maven.aliyun.com/repository/public'
-    }
-    handler.maven {
-        url 'https://jitpack.io'
-    }
-    handler.google()
-    handler.jcenter()
-}
-ext.addRepositories = this.&addRepositories
-
-/**
  * 仓库 版本
  * */
 def library_versions = [:]
 //Android相关
-library_versions.core_ktx = "1.6.0"
-library_versions.appcompat = "1.3.1"
+library_versions.core_ktx = "1.10.0"
+library_versions.appcompat = "1.6.1"
 library_versions.multidex = "2.0.1"
 library_versions.startup_runtime = "1.1.0"
 
 //常用ui
 library_versions.constraintlayout = "2.1.1"
 library_versions.recyclerview = "1.2.1"
-library_versions.material = "1.4.0"
+library_versions.material = "1.8.0"
 
 //兼容ui
 library_versions.legacy_v4 = "1.0.0"
 
 //gson
-library_versions.gson = "2.8.6"
+library_versions.gson = "2.10"
 
 //协程
-library_versions.kotlinx_coroutines = "1.5.1"
+library_versions.kotlinx_coroutines = "1.6.4"
 
 //glide
 library_versions.glide = "4.11.0"

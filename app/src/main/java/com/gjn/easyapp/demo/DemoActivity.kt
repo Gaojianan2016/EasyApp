@@ -9,9 +9,9 @@ import android.os.Environment
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import com.gjn.easyapp.R
+import com.gjn.easyapp.databinding.ActivityDemoBinding
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easyutils.*
-import kotlinx.android.synthetic.main.activity_demo.*
 import kotlinx.coroutines.delay
 import java.io.FileFilter
 import java.util.*
@@ -19,7 +19,14 @@ import java.util.concurrent.TimeUnit
 
 class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener {
 
+    private lateinit var binding: ActivityDemoBinding
+
     override fun layoutId() = R.layout.activity_demo
+
+    override fun bindContentView() {
+        binding = ActivityDemoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+    }
 
     @SuppressLint("MissingPermission")
     override fun initView() {
@@ -35,7 +42,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             }
         }*/
 
-        btn1_ad.click {
+        binding.btn1Ad.click {
             //id动画
 //            mActivity.startActivity<ImageActivity>(enterResId = R.anim.anim_bottom_in, exitResId = R.anim.anim_bottom_out)
 
@@ -47,13 +54,13 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             }
         }
 
-        btn2_ad.click {
-            mActivity.startActivity<ImageActivity>(sharedElements = arrayOf(btn1_ad, btn2_ad))
+        binding.btn2Ad.click {
+            mActivity.startActivity<ImageActivity>(sharedElements = arrayOf(binding.btn1Ad, binding.btn2Ad))
         }
 
-        btn3_ad.click {
+        binding.btn3Ad.click {
             mActivity.startActivity<ImageActivity>(
-                sharedElements = arrayOf(btn3_ad),
+                sharedElements = arrayOf(binding.btn3Ad),
                 pairs = arrayOf(
                     ImageActivity.DATA to "数据4",
                     ImageActivity.ID to R.mipmap.ic_launcher
@@ -61,67 +68,67 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             )
         }
 
-        btn4_ad.click {
+        binding.btn4Ad.click {
             showToast("是否打开软键盘 ${mActivity.isSoftInputVisible()}")
         }
 
-        btn5_ad.click {
+        binding.btn5Ad.click {
             mActivity.quickActivityResult(Intent(mActivity, ImageActivity::class.java))
             { code, data ->
                 showToast("code=$code data=${data?.getStringExtra("data")}")
             }
         }
 
-        btn6_ad.click {
+        binding.btn6Ad.click {
             println("bmp old ${bmp?.width} * ${bmp?.height} = ${bmp?.toByte()?.size} ")
             val bmp2 = bmp?.scale(0.5f)
             println("newBmp new ${bmp2?.width} * ${bmp2?.height} = ${bmp2?.toByte()?.size} ")
-            iv1_ad.setImageBitmap(bmp2)
+            binding.iv1Ad.setImageBitmap(bmp2)
 
-//            val bmp3 = btn7_ad.toBitmap()
-//            iv1_ad.setImageBitmap(bmp3)
+//            val bmp3 = binding.btn7Ad.toBitmap()
+//            iv1Ad.setImageBitmap(bmp3)
 
 //            val bmp4 = logo?.scale(0.5f)
-//            iv1_ad.setImageBitmap(bmp4)
+//            iv1Ad.setImageBitmap(bmp4)
 
 //            val bmp5 = bmp?.clip(0, 0, 50, 50)
-//            iv1_ad.setImageBitmap(bmp5)
+//            iv1Ad.setImageBitmap(bmp5)
 
 //            val bmp6 = bmp?.skew(5f, 0f)
-//            iv1_ad.setImageBitmap(bmp6)
+//            iv1Ad.setImageBitmap(bmp6)
 
 //            val bmp7 = bmp?.rotate(50f)
-//            iv1_ad.setImageBitmap(bmp7)
+//            iv1Ad.setImageBitmap(bmp7)
 
 //            val bmp8 = bmp?.alpha()
-//            iv1_ad.setImageBitmap(bmp8)
+//            iv1Ad.setImageBitmap(bmp8)
 
 //            val bmp9 = bmp?.gray()
-//            iv1_ad.setImageBitmap(bmp9)
+//            iv1Ad.setImageBitmap(bmp9)
         }
 
-        btn7_ad.click {
+        binding.btn7Ad.click {
 
             val logo = mActivity.vectorToBitmap(R.drawable.ic_launcher_background)
             val bmp2 = bmp?.addImageWatermark(logo, 9, 0.5f, 88, -45f)
-            iv1_ad.setImageBitmap(bmp2)
+            binding.iv1Ad.setImageBitmap(bmp2)
 
 //            val bmp3 = bmp?.toCircle(5, Color.BLUE)
-//            iv1_ad.setImageBitmap(bmp3)
+//            iv1Ad.setImageBitmap(bmp3)
 
 //            val bmp4 = bmp?.toRoundCorner(10f, 5, Color.RED)
-//            iv1_ad.setImageBitmap(bmp4)
+//            iv1Ad.setImageBitmap(bmp4)
 
 //            val bmp5 = bmp?.addTextWatermark("水印\n12345", textSize = 40f, degrees = -45f, alpha = 188)
-//            iv1_ad.setImageBitmap(bmp5)
+//            iv1Ad.setImageBitmap(bmp5)
         }
 
-        btn8_ad.click {
+        binding.btn8Ad.click {
             val bmp2 = bmp?.fastBlur(mActivity)
-            iv1_ad.setImageBitmap(bmp2)
+            binding.iv1Ad.setImageBitmap(bmp2)
         }
 
-        btn9_ad.click {
+        binding.btn9Ad.click {
             val internalSize = mActivity.appInternalCacheSize()
             val externalSize = mActivity.appExternalCacheSize()
             val fileSize = mActivity.appFileSize()
@@ -137,31 +144,31 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             )
         }
 
-        btn10_ad.click {
+        binding.btn10Ad.click {
             mActivity.clearAppAllData()
             showToast("清理成功")
         }
 
-        btn11_ad.click {
+        binding.btn11Ad.click {
             mActivity.requestWRPermission {
                 mActivity.installApp("/sdcard/Android/jsq.apk")
             }
         }
 
-        btn12_ad.click {
+        binding.btn12Ad.click {
             mActivity.uninstallApp("com.ddnapalon.calculator.gp")
         }
 
-        btn13_ad.click {
+        binding.btn13Ad.click {
             mActivity.openApp("com.ddnapalon.calculator.gp")
         }
 
-        btn14_ad.click {
+        binding.btn14Ad.click {
             mActivity.openAppDetailsSettings("com.ddnapalon.calculator.gp")
         }
 
-        btn15_ad.click {
-            iv2_ad.setImageDrawable(mActivity.getAppIcon())
+        binding.btn15Ad.click {
+            binding.iv2Ad.setImageDrawable(mActivity.getAppIcon())
             println("iconId ${mActivity.getAppIconId()}")
             println("applicationName ${mActivity.getApplicationName()}")
             println("appPath ${mActivity.getAppPath()}")
@@ -175,7 +182,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("getAppLauncherIntent ${mActivity.getAppLauncherIntent(WECHAT_PACKAGE_NAME)}")
         }
 
-        btn16_ad.click {
+        binding.btn16Ad.click {
             println("statusBarHeight ${mActivity.statusBarHeight}px")
             println("isStatusBarVisible ${mActivity.isStatusBarVisible}")
             println("isStatusBarLightMode ${mActivity.isStatusBarLightMode}")
@@ -186,14 +193,14 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("isNavBarLightMode ${mActivity.isNavBarLightMode}")
         }
 
-        btn17_ad.click {
+        binding.btn17Ad.click {
 //            //设置状态栏颜色
 //            mActivity.setStatusBarColor(Color.TRANSPARENT, true)
 
 //            //沉浸式状态栏
 //            mActivity.setStatusBarColor(Color.TRANSPARENT)
 //            //添加状态栏高度margin
-//            nsv_ad.addMarginTopEqualStatusBarHeight()
+//            nsvAd.addMarginTopEqualStatusBarHeight()
 
 //            //设置状态栏显示
 //            mActivity.isStatusBarVisible = !mActivity.isStatusBarVisible
@@ -203,60 +210,60 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             mActivity.startActivity<DrawerActivity>()
         }
 
-        btn18_ad.click {
+        binding.btn18Ad.click {
             println("isAutoBrightnessEnabled ${mActivity.isAutoBrightnessEnabled()}")
             println("screenBrightness ${mActivity.screenBrightness}")
             println("screenMaxBrightness ${mActivity.screenMaxBrightness}")
             println("windowBrightness ${window.windowBrightness}")
         }
 
-        btn19_ad.click {
-            window.setWindowBrightness(sb_ad.progress)
+        binding.btn19Ad.click {
+            window.setWindowBrightness(binding.sbAd.progress)
         }
 
-        btn20_ad.debouncingClick {
+        binding.btn20Ad.debouncingClick {
             mActivity.copyClipboardText("我是复制文字")
         }
 
-        btn21_ad.debouncingClick {
+        binding.btn21Ad.debouncingClick {
             println("getClipboardLabel ${mActivity.getClipboardLabel()}")
             println("getClipboardText ${mActivity.getClipboardText()}")
         }
 
-        btn22_ad.debouncingClick {
+        binding.btn22Ad.debouncingClick {
             mActivity.clearClipboard()
         }
 
-        btn23_ad.click {
-            tv_color_ad.setBackgroundColor(randomColor())
+        binding.btn23Ad.click {
+            binding.tvColorAd.setBackgroundColor(randomColor())
         }
 
-        btn24_ad.click {
+        binding.btn24Ad.click {
             val color = randomColor()
-            tv_color_ad.setBackgroundColor(color)
+            binding.tvColorAd.setBackgroundColor(color)
             println("${color.parseArgbColor()} isLightColor? ${color.isLightColor()}")
         }
 
-        btn25_ad.click {
+        binding.btn25Ad.click {
             var color = Color.BLACK
-            tv_color_ad.setBackgroundColor(color)
+            binding.tvColorAd.setBackgroundColor(color)
             launch {
                 delay(1000)
                 color = color.changeColorAlpha(0.2f)
-                tv_color_ad.setBackgroundColor(color)
+                binding.tvColorAd.setBackgroundColor(color)
                 delay(1000)
                 color = color.changeRedColorAlpha(0.3f)
-                tv_color_ad.setBackgroundColor(color)
+                binding.tvColorAd.setBackgroundColor(color)
                 delay(1000)
                 color = color.changeBlueColorAlpha(0.4f)
-                tv_color_ad.setBackgroundColor(color)
+                binding.tvColorAd.setBackgroundColor(color)
                 delay(1000)
                 color = color.changeGreenColorAlpha(0.5f)
-                tv_color_ad.setBackgroundColor(color)
+                binding.tvColorAd.setBackgroundColor(color)
             }
         }
 
-        btn26_ad.click {
+        binding.btn26Ad.click {
             println("isDeviceRooted ${isDeviceRooted()}")
             println("isAdbEnabled ${mActivity.isAdbEnabled()}")
             println("sdkVersionName $sdkVersionName")
@@ -265,7 +272,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("getMacAddress ${mActivity.getMacAddress()}")
         }
 
-        btn27_ad.click {
+        binding.btn27Ad.click {
             val str = "我是一段测试数据"
 
             var encodeStr = str.urlEncode()
@@ -287,26 +294,26 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("encryptHmacMD5ToString $encryptStr")
         }
 
-        btn28_ad.click {
+        binding.btn28Ad.click {
             val file = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".toFile()
 
             println("file createOrExistsFile ${file.createOrExistsFile()}")
 //            println("file createFile ${file.createfile}")
         }
 
-        btn29_ad.click {
+        binding.btn29Ad.click {
             val file = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".toFile()
 
             println("file deleteFile ${file.deleteFile()}")
         }
 
-        btn30_ad.click {
+        binding.btn30Ad.click {
             val file = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".toFile()
 
             println("file rename ${file.rename("text2.txt")}")
         }
 
-        btn31_ad.click {
+        binding.btn31Ad.click {
             val dir = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test".toFile()
             val file = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/text.txt".toFile()
             println("dir absolutePath ${dir.absolutePath}")
@@ -342,7 +349,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("externalDir statFsAvailableSize ${Environment.getExternalStorageDirectory().getStatFsAvailableSize().byteToStr()}")
         }
 
-        btn32_ad.click {
+        binding.btn32Ad.click {
             val path = "${Environment.getExternalStorageDirectory().absolutePath}/aA_test/"
             val file = "${path}text.txt".toFile()
             val dir = "${path}test1".toFile()
@@ -370,7 +377,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
         }
 
-        btn33_ad.click {
+        binding.btn33Ad.click {
             val intent = Intent()
             println("intentIsAvailable ${mActivity.intentIsAvailable(intent)}")
 
@@ -379,7 +386,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 
         }
 
-        btn34_ad.click {
+        binding.btn34Ad.click {
             val dir = "${Environment.getExternalStorageDirectory()}/aA_test".toFile()
 
             val file = "${Environment.getExternalStorageDirectory()}/aA_test/2b.jpg".toFile()
@@ -400,11 +407,11 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             }
         }
 
-        btn35_ad.click {
+        binding.btn35Ad.click {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-                println("isShowKeyboard-> ${soft_input.isShowKeyboard}")
-                println("keyboardShowHeight-> ${soft_input.keyboardShowHeight}")
+                println("isShowKeyboard-> ${binding.softInput.isShowKeyboard}")
+                println("keyboardShowHeight-> ${binding.softInput.keyboardShowHeight}")
 
 //                soft_input.toggleKeyboard()
 
@@ -418,7 +425,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
 //            soft_input.hideSoftInput()
         }
 
-        btn36_ad.click {
+        binding.btn36Ad.click {
             println("app getMetaData ${mActivity.getAppMetaData("TEST_KEY")}")
             println("activity getMetaData ${mActivity.getMetaData("TEST_KEY2")}")
         }
@@ -427,7 +434,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             NetworkStateManager.init(mActivity)
         }
 
-        btn37_ad.click {
+        binding.btn37Ad.click {
 //            mActivity.openWirelessSettings()
 
             println("isNetworkConnected ${mActivity.isNetworkConnected()}")
@@ -440,43 +447,45 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             }
         }
 
-        btn38_ad.click {
-            println("isNotificationsEnabled ${mActivity.isNotificationsEnabled()}")
+        binding.btn38Ad.click {
+            kotlin.runCatching {
+                println("isNotificationsEnabled ${mActivity.isNotificationsEnabled()}")
 
-            mActivity.sendNotification(100) {
-                it.setContentTitle("100通知")
-                it.setContentText("内容Text1111111111")
-                it.setWhen(System.currentTimeMillis())
-                it.setSmallIcon(R.mipmap.ic_launcher)
-            }
+                mActivity.sendNotification(100) {
+                    it.setContentTitle("100通知")
+                    it.setContentText("内容Text1111111111")
+                    it.setWhen(System.currentTimeMillis())
+                    it.setSmallIcon(R.mipmap.ic_launcher)
+                }
 
-            mActivity.sendNotification(200) {
-                it.setContentTitle("200通知")
-                it.setContentText("内容Text222222222")
-                it.setWhen(System.currentTimeMillis())
-                it.setSmallIcon(R.mipmap.ic_launcher)
-            }
+                mActivity.sendNotification(200) {
+                    it.setContentTitle("200通知")
+                    it.setContentText("内容Text222222222")
+                    it.setWhen(System.currentTimeMillis())
+                    it.setSmallIcon(R.mipmap.ic_launcher)
+                }
 
-            launch {
-                delay(500)
-                println("setNotificationBarExpand true")
-                mActivity.setNotificationBarExpand(true)
-            }
+                launch {
+                    delay(500)
+                    println("setNotificationBarExpand true")
+                    mActivity.setNotificationBarExpand(true)
+                }
 
-            launch {
-                delay(2000)
-                println("cancelNotification")
-                mActivity.cancelNotification(100)
-            }
+                launch {
+                    delay(2000)
+                    println("cancelNotification")
+                    mActivity.cancelNotification(100)
+                }
 
-            launch {
-                delay(4000)
-                println("cancelAllNotification")
-                mActivity.cancelAllNotification()
+                launch {
+                    delay(4000)
+                    println("cancelAllNotification")
+                    mActivity.cancelAllNotification()
+                }
             }
         }
 
-        btn39_ad.click {
+        binding.btn39Ad.click {
             println("isDevicePhone ${mActivity.isDevicePhone()}")
             println("isSimCardReady ${mActivity.isSimCardReady()}")
             println("getSimOperatorName ${mActivity.getSimOperatorName()}")
@@ -496,12 +505,12 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             }
         }
 
-        btn40_ad.click {
-            iv_qr_code.setQrCodeImageBitmap("生成二维码信息")
-            println("code ${iv_qr_code.getQrCodeByBitmap()}")
+        binding.btn40Ad.click {
+            binding.ivQrCode.setQrCodeImageBitmap("生成二维码信息")
+            println("code ${binding.ivQrCode.getQrCodeByBitmap()}")
         }
 
-        btn41_ad.click {
+        binding.btn41Ad.click {
             println("17745645645 isMobileNumber ${"17745645645".isMobileNumber()}")
             println("01114556677 isTelNumber ${"01114556677".isTelNumber()}")
             println("35001119900101237x isIdCard ${"35001119900101237x".isIdCard()}")
@@ -512,7 +521,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("360000 isZhPostCode ${"360000".isZhPostCode()}")
         }
 
-        btn42_ad.click {
+        binding.btn42Ad.click {
             requestWRPermission {
                 try {
                     println("get status_bar_height ${mActivity.getSystemDimenIdentifier("status_bar_height")}")
@@ -534,7 +543,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             }
         }
 
-        btn43_ad.click {
+        binding.btn43Ad.click {
             println("screenWidth ${mActivity.screenWidth}")
             println("screenHeight ${mActivity.screenHeight}")
             println("appScreenWidth ${mActivity.appScreenWidth}")
@@ -551,11 +560,11 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("getScreenLockTime ${mActivity.getScreenLockTime()}")
 
             mActivity.screenShot(false) {
-                iv_screen.setImageBitmap(it)
+                binding.ivScreen.setImageBitmap(it)
             }
         }
 
-        btn44_ad.click {
+        binding.btn44Ad.click {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 mActivity.quickRequestPermissions(arrayOf(Manifest.permission.FOREGROUND_SERVICE)) {
                     runService()
@@ -565,7 +574,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             }
         }
 
-        btn45_ad.click {
+        binding.btn45Ad.click {
             println("string ${getString(R.string.test_string)}")
             println("string ${getString(R.string.test_string2, "123455")}")
             mActivity.resources.getStringArray(R.array.test_string_array).forEach {
@@ -671,10 +680,10 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
                     R.mipmap.ic_launcher
                 )
             )
-            string_text.text = sp.matcherTextToColor(Color.RED, arrayOf("ext"), true)
+            binding.stringText.text = sp.matcherTextToColor(Color.RED, arrayOf("ext"), true)
         }
 
-        btn46_ad.click {
+        binding.btn46Ad.click {
             mActivity.quickRequestPermissions(arrayOf(Manifest.permission.VIBRATE)) {
                 mActivity.startVibrate(10_000)
                 launch {
@@ -684,14 +693,14 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             }
         }
 
-        btn47_ad.click {
-            println("viewWidth ${btn47_ad.viewWidth}")
-            println("viewHeight ${btn47_ad.viewHeight}")
-            println("isVisible ${btn47_ad.isVisible}")
+        binding.btn47Ad.click {
+            println("viewWidth ${binding.btn47Ad.viewWidth}")
+            println("viewHeight ${binding.btn47Ad.viewHeight}")
+            println("isVisible ${binding.btn47Ad.isVisible}")
             println("isLayoutRtl ${mActivity.isLayoutRtl()}")
         }
 
-        btn48_ad.click {
+        binding.btn48Ad.click {
 
             this@DemoActivity.setDeclaredField(this@DemoActivity.javaClass, "f1", "777")
             this@DemoActivity.setDeclaredField(this@DemoActivity.javaClass, "f2", "999")
@@ -713,7 +722,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             )
         }
 
-        btn49_ad.click {
+        binding.btn49Ad.click {
             val json1 = "{\"name\":\"111\",\"age\":11,\"phone\":\"123123213\",\"email\":\"123123123@123.com\"}"
             val json2 = "[{\"name\":\"111\",\"age\":11,\"phone\":\"123123213\",\"email\":\"123123123@123.com\"}," +
                     "{\"name\":\"222\",\"age\":22,\"phone\":\"456456456456\",\"email\":\"456456456456@123.com\"}]"
@@ -745,7 +754,7 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             println("jsonBean4 toGsonJson ${jsonBean4.toGsonJson()}")
         }
 
-        btn50_ad.click {
+        binding.btn50Ad.click {
             val log = buildString {
                 for (j in 0..170) {
                     append("[$j]{床前明月光，疑是地上霜。举头望明月，低头思故乡。}")
@@ -783,13 +792,21 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             mActivity.startService<TestService>()
             println("isServiceRunning1 ${mActivity.isServiceRunning(TestService::class.java)}")
 
-            mActivity.getAllRunningServiceNames().forEach {
+            var services = mActivity.getAllRunningServiceNames()
+            println("services1 ${services.size}")
+            services.forEach {
                 println("running $it")
             }
 
             delay(6000)
             mActivity.stopService<TestService>()
             println("isServiceRunning2 ${mActivity.isServiceRunning(TestService::class.java)}")
+
+            services = mActivity.getAllRunningServiceNames()
+            println("services2 ${services.size}")
+            services.forEach {
+                println("running $it")
+            }
         }
     }
 

@@ -15,6 +15,12 @@ class ToastUtil(private val mContext: Context) {
     private var mToast: Toast? = null
     var mEasyToastView = mContext.inflate(R.layout.easytoast_transient_notification)
 
+    fun destroy() {
+        mToast?.cancel()
+        mToast = null
+        mEasyToastView = null
+    }
+
     @SuppressLint("ShowToast")
     fun showToast(
         msg: CharSequence?,
@@ -183,6 +189,10 @@ class ToastUtil(private val mContext: Context) {
 
         fun init(context: Context) = initialize {
             ToastUtil(context)
+        }
+
+        fun destroy() {
+            instance?.destroy()
         }
 
         fun showToast(

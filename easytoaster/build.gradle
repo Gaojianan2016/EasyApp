@@ -1,10 +1,9 @@
 plugins{
     id 'com.android.library'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
-    id 'com.github.dcendents.android-maven'
+    id 'maven-publish'
 }
-group='com.github.Gaojianan2016'
+apply from: '../config.gradle'
 
 android {
     compileSdkVersion build_versions.compile_sdk
@@ -25,12 +24,24 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "androidx.core:core-ktx:${library_versions.core_ktx}"
-    implementation "androidx.appcompat:appcompat:${library_versions.appcompat}"
+    compileOnly fileTree(dir: "libs", include: ["*.jar"])
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compileOnly "androidx.core:core-ktx:${library_versions.core_ktx}"
+    compileOnly "androidx.appcompat:appcompat:${library_versions.appcompat}"
 
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${library_versions.kotlinx_coroutines}"
+    compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-android:${library_versions.kotlinx_coroutines}"
 
     compileOnly project(path: ':easyutils')
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.Gaojianan2016'
+                artifactId = 'easytoaster'
+            }
+        }
+    }
 }

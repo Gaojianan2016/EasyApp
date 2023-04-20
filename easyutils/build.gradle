@@ -1,10 +1,10 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
-    id 'com.github.dcendents.android-maven'
+    id 'kotlin-parcelize'
+    id 'maven-publish'
 }
-group = 'com.github.Gaojianan2016'
+apply from: '../config.gradle'
 
 android {
     compileSdkVersion build_versions.compile_sdk
@@ -29,13 +29,13 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "androidx.core:core-ktx:${library_versions.core_ktx}"
-    implementation "androidx.appcompat:appcompat:${library_versions.appcompat}"
+    compileOnly fileTree(dir: "libs", include: ["*.jar"])
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compileOnly "androidx.core:core-ktx:${library_versions.core_ktx}"
+    compileOnly "androidx.appcompat:appcompat:${library_versions.appcompat}"
 
-    implementation "com.google.android.material:material:${library_versions.material}"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${library_versions.kotlinx_coroutines}"
+    compileOnly "com.google.android.material:material:${library_versions.material}"
+    compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:${library_versions.kotlinx_coroutines}"
 
     //gson
     compileOnly "com.google.code.gson:gson:${library_versions.gson}"
@@ -43,4 +43,16 @@ dependencies {
     compileOnly "com.google.zxing:core:${library_versions.zxing}"
     compileOnly "com.tencent:mmkv-static:${library_versions.mmkv}"
     compileOnly "net.lingala.zip4j:zip4j:${library_versions.zip4j}"
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.Gaojianan2016'
+                artifactId = 'easyutils'
+            }
+        }
+    }
 }

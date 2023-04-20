@@ -1,9 +1,9 @@
 package com.gjn.easyapp
 
 import android.content.Intent
+import android.widget.Button
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easyutils.click
-import kotlinx.android.synthetic.main.activity_result.*
 
 class ActivityResultActivity : ABaseActivity() {
 
@@ -14,7 +14,7 @@ class ActivityResultActivity : ABaseActivity() {
     }
 
     override fun initData() {
-        button.click {
+        findViewById<Button>(R.id.button).click {
             val intent = Intent()
             intent.putExtra("msg", "你接到了我的数据")
             setResult(100, intent)

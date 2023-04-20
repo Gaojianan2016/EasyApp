@@ -15,7 +15,6 @@ import retrofit2.CallAdapter
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.EOFException
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
@@ -81,7 +80,7 @@ object RetrofitManager {
     }
 
     private fun isPlaintext(buffer: Buffer): Boolean {
-        return try {
+        kotlin.runCatching {
             val prefix = Buffer()
             val byteCount = buffer.size.coerceAtMost(64)
             buffer.copyTo(prefix, 0, byteCount)
@@ -92,10 +91,11 @@ object RetrofitManager {
                     return false
                 }
             }
-            true
-        } catch (e: EOFException) {
-            false
+            return true
+        }.onFailure {
+            it.printStackTrace()
         }
+        return false
     }
 
     private fun log(msg: String) {
@@ -247,6 +247,7 @@ object RetrofitManager {
                         consumeAll(jr)
                     }
                     JsonToken.NULL -> jr.nextNull()
+                    else -> {}
                 }
             }
         }
