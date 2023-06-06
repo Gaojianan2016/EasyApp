@@ -14,9 +14,10 @@ import java.util.concurrent.TimeUnit
 
 class DownLoadManager(private val activity: FragmentActivity) {
 
-    var downLoadStatus = DOWNLOAD_PRE
-        private set
     var onDownLoadListener: OnDownLoadListener? = null
+    var lengthBlock: (Response) -> Int = {
+        it.header(LENGTH)?.toInt() ?: -1
+    }
 
     var mOkHttpClient = OkHttpClient.Builder()
         .connectTimeout(30L, TimeUnit.SECONDS)
@@ -27,6 +28,8 @@ class DownLoadManager(private val activity: FragmentActivity) {
         .addInterceptor(RetrofitManager.LoggingAndCustomRequestInterceptor())
         .build()
 
+    var downLoadStatus = DOWNLOAD_PRE
+        private set
     private var mCall: Call? = null
 
     //停止下载 会改变下载状态
@@ -106,7 +109,7 @@ class DownLoadManager(private val activity: FragmentActivity) {
     }
 
     private fun downloadStream(call: Call, response: Response, file: File): Boolean {
-        val length = response.header(LENGTH)?.toInt() ?: -1
+        val length = lengthBlock.invoke(response)
         if (length < 0) {
             onDownLoadListener?.downLoadStatus(downLoadStatus, "下载内容为空")
             return false

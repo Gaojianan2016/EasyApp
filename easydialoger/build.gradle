@@ -28,7 +28,8 @@ android {
 
 dependencies {
     compileOnly fileTree(dir: "libs", include: ["*.jar"])
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+//    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
     compileOnly "androidx.core:core-ktx:${library_versions.core_ktx}"
     compileOnly "androidx.appcompat:appcompat:${library_versions.appcompat}"
 

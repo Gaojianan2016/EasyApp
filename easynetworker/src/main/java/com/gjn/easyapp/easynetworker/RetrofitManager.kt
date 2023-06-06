@@ -29,6 +29,8 @@ object RetrofitManager {
 
     val ignoreLogUrlPath = mutableListOf<String>()
 
+    val hideLogUrlPath = mutableListOf<String>()
+
     private val okHttpClientBuilder = OkHttpClient.Builder()
         .connectTimeout(30L, TimeUnit.SECONDS)
         .readTimeout(30L, TimeUnit.SECONDS)
@@ -162,30 +164,38 @@ object RetrofitManager {
             val response = chain.proceed(request)
             customInterceptorListener?.getResponse(response)
             val t2 = System.nanoTime()
-            log(buildString {
-                //request HEAD
-                append("----------Request HEAD----------\n")
-                append("--> ${request.method} ${request.url}\n")
-                request.headers.forEach { (name, value) ->
-                    append("-> $name = $value\n")
-                }
-                //request BODY
-                append("----------Request BODY----------\n")
-                append("--> ${request.body?.contentType()} ${request.body?.contentLength()}\n")
-                append(requestBodyStr(request))
-                append("----------Request END----------\n")
-                //response HEAD
-                append("--> ${response.code} ${(t2 - t1) / 1e6}ms\n")
-                append("----------Response HEAD----------\n")
-                response.headers.forEach { (name, value) ->
-                    append("-> $name = $value\n")
-                }
-                //response BODY
-                if (printBody) {
-                    append("${request.url}\n")
-                    append(responseBodyStr(response, ignoreLogUrlPath.toTypedArray()))
-                }
-            })
+
+            if (hideLogUrlPath.contains(request.url.toString())) {
+                log(buildString {
+                    append("--> ${request.method} ${request.url}\n")
+                    append("--> ${response.code} ${(t2 - t1) / 1e6}ms\n")
+                })
+            } else {
+                log(buildString {
+                    //request HEAD
+                    append("----------Request HEAD----------\n")
+                    append("--> ${request.method} ${request.url}\n")
+                    request.headers.forEach { (name, value) ->
+                        append("-> $name = $value\n")
+                    }
+                    //request BODY
+                    append("----------Request BODY----------\n")
+                    append("--> ${request.body?.contentType()} ${request.body?.contentLength()}\n")
+                    append(requestBodyStr(request))
+                    append("----------Request END----------\n")
+                    //response HEAD
+                    append("--> ${response.code} ${(t2 - t1) / 1e6}ms\n")
+                    append("----------Response HEAD----------\n")
+                    response.headers.forEach { (name, value) ->
+                        append("-> $name = $value\n")
+                    }
+                    //response BODY
+                    if (printBody) {
+                        append("${request.url}\n")
+                        append(responseBodyStr(response, ignoreLogUrlPath.toTypedArray()))
+                    }
+                })
+            }
             return response
         }
 

@@ -81,7 +81,7 @@ class MMKVUtil private constructor(private val mmkv: MMKV) {
     }
 
     fun decodeString(key: String, defaultValue: String = ""): String =
-        mmkv.decodeString(key, defaultValue)
+        mmkv.decodeString(key, defaultValue).orEmpty()
 
     fun decodeBool(key: String, defaultValue: Boolean = false): Boolean =
         mmkv.decodeBool(key, defaultValue)
@@ -98,10 +98,10 @@ class MMKVUtil private constructor(private val mmkv: MMKV) {
     fun decodeLong(key: String, defaultValue: Long = 0): Long =
         mmkv.decodeLong(key, defaultValue)
 
-    fun decodeBytes(key: String, defaultValue: ByteArray? = null): ByteArray =
+    fun decodeBytes(key: String, defaultValue: ByteArray? = null): ByteArray? =
         mmkv.decodeBytes(key, defaultValue)
 
-    fun decodeStringSet(key: String, defaultValue: Set<String>? = null): Set<String> =
+    fun decodeStringSet(key: String, defaultValue: Set<String>? = null): Set<String>? =
         mmkv.decodeStringSet(key, defaultValue)
 
     fun <T : Parcelable> decodeParcelable(key: String, clazz: Class<T>?): T? =

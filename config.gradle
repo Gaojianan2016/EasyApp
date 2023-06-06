@@ -15,7 +15,7 @@ build_versions.build_tools = "29.0.3"
 
 build_versions.min_sdk = 19
 build_versions.target_sdk = 33
-build_versions.app_version_code = 100000
+build_versions.app_version_code = 1
 build_versions.app_version_name = "1.0.0"
 
 ext.build_versions = build_versions
@@ -25,44 +25,44 @@ ext.build_versions = build_versions
  * */
 def library_versions = [:]
 //Android相关
-library_versions.core_ktx = "1.10.0"
+library_versions.core_ktx = "1.10.1"
 library_versions.appcompat = "1.6.1"
 library_versions.multidex = "2.0.1"
-library_versions.startup_runtime = "1.1.0"
+library_versions.startup_runtime = "1.1.1"
 
 //常用ui
-library_versions.constraintlayout = "2.1.1"
-library_versions.recyclerview = "1.2.1"
-library_versions.material = "1.8.0"
+library_versions.constraintlayout = "2.1.4"
+library_versions.recyclerview = "1.3.0"
+library_versions.material = "1.9.0"
 
 //兼容ui
 library_versions.legacy_v4 = "1.0.0"
 
 //gson
-library_versions.gson = "2.10"
+library_versions.gson = "2.10.1"
 
 //协程
 library_versions.kotlinx_coroutines = "1.6.4"
 
 //glide
-library_versions.glide = "4.11.0"
+library_versions.glide = "4.14.2"
 
 //Zxing
-library_versions.zxing = "3.4.0"
+library_versions.zxing = "3.5.1"
 
 //fastjson
-library_versions.fastjson = "1.2.73"
+library_versions.fastjson = "1.2.83"
 
 //okhttp
-library_versions.okhttp3 = "4.8.0"
+library_versions.okhttp3 = "4.11.0"
 
 //retrofit2
 library_versions.retrofit2 = "2.9.0"
 
 //mmkv
-library_versions.mmkv = "1.2.5"
+library_versions.mmkv = "1.2.16"
 
 //zip4j
-library_versions.zip4j = "2.9.0"
+library_versions.zip4j = "2.11.5"
 
 ext.library_versions = library_versions
