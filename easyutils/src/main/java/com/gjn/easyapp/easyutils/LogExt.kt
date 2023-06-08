@@ -65,16 +65,15 @@ fun printlnSuper(msg: String?) {
 private fun logMsg(msg: String?, tr: Throwable? = null, throwableBlock: ((String?) -> Unit)? = null, logBlock: (String) -> Unit) {
     val logs = logMsg(msg)
     if (logs.isEmpty()) {
-        if (tr == null && msg != null) {
+        if (tr != null) throwableBlock?.invoke(msg.orEmpty())
+        if (!msg.isNullOrEmpty()) {
             logBlock.invoke(msg)
-        } else {
-            throwableBlock?.invoke(msg)
         }
     } else if (logs.size == 1) {
-        throwableBlock?.invoke(tr?.message)
+        if (tr != null) throwableBlock?.invoke("")
         logBlock.invoke(logs[0])
     } else {
-        throwableBlock?.invoke(tr?.message)
+        if (tr != null) throwableBlock?.invoke("")
         logBlock.invoke(logs[0])
         for (i in 1 until logs.size) {
             logBlock.invoke(logs[i])

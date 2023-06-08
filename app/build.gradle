@@ -8,7 +8,7 @@ apply from: '../config.gradle'
 android {
     compileSdkVersion build_versions.compile_sdk
     //buildToolsVersion build_versions.build_tools
-    ndkVersion '22.1.7171670'
+    //ndkVersion '22.1.7171670'
 
     defaultConfig {
         applicationId "com.gjn.easyapp"

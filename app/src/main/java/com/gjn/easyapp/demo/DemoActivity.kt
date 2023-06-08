@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import com.gjn.easyapp.R
 import com.gjn.easyapp.databinding.ActivityDemoBinding
 import com.gjn.easyapp.easybase.ABaseActivity
+import com.gjn.easyapp.easynetworker.RetrofitManager
 import com.gjn.easyapp.easyutils.*
 import kotlinx.coroutines.delay
 import java.io.FileFilter
@@ -765,14 +766,19 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
                     append("[$j]{床前明月光，疑是地上霜。举头望明月，低头思故乡。}")
                 }
             }
+            val log3 = "床前明月光，疑是地上霜。举头望明月，低头思故乡。"
+            val log4 = "床前明月光，疑是地上霜。举头望明月，低头思故乡。 床前明月光，疑是地上霜。举头望明月，低头思故乡。"
+            val log5 = ""
             println(log.length)
             println(log2.length)
             printlnSuper(log)
             printlnSuper(log2)
-//            logV(log, tr = Throwable("logV 测试"))
-//            logD(log, tr = Throwable("logD 测试"))
             logE(log, tr = Throwable("logE 测试"))
             logE(log2, tr = Throwable("logE 测试2"))
+            logV(log3)
+            logD(log4)
+            logI(log5)
+            logW(log5, tr = Throwable("logW 测试5"))
         }
     }
 

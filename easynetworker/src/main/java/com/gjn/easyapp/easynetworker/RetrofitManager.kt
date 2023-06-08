@@ -165,16 +165,24 @@ object RetrofitManager {
             customInterceptorListener?.getResponse(response)
             val t2 = System.nanoTime()
 
-            if (hideLogUrlPath.contains(request.url.toString())) {
+            val requestUrl = request.url.toString()
+            var isHide = false
+            for (url in hideLogUrlPath) {
+                if (requestUrl.contains(url)) {
+                    isHide = true
+                    break
+                }
+            }
+            if (isHide) {
                 log(buildString {
-                    append("--> ${request.method} ${request.url}\n")
+                    append("--> ${request.method} $requestUrl \n")
                     append("--> ${response.code} ${(t2 - t1) / 1e6}ms\n")
                 })
             } else {
                 log(buildString {
                     //request HEAD
                     append("----------Request HEAD----------\n")
-                    append("--> ${request.method} ${request.url}\n")
+                    append("--> ${request.method} $requestUrl \n")
                     request.headers.forEach { (name, value) ->
                         append("-> $name = $value\n")
                     }
@@ -191,7 +199,7 @@ object RetrofitManager {
                     }
                     //response BODY
                     if (printBody) {
-                        append("${request.url}\n")
+                        append("$requestUrl \n")
                         append(responseBodyStr(response, ignoreLogUrlPath.toTypedArray()))
                     }
                 })
