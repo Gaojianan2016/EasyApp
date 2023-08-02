@@ -14,25 +14,23 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import com.gjn.easyapp.easydialoger.base.BaseDialogFragment
-import com.gjn.easyapp.easydialoger.base.ConvertLayoutDialogFragment
-import com.gjn.easyapp.easydialoger.base.OnDialogCancelListener
-import com.gjn.easyapp.easydialoger.base.ViewHolder
+import com.gjn.easyapp.easydialoger.base.*
 import com.gjn.easyapp.easyutils.*
 import java.util.concurrent.CopyOnWriteArrayList
 
+@SuppressLint("SetTextI18n")
 class EasyDialogManager {
 
     private val fragmentList: CopyOnWriteArrayList<BaseDialogFragment> = CopyOnWriteArrayList()
-    private var mFragmentManager: FragmentManager? = null
     private var mActivity: Activity? = null
+    private var mFragmentManager: FragmentManager? = null
 
-    constructor(activity: FragmentActivity) {
+    constructor(activity: FragmentActivity, isWeak: Boolean = false) {
         mFragmentManager = activity.supportFragmentManager
         mActivity = activity
     }
 
-    constructor(fragment: Fragment) {
+    constructor(fragment: Fragment, isWeak: Boolean = false) {
         mFragmentManager = fragment.childFragmentManager
         mActivity = fragment.activity
     }
@@ -44,7 +42,7 @@ class EasyDialogManager {
     }
 
     fun showDialog(dialogFragment: BaseDialogFragment?): BaseDialogFragment? {
-        if (dialogFragment == null) return dialogFragment
+        if (dialogFragment == null) return null
         dismissDialog(dialogFragment)
         show(dialogFragment)
         return dialogFragment
@@ -62,6 +60,11 @@ class EasyDialogManager {
             dismissDialog(fragment)
         }
         fragmentList.clear()
+    }
+
+    fun destroyManager() {
+        mFragmentManager = null
+        mActivity = null
     }
 
     fun showAndroidDialog(
@@ -147,7 +150,6 @@ class EasyDialogManager {
         return null
     }
 
-    @SuppressLint("SetTextI18n")
     fun showEasyDialog(
         msg: CharSequence,
         dimAmount: Float = BaseDialogFragment.DIM_AMOUNT,
@@ -260,7 +262,13 @@ class EasyDialogManager {
             fragmentList.add(dialogFragment)
             dialogFragment.addOnDialogCancelListener(object : OnDialogCancelListener {
                 override fun onCancel(dialog: DialogInterface, dialogFragment: DialogFragment) {
-                    log("cancel dismiss $dialogFragment")
+                    log("onCancel $dialogFragment")
+                    fragmentList.remove(dialogFragment)
+                }
+            })
+            dialogFragment.addOnDialogDismissListener(object : OnDialogDismissListener {
+                override fun onDismiss(dialog: DialogInterface, dialogFragment: DialogFragment) {
+                    log("onDismiss $dialogFragment")
                     fragmentList.remove(dialogFragment)
                 }
             })
