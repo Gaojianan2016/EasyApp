@@ -68,6 +68,7 @@ abstract class ABaseActivity : AppCompatActivity(), UIEvent {
 
     override fun onDestroy() {
         dismissAllEasyDialog()
+        mDialogManager.destroyManager()
         super.onDestroy()
     }
 }

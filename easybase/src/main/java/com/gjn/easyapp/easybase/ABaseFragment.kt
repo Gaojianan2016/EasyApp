@@ -83,6 +83,7 @@ abstract class ABaseFragment : Fragment(), UIEvent {
 
     override fun onDestroyView() {
         dismissAllEasyDialog()
+        mDialogManager.destroyManager()
         super.onDestroyView()
     }
 }
