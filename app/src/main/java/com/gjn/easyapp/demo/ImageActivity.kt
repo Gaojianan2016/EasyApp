@@ -9,6 +9,7 @@ import com.gjn.easyapp.R
 import com.gjn.easyapp.easybase.ABaseActivity
 import com.gjn.easyapp.easyinitalizer.killAppByStack
 import com.gjn.easyapp.easyutils.*
+import kotlinx.coroutines.CoroutineName
 
 class ImageActivity : ABaseActivity() {
 

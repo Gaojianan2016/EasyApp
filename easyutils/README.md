@@ -1,6 +1,7 @@
 # 工具类说明
 
 ## ActivityExt
+
 ```
 Context.startActivity 启动Activity
 Context.startActivityForResult 启动Activity有返回结果
@@ -22,12 +23,14 @@ Activity.getViewInvisibleHeight 获取Activity中子view未显示高度
 ```
 
 ## ActivityResultExt
+
 ```
 FragmentActivity.quickActivityResult 打开Activity并且直接执行结果
 Fragment.quickActivityResult 打开Activity并且直接执行结果
 ```
 
 ## AnnotationsExt
+
 ```
 Any.containAnnotation 判断类是否被注解
 Field.containAnnotation 判断Field是否被注解
@@ -36,11 +39,13 @@ Any.getField 获取注解的成员变量
 ```
 
 ## AnyExt
+
 ```
 Any.cloneAny 使用gson复制对象
 ```
 
 ## AppExt
+
 ```
 String.toPackageNameUri 包名转换为uri
 Context.toPackageNameUri 包名转换为uri
@@ -73,6 +78,7 @@ Context.getAppSignatures 获取app签名
 ```
 
 ## AutoScreenExt 今日头条适配方案
+
 ```
 AutoScreenUtil 主类
     init 初始化
@@ -82,6 +88,7 @@ IAutoChange 修改适配
 ```
 
 ## BarExt
+
 ```
 Context.statusBarHeight 状态栏高度(px)
 Activity.isStatusBarVisible 状态栏是否显示
@@ -123,6 +130,7 @@ Activity.subtractTopOffsetStatusBarHeight
 ```
 
 ## BitmapExt
+
 ```
 Bitmap.compress 压缩bitmap
 *.toDrawable Bitmap、ByteArray转Drawable
@@ -154,6 +162,7 @@ File.getRotateDegree 获取图片文件旋转角度
 ```
 
 ## BrightnessExt
+
 ```
 Context.isAutoBrightnessEnabled 是否开启自动亮度
 Context.screenBrightness 屏幕亮度 0-255
@@ -169,11 +178,13 @@ Context.setBrightness 设置亮度
 ```
 
 ## BundleExt
+
 ```
 Bundle?.get 将 Bundle.get(key) 转换为 Bundle[key]
 ```
 
 ## CancelExt
+
 ```
 //externalCacheDir cacheDir filesDir sharedPreferenceDir databasesDir 这几个路径为官方自带路径
 Context.sharedPreferenceDir SharedPreference路径
@@ -197,6 +208,7 @@ Context.appCancelSize app缓存文件大小
 ```
 
 ## ClickExt
+
 ```
 View.click 单击点击
 View.clickLong 长按点击
@@ -208,6 +220,7 @@ setOnDebouncingClickListeners 批量设置防抖点击
 ```
 
 ## ClipboardExt
+
 ```
 Context.copyClipboardText 剪切Text
 Context.clearClipboard 清空剪切板
@@ -219,6 +232,7 @@ Context.removeClipboardChangedListener 移除剪切板改变监听
 ```
 
 ## ColorExt
+
 ```
 Context.getColorRes 通过resource获取color
 
@@ -235,6 +249,7 @@ Int.isLightColor 是否为浅色
 ```
 
 ## ContextExt
+
 ```
 //常用Manager
 Context.activityManager
@@ -255,6 +270,7 @@ Context.checkPermission 判断权限
 ```
 
 ## ConvertExt
+
 ```
 Int.toHexString 10进制转16进制
 String.hexString2Int 16进制转10进制
@@ -270,7 +286,11 @@ ByteArray.splice 拼接Byte
 ```
 
 ## CoroutineExt
+
 ```
+applicationScope 全局协程区域
+applicationScopeExceptionHandler 全局协程区域报错监听
+
 launch 协程launch
 launchMain 主线程协程launch
 launchIO io线程协程launch
@@ -284,6 +304,7 @@ withContextIO io线程协程withContext
 ```
 
 ## DeviceExt
+
 ```
 isDeviceRooted 设备是否root
 Context.isAdbEnabled 是否开启adb
@@ -297,6 +318,7 @@ Context.getWifiEnabled 获取wifi状态
 ```
 
 ## DisplayExt
+
 ```
 Float.px2Dimension
 
@@ -310,6 +332,7 @@ Float.px2Dimension
 ```
 
 ## EncodeExt
+
 ```
 String.urlEncode url加密
 String.urlDecode url解密
@@ -323,6 +346,7 @@ String.binaryDecode 二进制解密
 ```
 
 ## EncryptExt
+
 ```
 *.encryptMD5ToString  MD5哈希加密
 *.encryptHash2String 哈希加密
@@ -350,6 +374,7 @@ String.binaryDecode 二进制解密
 ```
 
 ## FileExt
+
 ```
 *.toFile 转为file
 File.toByteArray 转为字节
@@ -393,12 +418,14 @@ Context.unzipFileUseZip4j zip4j解压文件
 ```
 
 ## FileIOExt
+
 ```
 File.writeString file写入字符串
 File.writeInputStream file写入输入流
 ```
 
 ## FragmentExt
+
 ```
 Fragment.startActivity 打开Activity
 Fragment.startActivityForResult 打开Activity等待结果
@@ -409,6 +436,7 @@ Fragment.getArgumentsKey 获取Fragment的Argument值
 ```
 
 ## IntentExt
+
 ```
 Context.dial 拨号
 Context.sendSMS 发短信
@@ -430,6 +458,7 @@ String.getComponentIntent 包名获取组件 Intent
 ```
 
 ## JsonExt
+
 ```
 setDelegateGson 设置代理Gson
 putGsonMap 修改默认GsonMap
@@ -454,6 +483,7 @@ String.fromGsonJsonArray json字符串通过gson转array
 ```
 
 ## KeyboardExt
+
 ```
 View.isShowKeyboard 是否显示软键盘
 View.keyboardShowHeight 软键盘高度
@@ -471,6 +501,7 @@ Activity.fixAndroidBug5497 修复软键盘bug
 ```
 
 ## ListExt
+
 ```
 Collection<T>?.isNotEmptyCollection 是否是非空集合
 *.isList 列表需要大于1
@@ -480,6 +511,7 @@ String.split2List 分割字符串成列表
 ```
 
 ## LogExt
+
 ```
 logV
 logD
@@ -491,6 +523,7 @@ printlnSuper
 ```
 
 ## MetaDataExt
+
 ```
 Context.getAppMetaData 获取App meta-data
 
@@ -505,6 +538,7 @@ Context.getReceiverMetaData 获取BroadcastReceiver meta-data
 ```
 
 ## NetworkExt
+
 ```
 Context.openWirelessSettings 打开无线设置
 
@@ -518,6 +552,7 @@ Context.unregisterNetworkCallback 取消监听网络状态变化
 ```
 
 ## NotificationExt
+
 ```
 Context.isNotificationsEnabled 是否启动通知
 
@@ -530,11 +565,13 @@ Context.setNotificationBarExpand 是否展开通知
 ```
 
 ## NumberExt
+
 ```
 *.format 格式化小数点
 ```
 
 ## PermissionExt
+
 ```
 Context.checkPermissionExistManifest 检查是否存在权限
 
@@ -548,6 +585,7 @@ FragmentActivity.requestCameraPermission 相机权限
 ```
 
 ## PhoneInfoExt
+
 ```
 Context.isDevicePhone 设备是否是手机
 Context.getDeviceId 获取设备id
@@ -564,6 +602,7 @@ phoneManufacturer 手机制造商
 ```
 
 ## QRCodeExt
+
 ```
 String.encodeQrCode 字符串加密成二维码bitmap
 Bitmap.decodeQrCode 二维码bitmap解密成字符串
@@ -574,6 +613,7 @@ File.getQrCode 获取文件二维码解析字符串
 ```
 
 ## ReflexExt
+
 ```
 String.toClazz 完整类名转Class对象
 String.toClass 完整类名转Class
@@ -595,6 +635,7 @@ Int.isStaticPublic 判断Modifier对象是否是静态公开的
 ```
 
 ## RegexExt
+
 ```
 CharSequence.isMobileNumber 是否是手机号码
 CharSequence.isTelNumber 是否是电话号码
@@ -609,6 +650,7 @@ CharSequence.findRegex 查找正则表达式
 ```
 
 ## ResourcesExt
+
 ```
 Context.getSystem...Identifier 获取系统包内数据
 
@@ -628,6 +670,7 @@ Context.stringArray 获取字符串数组
 ```
 
 ## ScreenExt
+
 ```
 //屏幕宽高
 Context.screenWidth
@@ -654,6 +697,7 @@ Context.getScreenLockTime 获取锁屏时间
 ```
 
 ## ServiceExt
+
 ```
 Context.getAllRunningServiceNames 获取全部运行的服务
 Context.isServiceRunning 服务是否在运行
@@ -665,17 +709,20 @@ Context.bindService
 ```
 
 ## ShellExt
+
 ```
 execCmd 执行命令
 Closeable.tryClose 尝试关闭流操作
 ```
 
 ## SingletonExt
+
 ```
 SingletonCompanionImpl 实现单例伴生类
 ```
 
 ## StringExt
+
 ```
 randomUUIDString 生成UUID随机数字符串
 
@@ -713,6 +760,7 @@ CharSequence.createImageSpannableStringBuilder 创建带图的SpannableStringBui
 ```
 
 ## TabLayoutExt
+
 ```
 TabScrollBar 快速创建TabLayout
 TabScrollBar2 快速创建TabLayout
@@ -722,6 +770,7 @@ TabLayout.setSelectedTabIndicatorFixWidth 强制固定TabLayout宽度 兼容5.0 
 ```
 
 ## TimeExt
+
 ```
 Long.toDateFormat 时间戳转日期格式
 Long.toDate 时间戳转日期
@@ -746,17 +795,20 @@ createGregorianCalendar 创建阳历
 ```
 
 ## ToastExt
+
 ```
 *.toast 正常吐司
 *.longToast 长吐司
 ```
 
 ## UnitExt
+
 ```
 UnitObj 一些常用单位对象
 ```
 
 ## UtilsExt
+
 ```
 *.intervalOpen 开区间
 *?.orZero 为空转为0
@@ -773,6 +825,7 @@ singleChoiceString 单选字符串
 ```
 
 ## UriExt
+
 ```
 //媒体uri地址
 EXTERNAL_MEDIA_IMAGE_URI
@@ -783,12 +836,14 @@ String.toUri 字符串转uri
 ```
 
 ## VibrateExt
+
 ```
 Context.startVibrate 设备开始震动
 Context.cancelVibrate 设备取消震动
 ```
 
 ## ViewBindingExt
+
 ```
 Activity.inflateBinding 快捷绑定viewbinding
 Dialog.inflateBinding 快捷绑定viewbinding
@@ -797,6 +852,7 @@ inflateViewBinding 快捷绑定viewbinding
 ```
 
 ## ViewExt
+
 ```
 //宽高
 View.viewWidth
@@ -842,6 +898,7 @@ Activity.monitorClickInOrOutEditText 监听Activity中点击是否在EditText内
 ```
 
 ## VolumeExt
+
 ```
 Context.getVolume 获取声音大小
 Context.setVolume 设置声音大小

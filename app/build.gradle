@@ -7,8 +7,6 @@ apply from: '../config.gradle'
 
 android {
     compileSdkVersion build_versions.compile_sdk
-    //buildToolsVersion build_versions.build_tools
-    //ndkVersion '22.1.7171670'
 
     defaultConfig {
         applicationId "com.gjn.easyapp"
@@ -20,8 +18,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     //kotlin 默认使用1.6编译 这里修改为使用1.8编译
@@ -91,6 +89,15 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:${library_versions.retrofit2}"
     //mmkv
     implementation "com.tencent:mmkv-static:${library_versions.mmkv}"
+
+//    def easy_version = "1.1.9"
+//    implementation "com.github.Gaojianan2016.EasyApp:easybase:$easy_version"
+//    implementation "com.github.Gaojianan2016.EasyApp:easynetworker:$easy_version"
+//    implementation "com.github.Gaojianan2016.EasyApp:easylogger:$easy_version"
+//    implementation "com.github.Gaojianan2016.EasyApp:easytoaster:$easy_version"
+//    implementation "com.github.Gaojianan2016.EasyApp:easydialoger:$easy_version"
+//    implementation "com.github.Gaojianan2016.EasyApp:easyinitalizer:$easy_version"
+//    implementation "com.github.Gaojianan2016.EasyApp:easyutils:$easy_version"
 
     implementation project(path: ':easybase')
     implementation project(path: ':easynetworker')

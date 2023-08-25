@@ -2,7 +2,6 @@ package com.gjn.easyapp.easyutils
 
 import android.os.Parcel
 import android.os.Parcelable
-import java.nio.charset.Charset
 
 private val HEX_DIGITS_UPPER = "0123456789ABCDEF".toCharArray()
 private val HEX_DIGITS_LOWER = "0123456789abcdef".toCharArray()
@@ -22,8 +21,8 @@ fun String.hexString2Int() = Integer.parseInt(this, 16)
  * eg. {0, byte(10)} -> 000A
  * */
 fun ByteArray?.toHexString(isUpperCase: Boolean = true): String {
-    if (this == null || size == 0) return ""
-    val hexDigits: CharArray = if (isUpperCase) HEX_DIGITS_UPPER else HEX_DIGITS_LOWER
+    if (this == null || isEmpty()) return ""
+    val hexDigits = if (isUpperCase) HEX_DIGITS_UPPER else HEX_DIGITS_LOWER
     //size << 1
     val ret = CharArray(size shl 1)
     var i = 0
@@ -50,7 +49,7 @@ fun String?.hexString2Bytes(): ByteArray {
         hexString = "0$hexString"
         len++
     }
-    val hexBytes = hexString.toUpperCase().toCharArray()
+    val hexBytes = hexString.uppercase().toCharArray()
     //len >> 1
     val ret = ByteArray(len shr 1)
     var i = 0
@@ -73,7 +72,6 @@ private fun Char.hex2Dec(): Int {
 /**
  * Bytes to Parcelable
  * */
-@Suppress("UNCHECKED_CAST")
 fun <T> ByteArray?.toParcelable(creator: Parcelable.Creator<T>): T?{
     if (this == null) return null
     val parcel = Parcel.obtain()

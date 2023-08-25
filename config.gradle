@@ -11,7 +11,6 @@ ext.lifecycle_ext_version = "2.2.0"
 def build_versions = [:]
 //android
 build_versions.compile_sdk = 33
-build_versions.build_tools = "29.0.3"
 
 build_versions.min_sdk = 19
 build_versions.target_sdk = 33

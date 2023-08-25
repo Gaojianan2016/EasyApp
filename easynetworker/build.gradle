@@ -2,33 +2,11 @@ plugins {
     id 'com.android.library'
     id 'kotlin-android'
     id 'maven-publish'
+    id 'kotlin-parcelize'
 }
-apply from: '../config.gradle'
-
-android {
-    compileSdkVersion build_versions.compile_sdk
-    defaultConfig {
-        minSdkVersion build_versions.min_sdk
-        consumerProguardFiles "consumer-rules.pro"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    //kotlin 默认使用1.6编译 这里修改为使用1.8编译
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-}
+apply from: '../base_lib_build.gradle'
 
 dependencies {
-    compileOnly fileTree(dir: "libs", include: ["*.jar"])
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compileOnly "androidx.core:core-ktx:${library_versions.core_ktx}"
-    compileOnly "androidx.appcompat:appcompat:${library_versions.appcompat}"
-
     compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-android:${library_versions.kotlinx_coroutines}"
 
     //gson
