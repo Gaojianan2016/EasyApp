@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
@@ -50,39 +51,74 @@ internal class SafeCoroutineScope(context: CoroutineContext) : CoroutineScope, C
 }
 
 /**
+ * 系统相关协程
+ * */
+fun launchGlobal(
+    context: CoroutineContext = Dispatchers.Default,
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> Unit
+) = GlobalScope.launch(context, start, block)
+
+fun launchGlobalMain(
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> Unit
+) = launchGlobal(Dispatchers.Main, start, block)
+
+fun launchGlobalIO(
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> Unit
+) = launchGlobal(Dispatchers.IO, start, block)
+
+fun asyncGlobal(
+    context: CoroutineContext = Dispatchers.Default,
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> Unit
+) = GlobalScope.async(context, start, block)
+
+fun asyncGlobalMain(
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> Unit
+) = asyncGlobal(Dispatchers.Main, start, block)
+
+fun asyncGlobalIO(
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> Unit
+) = asyncGlobal(Dispatchers.IO, start, block)
+
+/**
  * Application 全局相关协程
  * */
-fun launch(
-    context: CoroutineContext = EmptyCoroutineContext,
+fun launchApplication(
+    context: CoroutineContext = Dispatchers.Default,
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
 ) = applicationScope.launch(context, start, block)
 
-fun launchMain(
+fun launchApplicationMain(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
-) = launch(Dispatchers.Main, start, block)
+) = launchApplication(Dispatchers.Main, start, block)
 
-fun launchIO(
+fun launchApplicationIO(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
-) = launch(Dispatchers.IO, start, block)
+) = launchApplication(Dispatchers.IO, start, block)
 
-fun async(
-    context: CoroutineContext = EmptyCoroutineContext,
+fun asyncApplication(
+    context: CoroutineContext = Dispatchers.Default,
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
 ) = applicationScope.async(context, start, block)
 
-fun asyncMain(
+fun asyncApplicationMain(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
-) = launch(Dispatchers.Main, start, block)
+) = asyncApplication(Dispatchers.Main, start, block)
 
-fun asyncIO(
+fun asyncApplicationIO(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
-) = launch(Dispatchers.IO, start, block)
+) = asyncApplication(Dispatchers.IO, start, block)
 
 /**
  * Activity 相关协程
@@ -112,12 +148,12 @@ fun ComponentActivity.async(
 fun ComponentActivity.asyncMain(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
-) = launch(Dispatchers.Main, start, block)
+) = async(Dispatchers.Main, start, block)
 
 fun ComponentActivity.asyncIO(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
-) = launch(Dispatchers.IO, start, block)
+) = async(Dispatchers.IO, start, block)
 
 /**
  * Fragment 相关协程
@@ -147,12 +183,12 @@ fun Fragment.async(
 fun Fragment.asyncMain(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
-) = launch(Dispatchers.Main, start, block)
+) = async(Dispatchers.Main, start, block)
 
 fun Fragment.asyncIO(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
-) = launch(Dispatchers.IO, start, block)
+) = async(Dispatchers.IO, start, block)
 
 /**
  * ViewModel 相关协程
@@ -182,12 +218,12 @@ fun ViewModel.async(
 fun ViewModel.asyncMain(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
-) = launch(Dispatchers.Main, start, block)
+) = async(Dispatchers.Main, start, block)
 
 fun ViewModel.asyncIO(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
-) = launch(Dispatchers.IO, start, block)
+) = async(Dispatchers.IO, start, block)
 
 
 suspend fun <T> withContextMain(

@@ -270,7 +270,7 @@ class MediaStorageManager(private val context: Context) {
     inner class MediaObserver(private val uri: Uri, private val type: Int) : ContentObserver(null) {
         override fun onChange(selfChange: Boolean, uri: Uri?) {
             super.onChange(selfChange, uri)
-            launchMain {
+            launchApplicationMain {
                 changeCallback?.onChange(
                     selfChange, uri, uri.toString() == "content://media/external"
                 )
@@ -285,7 +285,7 @@ class MediaStorageManager(private val context: Context) {
                         TYPE_VIDEO -> generateVideoInfo(cursor)
                         else -> null
                     }
-                    launchMain {
+                    launchApplicationMain {
                         changeCallback?.onChangeMediaInfo(mediaInfo)
                     }
                 }

@@ -4,20 +4,36 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import androidx.fragment.app.FragmentActivity
-import com.gjn.easyapp.easyutils.*
-import okhttp3.*
+import com.gjn.easyapp.easyutils.HttpsUtils
+import com.gjn.easyapp.easyutils.getUrlLastName
+import com.gjn.easyapp.easyutils.launchApplicationMain
+import com.gjn.easyapp.easyutils.openFile
+import com.gjn.easyapp.easyutils.packageNameUri
+import com.gjn.easyapp.easyutils.quickActivityResult
+import com.gjn.easyapp.easyutils.requestWRPermission
+import com.gjn.easyapp.easyutils.tryClose
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.util.concurrent.TimeUnit
 
-class DownLoadManager(private val activity: FragmentActivity) {
-
-    var onDownLoadListener: OnDownLoadListener? = null
-    var lengthBlock: (Response) -> Int = {
+class DownLoadManager(
+    private val activity: FragmentActivity,
+    var getFileSizeBlock: (Response) -> Int = {
         it.header(LENGTH)?.toInt() ?: -1
-    }
+    },
+    var downloadStartBlock: ((file: File, name: String, length: Int) -> Unit)? = null,
+    var downloadingBlock: ((writeLength: Int, length: Int) -> Unit)? = null,
+    var downloadSuccessBlock: ((file: File) -> Unit)? = null,
+    var downloadFailBlock: ((code: Int, throwable: Throwable) -> Unit)? = null,
+    var downloadCompleteBlock: (() -> Unit)? = null,
+) {
 
     var mOkHttpClient = OkHttpClient.Builder()
         .connectTimeout(30L, TimeUnit.SECONDS)
@@ -28,13 +44,14 @@ class DownLoadManager(private val activity: FragmentActivity) {
         .addInterceptor(RetrofitManager.LoggingAndCustomRequestInterceptor())
         .build()
 
-    var downLoadStatus = DOWNLOAD_PRE
+    var mStatus = DOWNLOAD_PRE
         private set
-    private var mCall: Call? = null
+    var mCall: Call? = null
+        private set
 
     //停止下载 会改变下载状态
     fun stopDownLoad() {
-        downLoadStatus = DOWNLOAD_PRE
+        mStatus = DOWNLOAD_PRE
         cancelDownLoad()
     }
 
@@ -60,29 +77,35 @@ class DownLoadManager(private val activity: FragmentActivity) {
 
     fun downLoadFile(url: String, path: String, name: String? = url.getUrlLastName()) {
         if (url.isEmpty() || path.isEmpty() || name.isNullOrEmpty()) {
-            onDownLoadListener?.downLoadStatus(downLoadStatus, "下载内容为空")
+            //下载内容为空
+            downloadFailBlock?.invoke(CODE_DOWNLOAD_EMPTY, NullPointerException("url or path or name is null"))
             return
         }
-        if (downLoadStatus == DOWNLOAD_SUCCESS) {
-            onDownLoadListener?.downLoadStatus(downLoadStatus, "已下载成功")
-            openFile(File(path, name))
+        if (mStatus == DOWNLOAD_SUCCESS) {
+            //已下载成功
+            val file = File(path, name)
+            if (file.exists()) {
+                //文件存在
+                downloadSuccessBlock?.invoke(File(path, name))
+            } else {
+                //文件不存在
+                mStatus = DOWNLOAD_PRE
+                downLoadFile(url, path, name)
+            }
             return
         }
-        if (downLoadStatus == DOWNLOAD_ING) {
-            onDownLoadListener?.downLoadStatus(downLoadStatus, "正在下载中")
-            return
-        }
+        //下载中
+        if (mStatus == DOWNLOAD_ING) return
         activity.requestWRPermission {
             //准备下载
-            downLoadStatus = DOWNLOAD_ING
+            mStatus = DOWNLOAD_ING
             mCall = mOkHttpClient.newCall(Request.Builder().url(url).build())
             mCall?.enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
-                    downLoadStatus = DOWNLOAD_FAIL
-                    launchMain {
-                        onDownLoadListener?.error(call, e)
-                        onDownLoadListener?.fail(call)
-                        onDownLoadListener?.end(call)
+                    mStatus = DOWNLOAD_FAIL
+                    launchApplicationMain {
+                        downloadFailBlock?.invoke(CODE_DOWNLOAD_ERROR, e)
+                        downloadCompleteBlock?.invoke()
                     }
                 }
 
@@ -92,15 +115,16 @@ class DownLoadManager(private val activity: FragmentActivity) {
                     val file = File(path, name)
                     if (file.exists()) if (file.delete()) println("delete file $file")
                     if (file.createNewFile()) println("createNewFile $file")
-                    if (downloadStream(call, response, file)) {
-                        launchMain {
-                            downLoadStatus = DOWNLOAD_SUCCESS
-                            onDownLoadListener?.success(call, file)
+                    if (downloadStream(response, file)) {
+                        launchApplicationMain {
+                            mStatus = DOWNLOAD_SUCCESS
+                            downloadSuccessBlock?.invoke(file)
+                            downloadCompleteBlock?.invoke()
                         }
                     } else {
-                        launchMain {
-                            downLoadStatus = DOWNLOAD_FAIL
-                            onDownLoadListener?.fail(call)
+                        launchApplicationMain {
+                            mStatus = DOWNLOAD_FAIL
+                            downloadCompleteBlock?.invoke()
                         }
                     }
                 }
@@ -108,47 +132,37 @@ class DownLoadManager(private val activity: FragmentActivity) {
         }
     }
 
-    private fun downloadStream(call: Call, response: Response, file: File): Boolean {
-        val length = lengthBlock.invoke(response)
-        if (length < 0) {
-            onDownLoadListener?.downLoadStatus(downLoadStatus, "下载内容为空")
-            return false
-        }
+    private fun downloadStream(response: Response, file: File): Boolean {
+        val length = getFileSizeBlock.invoke(response)
         var iStream: InputStream? = null
         var fos: FileOutputStream? = null
         val buffer = ByteArray(streamByte(length))
         var len: Int
-        var readStream = 0
-        launchMain {
-            onDownLoadListener?.start(call, file, file.name, length)
+        var writeLength = 0
+        launchApplicationMain {
+            //准备开始写入
+            downloadStartBlock?.invoke(file, file.name, length)
         }
         try {
             iStream = response.body!!.byteStream()
             fos = FileOutputStream(file)
             while (iStream.read(buffer).also { len = it } != -1) {
                 fos.write(buffer, 0, len)
-                readStream += len
-                launchMain {
-                    onDownLoadListener?.downLoading(call, readStream, length)
+                writeLength += len
+                launchApplicationMain {
+                    downloadingBlock?.invoke(writeLength, length)
                 }
             }
             fos.flush()
-            launchMain {
-                onDownLoadListener?.end(call)
-            }
             return true
         } catch (e: Exception) {
             if (file.exists()) if (file.delete()) println("file error delete $file")
-            launchMain {
-                onDownLoadListener?.error(call, e)
-                onDownLoadListener?.fail(call)
+            launchApplicationMain {
+                downloadFailBlock?.invoke(CODE_DOWNLOAD_WRITE_ERROR, e)
             }
         } finally {
             iStream?.tryClose()
             fos?.tryClose()
-        }
-        launchMain {
-            onDownLoadListener?.end(call)
         }
         return false
     }
@@ -168,6 +182,10 @@ class DownLoadManager(private val activity: FragmentActivity) {
         const val DOWNLOAD_ING = 0x222
         const val DOWNLOAD_SUCCESS = 0x333
         const val DOWNLOAD_FAIL = 0x444
+
+        const val CODE_DOWNLOAD_EMPTY = 0x1000
+        const val CODE_DOWNLOAD_ERROR = 0x1001
+        const val CODE_DOWNLOAD_WRITE_ERROR = 0x1002
 
         private const val LENGTH = "Content-Length"
         private const val TYPE = "Content-Type"
