@@ -54,7 +54,7 @@ internal class SafeCoroutineScope(context: CoroutineContext) : CoroutineScope, C
  * 系统相关协程
  * */
 fun launchGlobal(
-    context: CoroutineContext = Dispatchers.Default,
+    context: CoroutineContext = EmptyCoroutineContext,
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
 ) = GlobalScope.launch(context, start, block)
@@ -70,7 +70,7 @@ fun launchGlobalIO(
 ) = launchGlobal(Dispatchers.IO, start, block)
 
 fun asyncGlobal(
-    context: CoroutineContext = Dispatchers.Default,
+    context: CoroutineContext = EmptyCoroutineContext,
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
 ) = GlobalScope.async(context, start, block)

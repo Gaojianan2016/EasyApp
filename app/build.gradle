@@ -24,7 +24,7 @@ android {
 
     //kotlin 默认使用1.6编译 这里修改为使用1.8编译
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
 
     buildFeatures {
