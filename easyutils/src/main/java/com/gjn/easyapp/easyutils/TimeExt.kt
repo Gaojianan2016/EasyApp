@@ -177,7 +177,7 @@ fun Long.nowTimeDifference(): String {
  * */
 fun Long.isToday(): Boolean {
     val todayMillis = getTodayMillis()
-    return this > todayMillis || this - todayMillis < 1.daysMillis
+    return this > todayMillis && this - todayMillis < 1.daysMillis
 }
 
 /**
