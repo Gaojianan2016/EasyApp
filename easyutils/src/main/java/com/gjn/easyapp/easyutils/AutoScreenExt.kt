@@ -9,7 +9,6 @@ import android.content.res.Configuration
  * 今日头条适配方式
  * */
 object AutoScreenUtil {
-    private const val LINE = "---------------------------------"
 
     private lateinit var application: Application
     private var width = -1f
@@ -27,10 +26,8 @@ object AutoScreenUtil {
         this.application = application
         this.width = width
         this.isDebug = isDebug
-        log(LINE)
         log("当前强制width为$width")
         initApplication()
-        log(LINE)
     }
 
     private fun initApplication() {

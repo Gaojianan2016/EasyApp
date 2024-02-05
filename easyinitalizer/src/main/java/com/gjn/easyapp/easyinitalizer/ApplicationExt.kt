@@ -1,4 +1,4 @@
-package com.gjn.easyapp.easyutils
+package com.gjn.easyapp.easyinitalizer
 
 import android.app.Application
 import android.content.pm.ApplicationInfo
@@ -8,7 +8,7 @@ import android.content.res.AssetManager
 import android.content.res.Resources
 import android.net.Uri
 import androidx.core.content.pm.PackageInfoCompat
-import com.gjn.easyapp.easyinitalizer.EasyAppInitializer
+import com.gjn.easyapp.easyutils.packageNameUri
 
 //////////////////////////////////
 ///// ApplicationManager

@@ -251,11 +251,13 @@ object RetrofitManager {
                         consumeAll(jr)
                         jr.endArray()
                     }
+
                     JsonToken.BEGIN_OBJECT -> {
                         jr.beginObject()
                         consumeAll(jr)
                         jr.endObject()
                     }
+
                     JsonToken.END_ARRAY -> jr.endArray()
                     JsonToken.END_OBJECT -> jr.endObject()
                     JsonToken.NUMBER -> jr.nextString()
@@ -264,6 +266,7 @@ object RetrofitManager {
                         jr.nextName()
                         consumeAll(jr)
                     }
+
                     JsonToken.NULL -> jr.nextNull()
                     else -> {}
                 }

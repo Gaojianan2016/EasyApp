@@ -18,13 +18,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     //kotlin 默认使用1.6编译 这里修改为使用1.8编译
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '1.8'
     }
 
     buildFeatures {
@@ -65,9 +65,6 @@ dependencies {
     //协程与LiveData联合使用 LiveData<Result> emit
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 
-//    //paging 3
-//    implementation "androidx.paging:paging-runtime:3.0.0-alpha09"
-
     // 引入multidex库
     implementation "androidx.multidex:multidex:${library_versions.multidex}"
 
@@ -89,15 +86,6 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:${library_versions.retrofit2}"
     //mmkv
     implementation "com.tencent:mmkv-static:${library_versions.mmkv}"
-
-//    def easy_version = "1.1.9"
-//    implementation "com.github.Gaojianan2016.EasyApp:easybase:$easy_version"
-//    implementation "com.github.Gaojianan2016.EasyApp:easynetworker:$easy_version"
-//    implementation "com.github.Gaojianan2016.EasyApp:easylogger:$easy_version"
-//    implementation "com.github.Gaojianan2016.EasyApp:easytoaster:$easy_version"
-//    implementation "com.github.Gaojianan2016.EasyApp:easydialoger:$easy_version"
-//    implementation "com.github.Gaojianan2016.EasyApp:easyinitalizer:$easy_version"
-//    implementation "com.github.Gaojianan2016.EasyApp:easyutils:$easy_version"
 
     implementation project(path: ':easybase')
     implementation project(path: ':easynetworker')

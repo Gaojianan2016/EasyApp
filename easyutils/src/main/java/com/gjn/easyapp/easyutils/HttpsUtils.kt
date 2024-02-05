@@ -1,7 +1,10 @@
 package com.gjn.easyapp.easyutils
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import java.net.Socket
 import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
@@ -14,6 +17,9 @@ object HttpsUtils {
 
     val mHostnameVerifier = TrustAllHostnameVerifier()
     val mX509TrustManager = TrustAllManager()
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    val mX509ExtendedTrustManager = ExtendedTrustAllManager()
 
     /**
      * 设置HttpsURLConnection默认允许全部Hostname和SSL
@@ -37,15 +43,53 @@ object HttpsUtils {
         return factory
     }
 
+    @SuppressLint("TrustAllX509TrustManager")
     class TrustAllManager : X509TrustManager {
-        @SuppressLint("TrustAllX509TrustManager")
         override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
-            //不处理代表接受任意客户端证书
         }
 
-        @SuppressLint("TrustAllX509TrustManager")
         override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
-            //不处理代表接受任意服务端证书
+        }
+
+        override fun getAcceptedIssuers(): Array<X509Certificate?> = arrayOfNulls(0)
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    @SuppressLint("TrustAllX509TrustManager")
+    class ExtendedTrustAllManager : X509ExtendedTrustManager() {
+        override fun checkClientTrusted(
+            chain: Array<out X509Certificate>?,
+            authType: String?,
+            socket: Socket?
+        ) {
+        }
+
+        override fun checkClientTrusted(
+            chain: Array<out X509Certificate>?,
+            authType: String?,
+            engine: SSLEngine?
+        ) {
+        }
+
+        override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
+        }
+
+        override fun checkServerTrusted(
+            chain: Array<out X509Certificate>?,
+            authType: String?,
+            socket: Socket?
+        ) {
+        }
+
+        override fun checkServerTrusted(
+            chain: Array<out X509Certificate>?,
+            authType: String?,
+            engine: SSLEngine?
+        ) {
+        }
+
+        override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
         }
 
         override fun getAcceptedIssuers(): Array<X509Certificate?> = arrayOfNulls(0)

@@ -7,8 +7,6 @@ plugins {
 apply from: '../base_lib_build.gradle'
 
 dependencies {
-//    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
-
     compileOnly project(path: ':easyutils')
 }
 

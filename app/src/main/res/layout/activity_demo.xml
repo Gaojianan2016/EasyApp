@@ -377,6 +377,18 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="MapperExt"
+            android:textAppearance="@style/Text_Title" />
+
+        <Button
+            android:id="@+id/btn51_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mapper操作" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="MetaDataExt"
             android:textAppearance="@style/Text_Title" />
 

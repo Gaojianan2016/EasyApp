@@ -11,8 +11,9 @@ import androidx.core.view.isVisible
 import com.gjn.easyapp.R
 import com.gjn.easyapp.databinding.ActivityDemoBinding
 import com.gjn.easyapp.easybase.ABaseActivity
-import com.gjn.easyapp.easynetworker.RetrofitManager
 import com.gjn.easyapp.easyutils.*
+import com.gjn.easyapp.model.ManagerBean
+import com.gjn.easyapp.model.UserBean
 import kotlinx.coroutines.delay
 import java.io.FileFilter
 import java.util.*
@@ -780,7 +781,30 @@ class DemoActivity : ABaseActivity(), NetworkStateManager.OnNetworkStateListener
             logI(log5)
             logW(log5, tr = Throwable("logW 测试5"))
         }
+
+        binding.btn51Ad.click {
+            val bean = UserBean("张三", 15, "男")
+            val beans = mutableListOf<UserBean>()
+
+            for (i in 0..10) {
+                beans.add(UserBean("张$i", 15 + i, if (i % 3 == 0) "男" else "女"))
+            }
+
+            val u2m = object : Mapper<UserBean, ManagerBean>{
+                override fun map(input: UserBean): ManagerBean {
+                    return ManagerBean(input.name, input.age % 5, emptyList())
+                }
+            }
+
+            val result = u2m.map(bean)
+            val resultList = ListMapperImpl(u2m).map(beans)
+
+            println("$bean 转换 $result")
+            println("$beans 转换 $resultList")
+
+        }
     }
+
 
     private var f1 = "123"
     var f2 = "456"

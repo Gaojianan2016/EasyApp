@@ -16,29 +16,24 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.gjn.easyapp.easydialoger.base.*
 import com.gjn.easyapp.easyutils.*
+import java.lang.ref.WeakReference
 import java.util.concurrent.CopyOnWriteArrayList
 
 @SuppressLint("SetTextI18n")
 class EasyDialogManager {
 
     private val fragmentList: CopyOnWriteArrayList<BaseDialogFragment> = CopyOnWriteArrayList()
-    private var mActivity: Activity? = null
+    private var weakActivity: WeakReference<Activity> = WeakReference(null)
     private var mFragmentManager: FragmentManager? = null
 
-    constructor(activity: FragmentActivity, isWeak: Boolean = false) {
+    constructor(activity: FragmentActivity) {
         mFragmentManager = activity.supportFragmentManager
-        mActivity = activity
+        weakActivity = WeakReference(activity)
     }
 
-    constructor(fragment: Fragment, isWeak: Boolean = false) {
+    constructor(fragment: Fragment) {
         mFragmentManager = fragment.childFragmentManager
-        mActivity = fragment.activity
-    }
-
-    fun addOnDialogCancelListener(listener: OnDialogCancelListener) {
-        for (fragment in fragmentList) {
-            fragment?.addOnDialogCancelListener(listener)
-        }
+        weakActivity = WeakReference(fragment.activity)
     }
 
     fun showDialog(dialogFragment: BaseDialogFragment?): BaseDialogFragment? {
@@ -64,7 +59,31 @@ class EasyDialogManager {
 
     fun destroyManager() {
         mFragmentManager = null
-        mActivity = null
+        weakActivity.clear()
+    }
+
+    fun addOnDialogCancelListener(listener: OnDialogCancelListener) {
+        for (fragment in fragmentList) {
+            fragment?.addOnDialogCancelListener(listener)
+        }
+    }
+
+    fun removeOnDialogDismissListener(listener: OnDialogDismissListener) {
+        for (fragment in fragmentList) {
+            fragment?.removeOnDialogDismissListener(listener)
+        }
+    }
+
+    fun removeOnDialogCancelListener(listener: OnDialogCancelListener) {
+        for (fragment in fragmentList) {
+            fragment?.removeOnDialogCancelListener(listener)
+        }
+    }
+
+    fun clearOnDialogDismissListeners() {
+        for (fragment in fragmentList) {
+            fragment?.clearOnDialogDismissListeners()
+        }
     }
 
     fun showAndroidDialog(
@@ -77,7 +96,7 @@ class EasyDialogManager {
         neutral: CharSequence? = null,
         neutralClickBlock: ((DialogInterface, Int) -> Unit)? = null,
     ): BaseDialogFragment? {
-        mActivity?.let {
+        weakActivity.get()?.let {
             val builder = AlertDialog.Builder(it)
             builder.run {
                 setTitle(title)
@@ -112,7 +131,7 @@ class EasyDialogManager {
         negative: CharSequence? = null,
         negativeClickBlock: (View.() -> Unit)? = null
     ): BaseDialogFragment? {
-        mActivity?.let {
+        weakActivity.get()?.let {
             val dialogFragment = EasyDialogFragment.newInstance(R.layout.edf_dialog_normal,
                 object : ConvertLayoutDialogFragment {
                     override fun convertView(holder: ViewHolder, dialogFragment: DialogFragment) {
@@ -159,7 +178,7 @@ class EasyDialogManager {
         negative: CharSequence? = null,
         negativeClickBlock: (View.() -> Unit)? = null
     ): BaseDialogFragment? {
-        mActivity?.let {
+        weakActivity.get()?.let {
             val dialogFragment = EasyDialogFragment.newInstance(R.layout.edf_dialog_input,
                 object : ConvertLayoutDialogFragment {
                     override fun convertView(holder: ViewHolder, dialogFragment: DialogFragment) {
@@ -225,7 +244,7 @@ class EasyDialogManager {
     fun showBigLoadingDialog(): BaseDialogFragment? = showEasyLoadingDialog(LOADING_B)
 
     fun showEasyLoadingDialog(size: Int, dimAmount: Float = BaseDialogFragment.DIM_AMOUNT): BaseDialogFragment? {
-        mActivity?.let {
+        weakActivity.get()?.let {
             val edge = when (size) {
                 LOADING_B -> it.screenWidth / LOADING_B
                 LOADING_N -> it.screenWidth / LOADING_N
