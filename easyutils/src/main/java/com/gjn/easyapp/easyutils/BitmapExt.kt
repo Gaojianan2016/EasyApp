@@ -13,6 +13,7 @@ import android.renderscript.ScriptIntrinsicBlur
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
+import android.view.Gravity
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
@@ -403,15 +404,10 @@ private fun Canvas.drawStaticLayout(text: CharSequence, textPaint: TextPaint) {
 
 /**
  * 添加图片水印
- * @param gravity [0..9]之间
- * 位置入下
- * 1 2 3
- * 4 5 6
- * 7 8 9
  * */
 fun Bitmap.addImageWatermark(
     mark: Bitmap?,
-    @IntRange(from = 1, to = 9) gravity: Int = 5,
+    gravity: Int = Gravity.CENTER,
     @FloatRange(from = 0.1, to = 1.0) scale: Float = 0.2f,
     @IntRange(from = 0, to = 255) alpha: Int = 255,
     degrees: Float = 0f,
@@ -421,15 +417,15 @@ fun Bitmap.addImageWatermark(
     val markWidth = (mark.width * scale).toInt()
     val markHeight = (mark.height * scale).toInt()
     val markBitmap = mark.scale(markWidth, markHeight)
-    val left = when (gravity % 3) {
-        1 -> 0f
-        2 -> (width - markWidth) / 2f
-        else -> (width - markHeight).toFloat()
+    val left = when (gravity and Gravity.HORIZONTAL_GRAVITY_MASK) {
+        Gravity.LEFT -> 0f
+        Gravity.RIGHT -> (width - markWidth).toFloat()
+        else -> (width - markWidth) / 2f
     }
-    val top = when {
-        gravity > 6 -> (height - markHeight).toFloat()
-        gravity > 3 -> (height - markHeight) / 2f
-        else -> 0f
+    val top = when (gravity and Gravity.VERTICAL_GRAVITY_MASK) {
+        Gravity.TOP -> 0f
+        Gravity.BOTTOM -> (height - markHeight).toFloat()
+        else -> (height - markHeight) / 2f
     }
     return addImageWatermark(markBitmap, left, top, degrees, alpha, recycle)
 }

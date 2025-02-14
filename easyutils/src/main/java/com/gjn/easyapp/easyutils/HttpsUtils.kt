@@ -58,35 +58,19 @@ object HttpsUtils {
     @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("TrustAllX509TrustManager")
     class ExtendedTrustAllManager : X509ExtendedTrustManager() {
-        override fun checkClientTrusted(
-            chain: Array<out X509Certificate>?,
-            authType: String?,
-            socket: Socket?
-        ) {
+        override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?, socket: Socket?) {
         }
 
-        override fun checkClientTrusted(
-            chain: Array<out X509Certificate>?,
-            authType: String?,
-            engine: SSLEngine?
-        ) {
+        override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?, engine: SSLEngine?) {
         }
 
         override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
         }
 
-        override fun checkServerTrusted(
-            chain: Array<out X509Certificate>?,
-            authType: String?,
-            socket: Socket?
-        ) {
+        override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?, socket: Socket?) {
         }
 
-        override fun checkServerTrusted(
-            chain: Array<out X509Certificate>?,
-            authType: String?,
-            engine: SSLEngine?
-        ) {
+        override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?, engine: SSLEngine?) {
         }
 
         override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
